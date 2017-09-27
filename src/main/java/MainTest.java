@@ -17,7 +17,7 @@ public class MainTest {
     public static void main(String[] args) throws FileNotFoundException,
             XMLStreamException {
         // Create a File object with appropriate xml file name
-        File file = new File("data.xml");
+        File file = new File("cranfield0004");
 
         // Function for accessing the data
         parser(file);
@@ -30,14 +30,16 @@ public class MainTest {
         // if false that means elements is
         // not been used currently , if true the element or the
         // tag is being used currently
-        bcompany = btitle = bname = bemail = bphone = false;
+        String doctitle = "", doctext = "", temp;
+        int docid;
+        boolean bdocid, btitle, btext;
+        bdocid = btitle = btext = false;
 
         // Instance of the class which helps on reading tags
         XMLInputFactory factory = XMLInputFactory.newInstance();
 
         // Initializing the handler to access the tags in the XML file
-        XMLEventReader eventReader
-                = factory.createXMLEventReader(new FileReader(file));
+        XMLEventReader eventReader = factory.createXMLEventReader(new FileReader(file));
 
         // Checking the availabilty of the next tag
         while (eventReader.hasNext()) {
@@ -52,34 +54,17 @@ public class MainTest {
             if (event.isStartElement()) {
                 StartElement element = (StartElement) event;
 
-                // Iterator for accessing the metadeta related
-                // the tag started.
-                // Here, it would name of the company
-                Iterator<Attribute> iterator = element.getAttributes();
-                while (iterator.hasNext()) {
-                    Attribute attribute = iterator.next();
-                    QName name = attribute.getName();
-                    String value = attribute.getValue();
-                    System.out.println(name + " = " + value);
-                }
-
                 // Checking which tag needs to be opened for reading.
                 // If the tag matches then the boolean of that tag
                 // is set to be true.
-                if (element.getName().toString().equalsIgnoreCase("comapany")) {
-                    bcompany = true;
+                if (element.getName().toString().equalsIgnoreCase("docno")) {
+                    bdocid = true;
                 }
                 if (element.getName().toString().equalsIgnoreCase("title")) {
                     btitle = true;
                 }
-                if (element.getName().toString().equalsIgnoreCase("name")) {
-                    bname = true;
-                }
-                if (element.getName().toString().equalsIgnoreCase("email")) {
-                    bemail = true;
-                }
-                if (element.getName().toString().equalsIgnoreCase("phone")) {
-                    bphone = true;
+                if (element.getName().toString().equalsIgnoreCase("text")) {
+                    btext = true;
                 }
             }
 
@@ -90,20 +75,14 @@ public class MainTest {
                 // Checking which tag needs to be closed after reading.
                 // If the tag matches then the boolean of that tag is
                 // set to be false.
-                if (element.getName().toString().equalsIgnoreCase("comapany")) {
-                    bcompany = false;
+                if (element.getName().toString().equalsIgnoreCase("docno")) {
+                    bdocid = false;
                 }
                 if (element.getName().toString().equalsIgnoreCase("title")) {
                     btitle = false;
                 }
-                if (element.getName().toString().equalsIgnoreCase("name")) {
-                    bname = false;
-                }
-                if (element.getName().toString().equalsIgnoreCase("email")) {
-                    bemail = false;
-                }
-                if (element.getName().toString().equalsIgnoreCase("phone")) {
-                    bphone = false;
+                if (element.getName().toString().equalsIgnoreCase("text")) {
+                    btext = false;
                 }
             }
 
@@ -112,22 +91,22 @@ public class MainTest {
             if (event.isCharacters()) {
                 // Depending upon the tag opened the data is retrieved .
                 Characters element = (Characters) event;
-                if (bcompany) {
-                    System.out.println(element.getData());
+                if (bdocid) {
+                    docid = Integer.parseInt(element.getData());
+                    temp = element.getData();
+                    System.out.print(element.getData());
+                    System.out.print(temp);
                 }
                 if (btitle) {
-                    System.out.println(element.getData());
+                    doctitle += element.getData();
+                    System.out.print(element.getData());
                 }
-                if (bname) {
-                    System.out.println(element.getData());
-                }
-                if (bemail) {
-                    System.out.println(element.getData());
-                }
-                if (bphone) {
-                    System.out.println(element.getData());
+                if (btext) {
+                    doctext += element.getData();
+                    System.out.print(element.getData());
                 }
             }
         }
+
     }
 }

@@ -20,6 +20,12 @@ import javax.xml.stream.events.*;
  * @author USER
  */
 public class CorpusReader {
+    
+    private static int docid;
+    private static String doctitle="";
+    private static String doctext="";
+    
+    public static void 
 
     public static void read(File file)
             throws FileNotFoundException, XMLStreamException {
@@ -99,12 +105,15 @@ public class CorpusReader {
                 // Depending upon the tag opened the data is retrieved .
                 Characters element = (Characters) event;
                 if (bdocid) {
+                    docid = Integer.parseInt(element.getData());
                     System.out.println(element.getData());
                 }
                 if (btitle) {
+                    doctitle += element.getData();
                     System.out.println(element.getData());
                 }
                 if (btext) {
+                    doctext += element.getData();
                     System.out.println(element.getData());
                 }
             }
