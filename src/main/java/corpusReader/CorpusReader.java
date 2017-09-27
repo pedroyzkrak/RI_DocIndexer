@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -25,15 +27,34 @@ public class CorpusReader {
     private static String doctitle="";
     private static String doctext="";
     
-    public static void 
-
-    public static void read(File file)
+    public static void readDir(String dir)
+    {
+        
+        File dirFolder = new File(dir);
+        File[] listOfFiles = dirFolder.listFiles();
+        
+        for(File file : listOfFiles)
+        {
+            if(file.isFile())
+            {
+                try {
+                    
+                    read(file);
+                    //guardar cenas Map
+                } catch (FileNotFoundException | XMLStreamException ex) {
+                    Logger.getLogger(CorpusReader.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+    private static void read(File file)
             throws FileNotFoundException, XMLStreamException {
         // Variables to make sure whether a element
         // in the xml is being accessed or not
         // if false that means elements is
         // not been used currently , if true the element or the
         // tag is being used currently
+        
         boolean bdocid, btitle, btext;
         bdocid = btitle = btext = false;
 
@@ -105,16 +126,16 @@ public class CorpusReader {
                 // Depending upon the tag opened the data is retrieved .
                 Characters element = (Characters) event;
                 if (bdocid) {
-                    docid = Integer.parseInt(element.getData());
+                    docid = Integer.parseInt(element.getData().trim());
                     System.out.println(element.getData());
                 }
                 if (btitle) {
                     doctitle += element.getData();
-                    System.out.println(element.getData());
+                    System.out.println(element.getData().trim());
                 }
                 if (btext) {
                     doctext += element.getData();
-                    System.out.println(element.getData());
+                    System.out.println(element.getData().trim());
                 }
             }
         }
