@@ -1,3 +1,4 @@
+
 import Exception.ParserException;
 import Tokenizer.SimpleTokenizer;
 //import corpusReader.CorpusReader;
@@ -9,13 +10,14 @@ public class MainTest {
         SimpleTokenizer tokenizer = new SimpleTokenizer();
 
         try {
-            tokenizer.tokenize("Hey 31are you#$ 31?", "[a-zA-Z]{3,}");
+            tokenizer.tokenize("Hey gd 31are you#$ 31?", "[a-zA-Z]{3,}"); //regex
 
-            for (SimpleTokenizer.Token tok : tokenizer.getTokens()) {
-                System.out.println("" + tok.sequence);
-            }
         } catch (ParserException e) {
             System.out.println(e.getMessage());
+        }
+
+        for (SimpleTokenizer.Token tok : tokenizer.getTokens()) {
+            System.out.println("" + tok.sequence);
         }
 
     }
