@@ -27,8 +27,8 @@ import posting.Posting;
 public class CorpusReader {
     
     private static int docid;
-    private static String doctitle="";
-    private static String doctext="";
+    private static String doctitle;
+    private static String doctext;
       
     public static void readDir(String dir, SimpleTokenizer tokenizer, SimpleIndexer indexer)
     {
@@ -59,7 +59,8 @@ public class CorpusReader {
         // if false that means elements is
         // not been used currently , if true the element or the
         // tag is being used currently
-        
+        doctitle = "";
+        doctext = "";
         boolean bdocid, btitle, btext;
         bdocid = btitle = btext = false;
 
