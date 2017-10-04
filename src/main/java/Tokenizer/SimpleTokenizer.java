@@ -18,7 +18,11 @@ public class SimpleTokenizer {
 
     public class Token {
 
-        public final String sequence;
+        private final String sequence;
+
+        public String getSequence() {
+            return sequence;
+        }
 
         public Token(String sequence) {
             super();
@@ -29,7 +33,7 @@ public class SimpleTokenizer {
     private LinkedList<Token> tokens;
 
     public SimpleTokenizer() {
-        tokens = new LinkedList<Token>();
+        tokens = new LinkedList<>();
     }
 
     public void tokenize(String str, String regex) {
@@ -51,5 +55,10 @@ public class SimpleTokenizer {
 
     public LinkedList<Token> getTokens() {
         return tokens;
+    }
+    
+    public void clear()
+    {
+        tokens.clear();
     }
 }

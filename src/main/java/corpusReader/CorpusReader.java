@@ -16,6 +16,9 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.*;
+import Tokenizer.SimpleTokenizer;
+import indexer.SimpleIndexer;
+import posting.Posting;
 
 /**
  *
@@ -26,8 +29,8 @@ public class CorpusReader {
     private static int docid;
     private static String doctitle="";
     private static String doctext="";
-    
-    public static void readDir(String dir)
+      
+    public static void readDir(String dir, SimpleTokenizer tokenizer, SimpleIndexer indexer)
     {
         
         File dirFolder = new File(dir);
@@ -40,7 +43,9 @@ public class CorpusReader {
                 try {
                     
                     read(file);
-                    //guardar cenas Map
+                    tokenizer.tokenize(doctitle+doctext,"[a-zA-Z]{3,}"); //????
+                    indexer.index(tokenizer.getTokens(),docid);
+                    tokenizer.clear();
                 } catch (FileNotFoundException | XMLStreamException ex) {
                     Logger.getLogger(CorpusReader.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -79,7 +84,6 @@ public class CorpusReader {
 
                 // Iterator for accessing the metadeta related
                 // the tag started.
-                // Here, it would name of the company
                 Iterator<Attribute> iterator = element.getAttributes();
                 while (iterator.hasNext()) {
                     Attribute attribute = iterator.next();

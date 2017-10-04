@@ -13,11 +13,11 @@ public class MainTest {
             tokenizer.tokenize("Hey gd 31are you#$ 31?", "[a-zA-Z]{3,}"); //regex
 
         } catch (ParserException e) {
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
         }
 
         for (SimpleTokenizer.Token tok : tokenizer.getTokens()) {
-            System.out.println("" + tok.sequence);
+            System.out.println("" + tok.getSequence());
         }
 
     }
