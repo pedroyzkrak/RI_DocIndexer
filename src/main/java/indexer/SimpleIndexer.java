@@ -5,30 +5,42 @@
  */
 package indexer;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.TreeMap;
+import java.util.HashMap;
+import posting.Posting;
 
 /**
  *
  * @author Francisco Q Lopes
  */
 public class SimpleIndexer {
-    private TreeMap<String, ArrayList<Integer>> docTerms = new TreeMap<>();
-    private TreeMap<String, Integer> docFreq = new TreeMap<>();
-    
-    
-    public void indexer(LinkedList<String> tokenList, int docID) {
-        
+
+    private HashMap<String, LinkedList<Posting>> indexer;
+
+    public SimpleIndexer() {
+        this.indexer = new HashMap<>();
+    }
+
+    public void indexer(LinkedList<String> tokenList, int docId) {
+
+        a:
         for (String tok : tokenList) {
-            if (!docTerms.containsKey(tok)) {
-                docTerms.put(tok, new ArrayList<Integer>());
-                docTerms.get(tok).add(docID);
-                docFreq.put(tok, 1);
-            }
-            else if (docTerms.containsKey(tok) && !docTerms.get(tok).contains(docID)) {
-                docTerms.get(tok).add(docID);
-                docFreq.replace(tok, docFreq.get(tok), docFreq.get(tok)+1);
+
+            // If token is not yet indexed
+            if (!indexer.containsKey(tok)) {
+                indexer.put(tok, new LinkedList<>());
+                indexer.get(tok).add(new Posting(docId, 1));
+            } else {
+
+                // check if the list contains a document linked to this token already
+                for (Posting posting : indexer.get(tok)) {
+                    if (posting.getDocId() == docId) {
+                        posting.setDocFreq(posting.getDocFreq() + 1);
+                        continue a;
+                    }
+                }
+                // add a new entry to the indexer for a new document that uses the token
+                indexer.get(tok).add(new Posting(docId, 1));
             }
         }
     }
