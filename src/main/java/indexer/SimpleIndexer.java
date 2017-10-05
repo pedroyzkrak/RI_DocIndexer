@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.HashMap;
 import posting.Posting;
 import Tokenizer.SimpleTokenizer.Token;
+import java.util.Map;
 
 /**
  *
@@ -46,4 +47,9 @@ public class SimpleIndexer {
             }
         }
     }
+
+    public Iterable<Map.Entry<String, LinkedList<Posting>>> entrySet() {
+        return indexer.entrySet();
+    }
+
 }
