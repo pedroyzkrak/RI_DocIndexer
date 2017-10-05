@@ -10,10 +10,10 @@ public class MainTest {
         SimpleTokenizer tokenizer = new SimpleTokenizer();
 
         try {
-            tokenizer.tokenize("Hey gd 31are you#$ 31?", "[a-zA-Z]{3,}"); //regex
+            tokenizer.tokenize("Hey gd 31are you#$ 31?", "[a-z]{3,}"); //regex
 
         } catch (ParserException e) {
-            //System.out.println(e.getMessage());
+            System.out.println(e.getMessage());
         }
 
         for (SimpleTokenizer.Token tok : tokenizer.getTokens()) {

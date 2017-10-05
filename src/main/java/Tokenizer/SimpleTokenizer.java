@@ -37,8 +37,7 @@ public class SimpleTokenizer {
     }
 
     public void tokenize(String str, String regex) {
-        String s = str.trim();
-        s = s.replaceAll("[^A-Za-z ]", "").toLowerCase();   //remocao de carateres especiais, lowercase
+        String s = str.toLowerCase().trim();
         tokens.clear();
         while (!s.equals("")) {
             Matcher m = Pattern.compile(regex).matcher(s);
@@ -48,7 +47,7 @@ public class SimpleTokenizer {
                 tokens.add(new Token(tok));
             }
             else{
-                throw new ParserException("Unexpected character in input: "+s);
+                throw new ParserException("Ignored characters in input: "+s);
             }
         }
     }
