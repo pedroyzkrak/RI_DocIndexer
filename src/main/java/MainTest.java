@@ -5,11 +5,26 @@ import indexer.SimpleIndexer;
 import java.util.LinkedList;
 import java.util.Map;
 import posting.Posting;
-//import corpusReader.CorpusReader;
+import save.SaveToFile;
+import corpusReader.CorpusReader;
 
+/**
+ * 
+ * @author Francisco Lopes 76406 
+ * @author Pedro Gusmão 77867
+ */
 public class MainTest {
 
     public static void main(String[] args) {
+        
+        
+        SimpleTokenizer tokenizer = new SimpleTokenizer();
+        SimpleIndexer indexer = new SimpleIndexer();
+        CorpusReader.readDir("cranfield", tokenizer, indexer);
+        SaveToFile.save(indexer);
+        
+        
+        /*
         //CorpusReader.readDir("cranfield");
         SimpleTokenizer tokenizer = new SimpleTokenizer();
         SimpleIndexer indexer = new SimpleIndexer();
@@ -118,6 +133,8 @@ public class MainTest {
             for (Posting doc : entry.getValue()) {
                 System.out.println("\tDoc ID: " + doc.getDocId() + " Doc Freq: " + doc.getDocFreq());
             }
-        }
+        }*/
+        
+        
     }
 }

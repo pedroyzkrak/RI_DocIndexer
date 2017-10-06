@@ -18,11 +18,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.*;
 import Tokenizer.SimpleTokenizer;
 import indexer.SimpleIndexer;
-import posting.Posting;
 
 /**
  *
- * @author USER
+ * @author Francisco Lopes 76406 
+ * @author Pedro Gusmão 77867
  */
 public class CorpusReader {
     
@@ -132,15 +132,12 @@ public class CorpusReader {
                 Characters element = (Characters) event;
                 if (bdocid) {
                     docid = Integer.parseInt(element.getData().trim());
-                    System.out.println(element.getData());
                 }
                 if (btitle) {
                     doctitle += element.getData();
-                    System.out.println(element.getData().trim());
                 }
                 if (btext) {
                     doctext += element.getData();
-                    System.out.println(element.getData().trim());
                 }
             }
         }

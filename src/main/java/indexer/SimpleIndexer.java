@@ -6,22 +6,23 @@
 package indexer;
 
 import java.util.LinkedList;
-import java.util.HashMap;
 import posting.Posting;
 import Tokenizer.SimpleTokenizer.Token;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  *
- * @author Francisco Q Lopes
+ * @author Francisco Lopes 76406 
+ * @author Pedro Gusmão 77867
  */
 
 public class SimpleIndexer {
 
-    private HashMap<String, LinkedList<Posting>> indexer;
+    private TreeMap<String, LinkedList<Posting>> indexer;
 
     public SimpleIndexer() {
-        this.indexer = new HashMap<>();
+        this.indexer = new TreeMap<>();
     }
 
     public void index(LinkedList<Token> tokenList, int docId) {

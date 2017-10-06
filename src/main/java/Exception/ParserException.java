@@ -7,7 +7,8 @@ package Exception;
 
 /**
  *
- * @author Pedro
+ * @author Francisco Lopes 76406 
+ * @author Pedro Gusmão 77867
  */
 public class ParserException extends RuntimeException {
 
