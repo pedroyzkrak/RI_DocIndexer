@@ -1,7 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * 
+ * Class built for the simple indexer
+ * 
  */
 package indexer;
 
@@ -15,6 +15,8 @@ import java.util.Map;
  *
  * @author Francisco Lopes 76406 
  * @author Pedro Gusmão 77867
+ * 
+ * Class for the simple indexer that it's main purpose is to index multiple given tokens
  */
 
 public class SimpleIndexer {
@@ -27,8 +29,8 @@ public class SimpleIndexer {
     
     /**
      * Indexes the tokens of a document
-     * @param tokenList a list of tokens of a document
-     * @param docId the ID of the document
+     * @param tokenList The linked list of tokens
+     * @param docId The ID of the document
      */
     public void index(LinkedList<Token> tokenList, int docId) {
 

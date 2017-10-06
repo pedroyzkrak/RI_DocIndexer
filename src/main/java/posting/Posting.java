@@ -1,7 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * 
+ * Class built to save document information
+ * 
  */
 package posting;
 
@@ -17,8 +17,8 @@ public class Posting {
     
     /**
      * Contructor that supports the Document ID and Document Frequency for the tokens in the indexer
-     * @param docId ID of the document
-     * @param docFreq Frequency of the token on this document
+     * @param docId the ID of the document
+     * @param docFreq the frequency of a token in documents
      */
     public Posting(int docId, int docFreq) {
         this.docId = docId;

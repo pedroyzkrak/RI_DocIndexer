@@ -1,7 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * 
+ * Class built to read the files and process them with given tokenizer and indexer
+ * 
  */
 package corpusReader;
 
@@ -32,10 +32,13 @@ public class CorpusReader {
     private static int docid;
     private static String doctitle;
     private static String doctext;
-      /*
+   /**
     *
     * Reads files inside a directory while tokenizing the content and indexing the resulting tokens
     *
+    * @param dir the directory
+    * @param tokenizer the tokenizer
+    * @param indexer the indexer
     */
     public static void readAndProcessDir(String dir, SimpleTokenizer tokenizer, SimpleIndexer indexer)
     {
@@ -59,9 +62,10 @@ public class CorpusReader {
             }
         }
     }
-    /*
+    /**
     *
     * Reads the xml file storing the content from selected tags, in this case: title; text and docID
+    * @param file a file
     *
     */
     private static void read(File file)
