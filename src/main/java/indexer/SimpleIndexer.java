@@ -15,6 +15,8 @@ import java.util.Map;
  *
  * @author Francisco Lopes 76406 
  * @author Pedro Gusmão 77867
+ * 
+ * A class for the indexer
  */
 
 public class SimpleIndexer {
