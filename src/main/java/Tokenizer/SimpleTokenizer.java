@@ -22,7 +22,7 @@ import org.tartarus.snowball.ext.englishStemmer;
 
 /**
  *
- * @author Francisco Lopes 76406 
+ * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
  */
 public class SimpleTokenizer {
@@ -62,30 +62,27 @@ public class SimpleTokenizer {
                 Logger.getLogger(SimpleTokenizer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-        if (stem) {
-            stemmer.setCurrent(s);
-            stemmer.stem();
-            s = stemmer.getCurrent();
-        }
-
+        
         while (!s.equals("")) {
             Matcher m = Pattern.compile(regex).matcher(s);
             if (m.find()) {
                 String tok = m.group().trim();
                 s = m.replaceFirst("").trim();
-                if(!stopword)
-                {
-                    tokens.add(new Token(tok));
+
+                if (stem) {
+                    stemmer.setCurrent(tok);
+                    stemmer.stem();
+                    tok = stemmer.getCurrent();
                 }
-                else{
-                    if(!stopwordArray.contains(tok))
-                    {
+                if (!stopword) {
+                    tokens.add(new Token(tok));
+                } else {
+                    if (!stopwordArray.contains(tok)) {
                         tokens.add(new Token(tok));
                     }
-                }          
+                }
             } else {
-                throw new ParserException("Ignored characters in input: " + s);
+                break;
             }
         }
     }

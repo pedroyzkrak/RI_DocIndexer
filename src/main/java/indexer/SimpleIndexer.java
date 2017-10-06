@@ -8,8 +8,8 @@ package indexer;
 import java.util.LinkedList;
 import posting.Posting;
 import Tokenizer.SimpleTokenizer.Token;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  *
@@ -19,10 +19,10 @@ import java.util.TreeMap;
 
 public class SimpleIndexer {
 
-    private TreeMap<String, LinkedList<Posting>> indexer;
+    private final HashMap<String, LinkedList<Posting>> indexer;
 
     public SimpleIndexer() {
-        this.indexer = new TreeMap<>();
+        this.indexer = new HashMap<>();
     }
 
     public void index(LinkedList<Token> tokenList, int docId) {

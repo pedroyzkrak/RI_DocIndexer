@@ -17,7 +17,6 @@ public class MainTest {
 
     public static void main(String[] args) {
         
-        
         SimpleTokenizer tokenizer = new SimpleTokenizer();
         SimpleIndexer indexer = new SimpleIndexer();
         CorpusReader.readDir("cranfield", tokenizer, indexer);
