@@ -49,7 +49,7 @@ public class SimpleTokenizer {
     public void tokenize(String str, String regex, boolean stem, boolean stopword) {
         String s = str.toLowerCase().trim();
         List<String> stopwordArray = new ArrayList<>();
-        SnowballStemmer stemmer = new englishStemmer();;
+        SnowballStemmer stemmer = new englishStemmer();
         if (stopword) {
             File stopfile = new File("stop.txt");
             try (BufferedReader br = new BufferedReader(new FileReader(stopfile))) {

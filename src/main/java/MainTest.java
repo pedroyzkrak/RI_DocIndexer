@@ -53,16 +53,16 @@ public class MainTest {
         indexer.clear();
         
         
-        //Stop word filter
-        System.out.println("\nStopWord");
+        // Stemmer
+        System.out.println("\nStemmer");
         System.out.println("-------------------------");
-        tokenizer.tokenize("Taste the feeling, so damn frosty, people like, Damn! That's a cool as honkey", "[a-z]{3,}", false, true);
+        tokenizer.tokenize("Taste the feeling, so damn frosty, people like, Damn! That's a cool as honkey", "[a-z]{3,}", true, false);
         indexer.index(tokenizer.getTokens(), 1);
         tokenizer.clear();
-        tokenizer.tokenize("Follow me to the end of the world", "[a-z]{3,}", false, true);
+        tokenizer.tokenize("Follow me to the end of the world", "[a-z]{3,}", true, false);
         indexer.index(tokenizer.getTokens(), 2);
         tokenizer.clear();
-        tokenizer.tokenize("I'm going on an adventure to see the world to describe my feelings", "[a-z]{3,}", false, true);
+        tokenizer.tokenize("I'm going on an adventure to see the world to describes my feeling", "[a-z]{3,}", true, false);
         indexer.index(tokenizer.getTokens(), 3);
         tokenizer.clear();
         
@@ -76,16 +76,16 @@ public class MainTest {
         indexer.clear();
         
         
-        // Stemmer
-        System.out.println("\nStemmer");
+        //Stop word filter
+        System.out.println("\nStopWord");
         System.out.println("-------------------------");
-        tokenizer.tokenize("Taste the feeling, so damn frosty, people like, Damn! That's a cool as honkey", "[a-z]{3,}", true, false);
+        tokenizer.tokenize("Taste the feeling, so damn frosty, people like, Damn! That's a cool as honkey", "[a-z]{3,}", false, true);
         indexer.index(tokenizer.getTokens(), 1);
         tokenizer.clear();
-        tokenizer.tokenize("Follow me to the end of the world", "[a-z]{3,}", true, false);
+        tokenizer.tokenize("Follow me to the end of the world", "[a-z]{3,}", false, true);
         indexer.index(tokenizer.getTokens(), 2);
         tokenizer.clear();
-        tokenizer.tokenize("I'm going on an adventure to see the world to describe my feelings", "[a-z]{3,}", true, false);
+        tokenizer.tokenize("I'm going on an adventure to see the world to describe my feelings", "[a-z]{3,}", false, true);
         indexer.index(tokenizer.getTokens(), 3);
         tokenizer.clear();
         
