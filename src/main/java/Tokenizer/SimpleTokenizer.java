@@ -1,7 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Class implemented for the simple tokenizer 
+ * 
+ * 
  */
 package Tokenizer;
 
@@ -64,10 +64,10 @@ public class SimpleTokenizer {
     * Tokenizes a given string with a given rule (regex) with the options to stem or filter the stopwords
     * the tokens are inserted in a linked list previously initializated in the constructor
     *
-    * @param str
-    * @param regex
-    * @param stem
-    * @param stopword
+    * @param str the content to tokenize
+    * @param regex the rule 
+    * @param stem to stem or not to stem
+    * @param stopword to filter stopwords or not
     */
 
     public void tokenize(String str, String regex, boolean stem, boolean stopword) {
@@ -111,7 +111,7 @@ public class SimpleTokenizer {
     }
     /**
      * 
-     * @return 
+     * @return the linked list of tokens
      */
     public LinkedList<Token> getTokens() {
         return tokens;
