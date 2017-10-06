@@ -19,7 +19,7 @@ public class MainTest {
         
         SimpleTokenizer tokenizer = new SimpleTokenizer();
         SimpleIndexer indexer = new SimpleIndexer();
-        CorpusReader.readDir("cranfield", tokenizer, indexer);
+        CorpusReader.readAndProcessDir("cranfield", tokenizer, indexer);
         SaveToFile.save(indexer);
         
         

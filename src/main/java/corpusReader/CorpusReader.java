@@ -23,14 +23,21 @@ import indexer.SimpleIndexer;
  *
  * @author Francisco Lopes 76406 
  * @author Pedro Gusmão 77867
+ * 
+ * A class for the Corpus Reader
+ * 
  */
 public class CorpusReader {
     
     private static int docid;
     private static String doctitle;
     private static String doctext;
-      
-    public static void readDir(String dir, SimpleTokenizer tokenizer, SimpleIndexer indexer)
+      /*
+    *
+    * Reads files inside a directory while tokenizing the content and indexing the resulting tokens
+    *
+    */
+    public static void readAndProcessDir(String dir, SimpleTokenizer tokenizer, SimpleIndexer indexer)
     {
         
         File dirFolder = new File(dir);
@@ -52,13 +59,14 @@ public class CorpusReader {
             }
         }
     }
+    /*
+    *
+    * Reads the xml file storing the content from selected tags, in this case: title; text and docID
+    *
+    */
     private static void read(File file)
             throws FileNotFoundException, XMLStreamException {
-        // Variables to make sure whether a element
-        // in the xml is being accessed or not
-        // if false that means elements is
-        // not been used currently , if true the element or the
-        // tag is being used currently
+        
         doctitle = "";
         doctext = "";
         boolean bdocid, btitle, btext;

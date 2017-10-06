@@ -20,6 +20,12 @@ import posting.Posting;
  * @author Pedro Gusmão 77867
  */
 public class SaveToFile {
+    
+    /*
+    *
+    * Saves indexed content to a file
+    *
+    */
 
     public static void save(SimpleIndexer indexer) {
         try {

@@ -24,9 +24,17 @@ import org.tartarus.snowball.ext.englishStemmer;
  *
  * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
+ * 
+ * A class for the Tokenizer
+ * 
  */
 public class SimpleTokenizer {
 
+    /*
+    *
+    * Internal Token class that defines a token
+    *
+    */
     public class Token {
 
         private final String sequence;
@@ -42,10 +50,23 @@ public class SimpleTokenizer {
 
     }
     private LinkedList<Token> tokens;
-
+    
+    /*
+    *
+    * The constructor of the tokenizer that initializates the linked list
+    *
+    */
+    
     public SimpleTokenizer() {
         tokens = new LinkedList<>();
     }
+    
+    /*
+    *
+    * Tokenizes a given string with a given rule (regex) with the options to stem or filter the stopwords
+    * the tokens are inserted in a linked list previously initializated in the constructor
+    *
+    */
 
     public void tokenize(String str, String regex, boolean stem, boolean stopword) {
         String s = str.toLowerCase().trim();
