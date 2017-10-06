@@ -16,7 +16,7 @@ import java.util.Map;
  * @author Francisco Lopes 76406 
  * @author Pedro Gusmão 77867
  * 
- * Class for the simple indexer that it's main purpose is to index a multiple given tokens
+ * Class for the simple indexer that it's main purpose is to index multiple given tokens
  */
 
 public class SimpleIndexer {
@@ -29,8 +29,8 @@ public class SimpleIndexer {
     
     /**
      * Indexes the tokens of a document
-     * @param tokenList
-     * @param docId 
+     * @param tokenList The linked list of tokens
+     * @param docId The ID of the document
      */
     public void index(LinkedList<Token> tokenList, int docId) {
 
