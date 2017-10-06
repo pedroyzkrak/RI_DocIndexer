@@ -23,12 +23,17 @@ public class SimpleIndexer {
 
     private final HashMap<String, LinkedList<Posting>> indexer;
 
+    /**
+     * 
+     * The constructor of the indexer that initializes the linked list
+     * 
+     */
     public SimpleIndexer() {
         this.indexer = new HashMap<>();
     }
     
     /**
-     * Indexes the tokens of a document
+     * Indexes the tokens of a document to a hash map containing the terms and the corresponding document with the frequency of said term
      * @param tokenList The linked list of tokens
      * @param docId The ID of the document
      */
