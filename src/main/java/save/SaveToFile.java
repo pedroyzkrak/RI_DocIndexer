@@ -20,7 +20,11 @@ import posting.Posting;
  * @author Pedro Gusmão 77867
  */
 public class SaveToFile {
-
+    
+    /**
+     * Saves the resulting index to a file
+     * @param indexer 
+     */
     public static void save(SimpleIndexer indexer) {
         try {
             try (FileWriter writer = new FileWriter("SaveIndex.txt")) {

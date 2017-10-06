@@ -1,5 +1,4 @@
 
-import Exception.ParserException;
 import Tokenizer.SimpleTokenizer;
 import indexer.SimpleIndexer;
 import java.util.LinkedList;
@@ -9,20 +8,30 @@ import save.SaveToFile;
 import corpusReader.CorpusReader;
 
 /**
- * 
- * @author Francisco Lopes 76406 
+ *
+ * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
  */
 public class MainTest {
 
     public static void main(String[] args) {
-        
         SimpleTokenizer tokenizer = new SimpleTokenizer();
         SimpleIndexer indexer = new SimpleIndexer();
+        
+        Runtime runtime = Runtime.getRuntime();
+        
+        
+        double usedMemoryBefore = (double) (runtime.totalMemory() - runtime.freeMemory()) / (double)(1024*1024);
+        System.out.println("Used Memory before: " + usedMemoryBefore + " MB");
+        
         CorpusReader.readDir("cranfield", tokenizer, indexer);
+
+        double usedMemoryAfter = (double) (runtime.totalMemory() - runtime.freeMemory()) / (double)(1024*1024);
+        System.out.println("Used Memory after: " + usedMemoryAfter + " MB");
+        System.out.println("Memory increased: " + (usedMemoryAfter - usedMemoryBefore) + " MB");
+
         SaveToFile.save(indexer);
-        
-        
+
         /*
         //CorpusReader.readDir("cranfield");
         SimpleTokenizer tokenizer = new SimpleTokenizer();
@@ -133,7 +142,5 @@ public class MainTest {
                 System.out.println("\tDoc ID: " + doc.getDocId() + " Doc Freq: " + doc.getDocFreq());
             }
         }*/
-        
-        
     }
 }

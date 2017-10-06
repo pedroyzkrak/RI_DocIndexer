@@ -24,7 +24,12 @@ public class SimpleIndexer {
     public SimpleIndexer() {
         this.indexer = new HashMap<>();
     }
-
+    
+    /**
+     * Indexes the tokens of a document
+     * @param tokenList
+     * @param docId 
+     */
     public void index(LinkedList<Token> tokenList, int docId) {
 
         a:
@@ -48,11 +53,18 @@ public class SimpleIndexer {
             }
         }
     }
-
+    
+    /**
+     * 
+     * @return the entry set of the index
+     */
     public Iterable<Map.Entry<String, LinkedList<Posting>>> entrySet() {
         return indexer.entrySet();
     }
-
+    
+    /**
+     * clears the index
+     */
     public void clear() {
         indexer.clear();
     }
