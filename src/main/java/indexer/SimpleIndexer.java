@@ -52,4 +52,8 @@ public class SimpleIndexer {
         return indexer.entrySet();
     }
 
+    public void clear() {
+        indexer.clear();
+    }
+
 }
