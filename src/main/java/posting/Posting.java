@@ -16,9 +16,9 @@ public class Posting {
     private int docFreq;
     
     /**
-     * Contructor that supports the DocId and DocFrequency for the tokens in the indexer
-     * @param docId
-     * @param docFreq 
+     * Contructor that supports the Document ID and Document Frequency for the tokens in the indexer
+     * @param docId ID of the document
+     * @param docFreq Frequency of the token on this document
      */
     public Posting(int docId, int docFreq) {
         this.docId = docId;

@@ -23,7 +23,7 @@ public class SaveToFile {
     
     /**
      * Saves the resulting index to a file
-     * @param indexer 
+     * @param indexer the resulting to be saved
      */
     public static void save(SimpleIndexer indexer) {
         try {
