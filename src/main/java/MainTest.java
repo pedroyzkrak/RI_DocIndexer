@@ -24,7 +24,7 @@ public class MainTest {
         double usedMemoryBefore = (double) (runtime.totalMemory() - runtime.freeMemory()) / (double)(1024*1024);
         System.out.println("Used Memory before: " + usedMemoryBefore + " MB");
         
-        CorpusReader.readDir("cranfield", tokenizer, indexer);
+        CorpusReader.readAndProcessDir("cranfield", tokenizer, indexer);
 
         double usedMemoryAfter = (double) (runtime.totalMemory() - runtime.freeMemory()) / (double)(1024*1024);
         System.out.println("Used Memory after: " + usedMemoryAfter + " MB");
