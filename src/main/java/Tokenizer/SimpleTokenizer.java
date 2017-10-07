@@ -52,7 +52,7 @@ public class SimpleTokenizer {
     
     /**
     *
-    * The constructor of the tokenizer that initializates the linked list
+    * The constructor of the tokenizer that initializes the linked list
     *
      */
     public SimpleTokenizer() {
