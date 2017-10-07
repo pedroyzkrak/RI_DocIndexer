@@ -30,7 +30,7 @@ public class SimpleIndexer {
     /**
      * Indexes the tokens of a document
      * @param tokenList The linked list of tokens
-     * @param docId The ID of the document
+     * @param docId The ID of the document  
      */
     public void index(LinkedList<Token> tokenList, int docId) {
 
