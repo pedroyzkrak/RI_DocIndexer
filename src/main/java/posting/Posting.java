@@ -14,6 +14,7 @@ public class Posting {
 
     private final int docId;
     private int docFreq;
+    private String term;
     
     /**
      * Contructor that supports the Document ID and Document Frequency for the tokens in the indexer
@@ -23,6 +24,16 @@ public class Posting {
     public Posting(int docId, int docFreq) {
         this.docId = docId;
         this.docFreq = docFreq;
+    }
+    /**
+     * Contructor that saves information about the terms and their total frequency
+     * @param term the term of the indexer
+     * @param tDocFreq total document frequency of the term
+     */
+    public Posting(String term, int tDocFreq) {
+        docId = -1;
+        this.term = term;
+        this.docFreq = tDocFreq;
     }
 
     public void setDocFreq(int docFreq) {

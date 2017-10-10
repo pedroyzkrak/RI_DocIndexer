@@ -8,7 +8,9 @@ package indexer;
 import java.util.LinkedList;
 import posting.Posting;
 import Tokenizer.SimpleTokenizer.Token;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -75,5 +77,36 @@ public class SimpleIndexer {
     public void clear() {
         indexer.clear();
     }
-
+    
+    public List<String> getSingleTerms(int n) {
+        LinkedList<String> singleTerms = new LinkedList<>();
+        if (indexer.isEmpty()) {
+            System.err.println("Indexer is empty.");
+            return null;
+        }
+        else if (indexer.size() < n) {
+            System.err.println("Value higher than indexer size.");
+        }
+        indexer.entrySet().stream().filter((entry) -> (entry.getValue().size() == 1)).forEachOrdered((entry) -> {
+            singleTerms.add(entry.getKey());
+        });
+        
+        Collections.sort(singleTerms);
+        
+        return singleTerms.subList(0, n);
+    }
+    
+    public LinkedList<Posting> getHighestFrequency(int n) {
+        LinkedList<Posting> termFreq = new LinkedList<>();
+        int freq = 0;
+        
+        for (Map.Entry<String, LinkedList<Posting>> entry : indexer.entrySet()) {
+            for(Posting post : entry.getValue()) {
+                freq += post.getDocFreq();
+                
+            }
+            termFreq.add(new Posting(entry.getKey(), freq));
+        }
+        return termFreq;
+    }
 }
