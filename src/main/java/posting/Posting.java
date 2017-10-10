@@ -10,7 +10,7 @@ package posting;
  * @author Francisco Lopes 76406 
  * @author Pedro Gusmão 77867
  */
-public class Posting {
+public class Posting implements Comparable<Posting> {
 
     private final int docId;
     private int docFreq;
@@ -46,6 +46,20 @@ public class Posting {
 
     public int getDocFreq() {
         return docFreq;
+    }  
+    
+    public String getTerm() {
+        return term;
+    }
+    
+    /**
+     * 
+     * Comparable method to sort a list of Posting objects by decreasing order of document frequency
+     * 
+     */
+    @Override
+    public int compareTo(Posting p) {
+        return (p.docFreq - docFreq);
     }
 
 }

@@ -78,6 +78,12 @@ public class SimpleIndexer {
         indexer.clear();
     }
     
+    
+    /**
+     * 
+     * @param n number of the first terms to show
+     * @return sorted list of the first n terms that appear in only one document
+     */
     public List<String> getSingleTerms(int n) {
         LinkedList<String> singleTerms = new LinkedList<>();
         if (indexer.isEmpty()) {
@@ -96,17 +102,26 @@ public class SimpleIndexer {
         return singleTerms.subList(0, n);
     }
     
-    public LinkedList<Posting> getHighestFrequency(int n) {
+    /**
+     * 
+     * @param n number of terms with highest document frequency
+     * @return sorted list in decreasing order of terms with highest document frequency
+     */
+    public List<Posting> getHighestFrequency(int n) {
         LinkedList<Posting> termFreq = new LinkedList<>();
-        int freq = 0;
+        int freq;
         
         for (Map.Entry<String, LinkedList<Posting>> entry : indexer.entrySet()) {
+            freq = 0;
             for(Posting post : entry.getValue()) {
                 freq += post.getDocFreq();
                 
             }
             termFreq.add(new Posting(entry.getKey(), freq));
         }
-        return termFreq;
+        
+        Collections.sort(termFreq);
+        
+        return termFreq.subList(0, n);
     }
 }

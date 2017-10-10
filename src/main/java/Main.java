@@ -3,6 +3,7 @@ import Tokenizer.SimpleTokenizer;
 import indexer.SimpleIndexer;
 import save.SaveToFile;
 import corpusReader.CorpusReader;
+//import posting.Posting;
 
 /**
  *
@@ -14,11 +15,11 @@ public class Main {
     public static void main(String[] args) {
         SimpleTokenizer tokenizer = new SimpleTokenizer();
         SimpleIndexer indexer = new SimpleIndexer();
-
+        
         long tStart = System.currentTimeMillis();
 
         CorpusReader.readAndProcessDir("cranfield", tokenizer, indexer);
-
+        
         long tEnd = System.currentTimeMillis();
         long tDelta = tEnd - tStart;
         double elapsedSeconds = tDelta / 1000.0;
@@ -26,9 +27,13 @@ public class Main {
 
         SaveToFile.save(indexer);
         
-        
+        /*
+        // Question 4
         for (String term : indexer.getSingleTerms(10)) {
             System.out.println("Term: " + term);
         }
+        
+        for (Posting freq : indexer.getHighestFrequency(10))
+            System.out.println("Term: " + freq.getTerm() + " DocFreq: " + freq.getDocFreq());*/
     }
 }
