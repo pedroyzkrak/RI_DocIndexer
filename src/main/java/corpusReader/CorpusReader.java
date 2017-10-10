@@ -53,12 +53,9 @@ public class CorpusReader {
                 try {
                     
                     read(file);
-<<<<<<< HEAD
                     tokenizer.tokenize(doctitle+" "+doctext,"[a-z]{3,}",true,true); 
-                    tokenizer.tokenize(doctitle+" "+doctext,"[a-zA-Z]{3,}",true,true); //doctitle+doctext ???
-=======
-                    tokenizer.tokenize(doctitle+" "+doctext,"[a-zA-Z]{3,}",true,true);
->>>>>>> origin/master
+                    tokenizer.tokenize(doctitle+" "+doctext,"[a-z]{3,}",true,true);
+                    tokenizer.tokenize(doctitle+" "+doctext,"[a-z]{3,}",true,true);
                     indexer.index(tokenizer.getTokens(),docid);
                     tokenizer.clear();
                 } catch (FileNotFoundException | XMLStreamException ex) {
