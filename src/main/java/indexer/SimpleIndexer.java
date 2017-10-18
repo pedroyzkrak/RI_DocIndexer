@@ -1,23 +1,22 @@
 /**
- * 
  * Class built for the simple indexer
- * 
  */
 package indexer;
 
 import java.util.LinkedList;
+
 import posting.Posting;
 import Tokenizer.SimpleTokenizer.Token;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- *
- * @author Francisco Lopes 76406 
+ * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
- * 
+ * <p>
  * Class for the simple indexer that it's main purpose is to index multiple given tokens
  */
 
@@ -26,18 +25,17 @@ public class SimpleIndexer {
     private final HashMap<String, LinkedList<Posting>> indexer;
 
     /**
-     * 
      * The constructor of the indexer that initializes the linked list
-     * 
      */
     public SimpleIndexer() {
         this.indexer = new HashMap<>();
     }
-    
+
     /**
      * Indexes the tokens of a document to a hash map containing the terms and the corresponding document with the frequency of said term
+     *
      * @param tokenList The linked list of tokens
-     * @param docId The ID of the document  
+     * @param docId     The ID of the document
      */
     public void index(LinkedList<Token> tokenList, int docId) {
 
@@ -62,25 +60,47 @@ public class SimpleIndexer {
             }
         }
     }
-    
+
+
     /**
-     * 
+     * Builds an index given a term and the corresponding document IDs and document frequencies (from a file)
+     *
+     * @param term     The given term
+     * @param postings The list of postings (with document ID and document frequency)
+     */
+    public void indexFromFile(String term, LinkedList<Posting> postings) {
+
+        // If token is not yet indexed
+        if (!indexer.containsKey(term)) {
+            indexer.put(term, postings);
+        } else {
+            for (Posting indexPosting : indexer.get(term)) {
+                for (Posting newPosting : postings) {
+                    if (indexPosting.getDocId() == newPosting.getDocId())
+                        indexPosting.setDocFreq(indexPosting.getDocFreq() + newPosting.getDocFreq());
+                    else
+                        indexer.get(term).add(newPosting);
+                }
+            }
+        }
+    }
+
+    /**
      * @return the entry set of the index
      */
     public Iterable<Map.Entry<String, LinkedList<Posting>>> entrySet() {
         return indexer.entrySet();
     }
-    
+
     /**
      * clears the index
      */
     public void clear() {
         indexer.clear();
     }
-    
-    
+
+
     /**
-     * 
      * @param n number of the first terms to show
      * @return sorted list of the first n terms that appear in only one document
      */
@@ -89,39 +109,37 @@ public class SimpleIndexer {
         if (indexer.isEmpty()) {
             System.err.println("Indexer is empty.");
             return null;
-        }
-        else if (indexer.size() < n) {
+        } else if (indexer.size() < n) {
             System.err.println("Value higher than indexer size.");
         }
         indexer.entrySet().stream().filter((entry) -> (entry.getValue().size() == 1)).forEachOrdered((entry) -> {
             singleTerms.add(entry.getKey());
         });
-        
+
         Collections.sort(singleTerms);
-        
+
         return singleTerms.subList(0, n);
     }
-    
+
     /**
-     * 
      * @param n number of terms with highest document frequency
      * @return sorted list in decreasing order of terms with highest document frequency
      */
     public List<Posting> getHighestFrequency(int n) {
         LinkedList<Posting> termFreq = new LinkedList<>();
         int freq;
-        
+
         for (Map.Entry<String, LinkedList<Posting>> entry : indexer.entrySet()) {
             freq = 0;
-            for(Posting post : entry.getValue()) {
+            for (Posting post : entry.getValue()) {
                 freq += post.getDocFreq();
-                
+
             }
             termFreq.add(new Posting(entry.getKey(), freq));
         }
-        
+
         Collections.sort(termFreq);
-        
+
         return termFreq.subList(0, n);
     }
 }

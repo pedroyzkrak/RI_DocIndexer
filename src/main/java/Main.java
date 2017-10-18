@@ -1,5 +1,6 @@
 
 import Tokenizer.SimpleTokenizer;
+import indexer.IndexReader;
 import indexer.SimpleIndexer;
 import save.SaveToFile;
 import corpusReader.CorpusReader;
@@ -13,6 +14,7 @@ import corpusReader.CorpusReader;
 public class Main {
 
     public static void main(String[] args) {
+        /*
         SimpleTokenizer tokenizer = new SimpleTokenizer();
         SimpleIndexer indexer = new SimpleIndexer();
         
@@ -34,6 +36,10 @@ public class Main {
         }
         
         for (Posting freq : indexer.getHighestFrequency(10))
-            System.out.println("Term: " + freq.getTerm() + " DocFreq: " + freq.getDocFreq());*/
+            System.out.println("Term: " + freq.getTerm() + " DocFreq: " + freq.getDocFreq());
+        */
+
+        IndexReader.readIndex("SaveIndex.txt");
+
     }
 }
