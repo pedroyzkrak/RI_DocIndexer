@@ -25,10 +25,9 @@ public class SaveToFile {
      * Saves the resulting index to a file
      * @param indexer the resulting to be saved
      */
-    public static void save(SimpleIndexer indexer) {
+    public static void save(SimpleIndexer indexer, String fileName) {
         try {
-            try (FileWriter writer = new FileWriter("SaveIndex.txt")) {
-                writer.write("*FORMAT*\nTerm, DocId:DocFreq\n\n");
+            try (FileWriter writer = new FileWriter(fileName)) {
                 for (Map.Entry<String, LinkedList<Posting>> entry : indexer.entrySet()) {
                     writer.write(entry.getKey());
                     for (Posting doc : entry.getValue()) {

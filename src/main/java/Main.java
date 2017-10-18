@@ -27,7 +27,7 @@ public class Main {
         double elapsedSeconds = tDelta / 1000.0;
         System.out.println("Elapsed Time: "+elapsedSeconds);
 
-        SaveToFile.save(indexer);
+        SaveToFile.save(indexer, "SaveIndext.txt");
         
         /*
         // Question 4
@@ -39,7 +39,7 @@ public class Main {
             System.out.println("Term: " + freq.getTerm() + " DocFreq: " + freq.getDocFreq());
         */
 
-        IndexReader.readIndex("SaveIndex.txt");
+        SaveToFile.save(IndexReader.loadIndex("SaveIndex.txt"), "newIndex.txt");
 
     }
 }

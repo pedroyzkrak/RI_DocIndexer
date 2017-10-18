@@ -5,6 +5,8 @@
  */
 package posting;
 
+import java.util.List;
+
 /**
  *
  * @author Francisco Lopes 76406 
@@ -60,6 +62,25 @@ public class Posting implements Comparable<Posting> {
     @Override
     public int compareTo(Posting p) {
         return (p.docFreq - docFreq);
+    }
+
+    /**
+     * Checks if a certain Posting object has the same document ID as one of the Posting objects in the given list
+     * @param postingList list of postings
+     * @param posting posting object
+     * @return true in case the given Posting object has the same ID as one of the elements of the list
+     */
+    public static boolean containsDocID(List<Posting> postingList, Posting posting) {
+        for (Posting p : postingList) {
+            if (p.getDocId() == posting.getDocId())
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return this.docId + ":" + this.docFreq;
     }
 
 }

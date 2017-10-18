@@ -5,7 +5,6 @@ package indexer;
 
 
 import posting.Posting;
-import save.SaveToFile;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -16,21 +15,28 @@ import java.util.LinkedList;
  * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
  * <p>
- * A class that reads an index from disk
+ * A class that reads an index saved on disk
  */
 public class IndexReader {
 
-    public static SimpleIndexer readIndex(String indexFile) {
+
+    /**
+     * Loads an index from a file
+     * @param indexFile name of the file to load the index from
+     * @return the loaded index
+     */
+    public static SimpleIndexer loadIndex(String indexFile) {
         SimpleIndexer indexer = new SimpleIndexer();
         LinkedList<Posting> postings = new LinkedList<>();
 
         try (BufferedReader in = new BufferedReader(new FileReader(indexFile))) {
-            String line, term = "";
+            String line, term;
             int docID, docFreq;
             boolean isTerm;
             while ((line = in.readLine()) != null) {
-                //index = "";
+                term = "";
                 isTerm = true;
+                postings.clear();
                 for (String l : line.split(", ")) {
                     if (isTerm) {
                         term = l;
@@ -43,11 +49,12 @@ public class IndexReader {
                     }
                 }
                 indexer.indexFromFile(term, postings);
-                SaveToFile.save(indexer);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println("Index Loaded.");
 
         return indexer;
     }
