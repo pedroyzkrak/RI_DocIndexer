@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import posting.Posting;
+import support.Posting;
 
 /**
  *

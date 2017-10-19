@@ -4,7 +4,7 @@
 package indexer;
 
 
-import posting.Posting;
+import support.Posting;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

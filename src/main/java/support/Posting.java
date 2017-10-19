@@ -3,7 +3,7 @@
  * Class built to save document information
  * 
  */
-package posting;
+package support;
 
 import java.util.List;
 

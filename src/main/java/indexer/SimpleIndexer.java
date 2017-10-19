@@ -4,7 +4,7 @@
 package indexer;
 
 
-import posting.Posting;
+import support.Posting;
 import Tokenizer.SimpleTokenizer.Token;
 
 import java.util.Collections;
@@ -164,5 +164,11 @@ public class SimpleIndexer {
 
         return termFreq.subList(0, n);
     }
+
+    public HashMap<String, LinkedList<Posting>> getIndexer() {
+        return indexer;
+    }
+    
+    
 }
 
