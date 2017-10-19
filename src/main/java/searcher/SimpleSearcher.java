@@ -5,6 +5,8 @@
  */
 package searcher;
 
+import Tokenizer.SimpleTokenizer;
+import Tokenizer.SimpleTokenizer.Token;
 import indexer.SimpleIndexer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,11 +28,13 @@ public class SimpleSearcher {
     }
 
     public List<SearchData> booleanSearchFirst(Query query, SimpleIndexer indexer) {
+        SimpleTokenizer tkn = new SimpleTokenizer();
+        tkn.tokenize(query.getStr(),"[a-zA-Z]{3,}",true,true);
         List<SearchData> searchList = new ArrayList<>();
-        List<String> wordsList = wordsInQuery(query.getStr());
-        Iterator<String> wordsIt = wordsList.iterator();
+        LinkedList<Token> wordsList = tkn.getTokens();
+        Iterator<Token> wordsIt = wordsList.iterator();
         while (wordsIt.hasNext()) {
-            String word = wordsIt.next();
+            String word = wordsIt.next().getSequence();
             if (indexer.getIndexer().containsKey(word)) {
                
                 LinkedList<Posting> posting = indexer.getIndexer().get(word);
