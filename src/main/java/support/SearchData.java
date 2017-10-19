@@ -6,8 +6,10 @@
 package support;
 
 /**
- * @author Francisco Lopes 76406 
+ *
+ * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
+ *
  */
 public class SearchData {
     private Query query;
@@ -35,7 +37,22 @@ public class SearchData {
     public void setScore(int score) {
         this.score = score;
     }
-    
-    
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SearchData that = (SearchData) o;
+
+        if (docId != that.docId) return false;
+        return query.equals(that.query);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = query.hashCode();
+        result = 31 * result + docId;
+        return result;
+    }
 }

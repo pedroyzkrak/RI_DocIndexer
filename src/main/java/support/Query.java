@@ -8,7 +8,9 @@ package support;
 
 /**
  *
- * @author Pedro
+ * @author Francisco Lopes 76406
+ * @author Pedro Gusmão 77867
+ *
  */
 public class Query {
     private final int id;
@@ -26,6 +28,19 @@ public class Query {
     public void setStr(String str) {
         this.querystr = str;
     }
-    
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Query query = (Query) o;
+
+        return id == query.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }

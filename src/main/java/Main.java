@@ -4,6 +4,9 @@ import indexer.IndexReader;
 import indexer.SimpleIndexer;
 import save.SaveToFile;
 import corpusReader.CorpusReader;
+import searcher.SimpleSearcher;
+import support.Query;
+import support.SearchData;
 //import posting.Posting;
 
 /**
@@ -39,7 +42,13 @@ public class Main {
             System.out.println("Term: " + freq.getTerm() + " DocFreq: " + freq.getDocFreq());
         */
 
-        SaveToFile.save(IndexReader.loadIndex("SaveIndex.txt"), "newIndex.txt");
+        //SaveToFile.save(IndexReader.loadIndex("SaveIndex.txt"), "newIndex.txt");
+
+        Query query = new Query(1, "wet");
+
+        for (SearchData data : SimpleSearcher.booleanSearchFirst(query, IndexReader.loadIndex("SaveIndex.txt"))) {
+            System.out.println("DocID: " + data.getDocId() + ", Score: " + data.getScore());
+        }
 
     }
 }
