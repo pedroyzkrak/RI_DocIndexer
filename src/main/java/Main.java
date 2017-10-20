@@ -44,9 +44,9 @@ public class Main {
 
         //SaveToFile.save(IndexReader.loadIndex("SaveIndex.txt"), "newIndex.txt");
 
-        Query query = new Query(1, "wet");
+        Query query = new Query(1, "visual visualisation");
 
-        for (SearchData data : SimpleSearcher.booleanSearchFirst(query, IndexReader.loadIndex("SaveIndex.txt"))) {
+        for (SearchData data : SimpleSearcher.booleanSearchSecond(query, IndexReader.loadIndex("SaveIndex.txt"))) {
             System.out.println("DocID: " + data.getDocId() + ", Score: " + data.getScore());
         }
 

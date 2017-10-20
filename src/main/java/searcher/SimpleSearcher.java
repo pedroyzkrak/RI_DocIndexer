@@ -39,7 +39,8 @@ public class SimpleSearcher {
                 
                 while (postingsIt.hasNext()) {
                     
-                    SearchData sd = new SearchData(query, postingsIt.next().getDocId());
+                    Posting pst = postingsIt.next();
+                    SearchData sd = new SearchData(query, pst.getDocId());
                     
                     if (!searchList.contains(sd)) {
                         sd.setScore(1);
@@ -55,4 +56,38 @@ public class SimpleSearcher {
         }
         return searchList;
     }
+     public static List<SearchData> booleanSearchSecond(Query query, SimpleIndexer si) {
+        SimpleTokenizer tkn = new SimpleTokenizer();
+        tkn.tokenize(query.getStr(),"[a-zA-Z]{3,}",true,true);
+        List<SearchData> searchList = new ArrayList<>();
+        LinkedList<Token> wordsList = tkn.getTokens();
+        Iterator<Token> wordsIt = wordsList.iterator();
+        HashMap<String, LinkedList<Posting>> indexer = si.getIndexer();
+        while (wordsIt.hasNext()) {
+            String word = wordsIt.next().getSequence();
+            if (indexer.containsKey(word)) {
+               
+                LinkedList<Posting> posting = indexer.get(word);
+                Iterator<Posting> postingsIt = posting.iterator();
+                
+                while (postingsIt.hasNext()) {
+                    
+                    Posting pst = postingsIt.next();
+                    SearchData sd = new SearchData(query, pst.getDocId());
+                    
+                    if (!searchList.contains(sd)) {
+                        sd.setScore(pst.getDocFreq());
+                        searchList.add(sd);
+                    } else { //para termos diferentes pq supostamente n aparece + que uma vez um docId no mesmo termo
+                        searchList.get(searchList.indexOf(sd)).setScore(searchList.get(searchList.indexOf(sd)).getScore() + pst.getDocFreq()); //rever
+                    }
+                }
+
+            }
+            
+            
+        }
+        return searchList;
+    }
+    
 }
