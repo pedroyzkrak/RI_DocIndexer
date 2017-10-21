@@ -54,7 +54,7 @@ public class IndexReader {
             e.printStackTrace();
         }
 
-        System.out.println("Index Loaded.");
+        System.out.println("Index Loaded.\n");
 
         return indexer;
     }

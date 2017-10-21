@@ -25,6 +25,8 @@ public class Query {
         return querystr;
     }
 
+    public int getId() { return id; }
+
     public void setStr(String str) {
         this.querystr = str;
     }
