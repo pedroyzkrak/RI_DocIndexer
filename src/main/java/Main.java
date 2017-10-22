@@ -10,7 +10,6 @@ import support.SearchData;
 //import posting.Posting;
 
 /**
- *
  * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
  */

@@ -1,16 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Class built to save query information
  */
-
 package support;
 
 /**
- *
  * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
- *
  */
 public class Query {
     private final int id;
@@ -25,10 +20,8 @@ public class Query {
         return querystr;
     }
 
-    public int getId() { return id; }
-
-    public void setStr(String str) {
-        this.querystr = str;
+    public int getId() {
+        return id;
     }
 
     @Override

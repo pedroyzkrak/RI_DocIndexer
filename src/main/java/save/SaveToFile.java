@@ -1,5 +1,5 @@
 /**
- * Class built to save the index to a file
+ * Class built to save the index/results to a file
  */
 package save;
 
@@ -60,16 +60,6 @@ public class SaveToFile {
             for (SearchData data : results) {
                 bw.append(String.format(formatStr, data.getQuery().getId(), data.getDocId(), data.getScore()));
             }
-
-
-                /*
-                for (Map.Entry<String, LinkedList<Posting>> entry : indexer.entrySet()) {
-                    writer.write(entry.getKey());
-                    for (Posting doc : entry.getValue()) {
-                        writer.write(", "+doc.getDocId()+":"+doc.getDocFreq());
-                    }
-                    writer.write("\n");
-                }*/
         } catch (IOException ex) {
             Logger.getLogger(SaveToFile.class.getName()).log(Level.SEVERE, null, ex);
         }

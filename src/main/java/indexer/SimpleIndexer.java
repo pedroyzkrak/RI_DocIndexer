@@ -168,7 +168,7 @@ public class SimpleIndexer {
     public HashMap<String, LinkedList<Posting>> getIndexer() {
         return indexer;
     }
-    
-    
+
+
 }
 

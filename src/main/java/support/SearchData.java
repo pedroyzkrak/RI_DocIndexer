@@ -1,15 +1,11 @@
 /**
- * 
  * Class built to save search information
- * 
  */
 package support;
 
 /**
- *
  * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
- *
  */
 public class SearchData {
     private Query query;
@@ -21,7 +17,7 @@ public class SearchData {
         this.docId = docId;
         this.score = 0;
     }
-    
+
     public Query getQuery() {
         return query;
     }

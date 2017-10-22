@@ -22,6 +22,7 @@ public class IndexReader {
 
     /**
      * Loads an index from a file
+     *
      * @param indexFile name of the file to load the index from
      * @return the loaded index
      */

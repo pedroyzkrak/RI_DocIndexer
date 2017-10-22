@@ -1,7 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * A class for the searcher
  */
 package searcher;
 
@@ -22,12 +20,18 @@ import support.*;
  * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
  * <p>
- * A class for the Searcher
+ * A class that implements Boolean retrieval methods
  */
 public class SimpleSearcher {
 
+    /**
+     * Reads a file containing queries and saves the results to a file
+     *
+     * @param fileName   name of the file containing the queries
+     * @param outputFile name of the files to save the results
+     * @param op         type of boolean search (by 'words' or 'frequency')
+     */
     public static void readQueryFromFile(String fileName, String outputFile, String op) {
-
         try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
             String line;
             int id = 0;
@@ -40,26 +44,31 @@ public class SimpleSearcher {
 
                 switch (op) {
                     case "words":
-                        SaveToFile.saveResults(booleanSearchFirst(query, si), outputFile);
+                        SaveToFile.saveResults(booleanSearchWord(query, si), outputFile);
                         break;
 
                     case "frequency":
-                        SaveToFile.saveResults(booleanSearchSecond(query, si), outputFile);
+                        SaveToFile.saveResults(booleanSearchFrequency(query, si), outputFile);
                         break;
 
                     default:
                         System.err.println("Option not found.");
                         break a;
                 }
-
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
-    private static List<SearchData> booleanSearchFirst(Query query, SimpleIndexer si) {
+    /**
+     * Performs a boolean search by the number of words in the query that appear in the document
+     *
+     * @param query the query object
+     * @param si    the index
+     * @return a list of SearchData objects containing information about the results of the query
+     */
+    private static List<SearchData> booleanSearchWord(Query query, SimpleIndexer si) {
         SimpleTokenizer tkn = new SimpleTokenizer();
         tkn.tokenize(query.getStr(), "[a-zA-Z]{3,}", true, true);
         List<SearchData> searchList = new ArrayList<>();
@@ -94,7 +103,14 @@ public class SimpleSearcher {
         return searchList;
     }
 
-    private static List<SearchData> booleanSearchSecond(Query query, SimpleIndexer si) {
+    /**
+     * Performs a boolean search by the total frequency of query words in the document
+     *
+     * @param query the query object
+     * @param si    the index
+     * @return a list of SearchData objects containing information about the results of the query
+     */
+    private static List<SearchData> booleanSearchFrequency(Query query, SimpleIndexer si) {
         SimpleTokenizer tkn = new SimpleTokenizer();
         tkn.tokenize(query.getStr(), "[a-zA-Z]{3,}", true, true);
         List<SearchData> searchList = new ArrayList<>();

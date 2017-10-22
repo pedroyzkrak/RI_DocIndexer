@@ -1,7 +1,5 @@
 /**
- * 
  * Class built to save document information
- * 
  */
 package support;
 

@@ -1,7 +1,5 @@
 /**
- * Class implemented for the simple tokenizer 
- * 
- * 
+ * Class implemented for the simple tokenizer
  */
 package Tokenizer;
 
@@ -16,23 +14,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.tartarus.snowball.SnowballStemmer;
 import org.tartarus.snowball.ext.englishStemmer;
 
 /**
- *
  * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
- * 
+ * <p>
  * A class for the Tokenizer
- * 
  */
 public class SimpleTokenizer {
 
     /**
-    *
-    * Internal Token class that defines a token
-    *
+     * Internal Token class that defines a token
      */
     public class Token {
 
@@ -48,27 +43,25 @@ public class SimpleTokenizer {
         }
 
     }
+
     private LinkedList<Token> tokens;
-    
+
     /**
-    *
-    * The constructor of the tokenizer that initializes the linked list
-    *
+     * The constructor of the tokenizer that initializes the linked list
      */
     public SimpleTokenizer() {
         tokens = new LinkedList<>();
     }
-    
+
     /**
-    *
-    * Tokenizes a given string with a given rule (regex) with the options to stem or filter the stopwords
-    * the tokens are inserted in a linked list previously initializated in the constructor
-    *
-    * @param str the content to tokenize
-    * @param regex the rule 
-    * @param stem to stem or not to stem
-    * @param stopword to filter stopwords or not
-    */
+     * Tokenizes a given string with a given rule (regex) with the options to stem or filter the stopwords
+     * the tokens are inserted in a linked list previously initializated in the constructor
+     *
+     * @param str      the content to tokenize
+     * @param regex    the rule
+     * @param stem     to stem or not to stem
+     * @param stopword to filter stopwords or not
+     */
 
     public void tokenize(String str, String regex, boolean stem, boolean stopword) {
         String s = str.toLowerCase().trim();
@@ -85,7 +78,7 @@ public class SimpleTokenizer {
                 Logger.getLogger(SimpleTokenizer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         while (!s.equals("")) {
             Matcher m = Pattern.compile(regex).matcher(s);
             if (m.find()) {
@@ -109,13 +102,14 @@ public class SimpleTokenizer {
             }
         }
     }
+
     /**
-     * 
      * @return the linked list of tokens
      */
     public LinkedList<Token> getTokens() {
         return tokens;
     }
+
     /**
      * clears the linked list
      */

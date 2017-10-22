@@ -1,7 +1,5 @@
 /**
- * 
  * Class built to read the files and process them with given tokenizer and indexer
- * 
  */
 package corpusReader;
 
@@ -16,45 +14,41 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.*;
+
 import Tokenizer.SimpleTokenizer;
 import indexer.SimpleIndexer;
 
 /**
- *
- * @author Francisco Lopes 76406 
+ * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
- * 
+ * <p>
  * A class for the Corpus Reader
- * 
  */
 public class CorpusReader {
-    
+
     private static int docid;
     private static String doctitle;
     private static String doctext;
-   /**
-    *
-    * Reads files inside a directory while tokenizing the content and indexing the resulting tokens
-    *
-    * @param dir the directory
-    * @param tokenizer the tokenizer
-    * @param indexer the indexer
-    */
-    public static void readAndProcessDir(String dir, SimpleTokenizer tokenizer, SimpleIndexer indexer)
-    {
-        
+
+    /**
+     * Reads files inside a directory while tokenizing the content and indexing the resulting tokens
+     *
+     * @param dir       the directory
+     * @param tokenizer the tokenizer
+     * @param indexer   the indexer
+     */
+    public static void readAndProcessDir(String dir, SimpleTokenizer tokenizer, SimpleIndexer indexer) {
+
         File dirFolder = new File(dir);
         File[] listOfFiles = dirFolder.listFiles();
-        
-        for(File file : listOfFiles)
-        {
-            if(file.isFile())
-            {
+
+        for (File file : listOfFiles) {
+            if (file.isFile()) {
                 try {
-                    
+
                     read(file);
-                    tokenizer.tokenize(doctitle+" "+doctext,"[a-zA-Z]{3,}",true,true); 
-                    indexer.index(tokenizer.getTokens(),docid);
+                    tokenizer.tokenize(doctitle + " " + doctext, "[a-zA-Z]{3,}", true, true);
+                    indexer.index(tokenizer.getTokens(), docid);
                     tokenizer.clear();
                 } catch (FileNotFoundException | XMLStreamException ex) {
                     Logger.getLogger(CorpusReader.class.getName()).log(Level.SEVERE, null, ex);
@@ -62,15 +56,15 @@ public class CorpusReader {
             }
         }
     }
+
     /**
-    *
-    * Reads the xml file storing the content from selected tags, in this case: title; text and docID
-    * @param file a file
-    *
-    */
+     * Reads the xml file storing the content from selected tags, in this case: title; text and docID
+     *
+     * @param file a file
+     */
     private static void read(File file)
             throws FileNotFoundException, XMLStreamException {
-        
+
         doctitle = "";
         doctext = "";
         boolean bdocid, btitle, btext;
