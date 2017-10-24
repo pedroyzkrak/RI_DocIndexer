@@ -33,7 +33,7 @@ public class SaveToFile {
             for (Map.Entry<String, LinkedList<Posting>> entry : indexer.entrySet()) {
                 writer.write(entry.getKey());
                 for (Posting doc : entry.getValue()) {
-                    writer.write(", " + doc.getDocId() + ":" + doc.getDocFreq());
+                    writer.write("," + doc.getDocId() + ":" + doc.getDocFreq());
                 }
                 writer.write("\n");
             }

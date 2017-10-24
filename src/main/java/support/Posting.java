@@ -77,6 +77,21 @@ public class Posting implements Comparable<Posting> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Posting posting = (Posting) o;
+
+        return docId == posting.docId;
+    }
+
+    @Override
+    public int hashCode() {
+        return docId;
+    }
+
+    @Override
     public String toString() {
         return this.docId + ":" + this.docFreq;
     }

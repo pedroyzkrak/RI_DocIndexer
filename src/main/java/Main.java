@@ -5,9 +5,6 @@ import indexer.SimpleIndexer;
 import save.SaveToFile;
 import corpusReader.CorpusReader;
 import searcher.SimpleSearcher;
-import support.Query;
-import support.SearchData;
-//import posting.Posting;
 
 /**
  * @author Francisco Lopes 76406
@@ -29,7 +26,7 @@ public class Main {
         double elapsedSeconds = tDelta / 1000.0;
         System.out.println("Elapsed Time: "+elapsedSeconds);
 
-        SaveToFile.save(indexer, "SaveIndext.txt");
+        SaveToFile.saveIndex(indexer, "SaveIndex.txt");
         
         /*
         // Question 4
@@ -41,10 +38,24 @@ public class Main {
             System.out.println("Term: " + freq.getTerm() + " DocFreq: " + freq.getDocFreq());
         */
 
-        //SaveToFile.save(IndexReader.loadIndex("SaveIndex.txt"), "newIndex.txt");
+        //SaveToFile.saveIndex(IndexReader.loadIndex("SaveIndex.txt"), "newIndex.txt");
+
+
+        long tStart = System.currentTimeMillis();
 
         SimpleSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsWords.txt", "words");
+        long tEnd = System.currentTimeMillis();
+        long tDelta = tEnd - tStart;
+        double elapsedSeconds = tDelta / 1000.0;
+        System.out.println("Elapsed Time: "+elapsedSeconds);
+
+        tStart = System.currentTimeMillis();
         SimpleSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsFrequency.txt", "frequency");
+        tEnd = System.currentTimeMillis();
+        tDelta = tEnd - tStart;
+        elapsedSeconds = tDelta / 1000.0;
+        System.out.println("Elapsed Time: "+elapsedSeconds);
+
 
     }
 }

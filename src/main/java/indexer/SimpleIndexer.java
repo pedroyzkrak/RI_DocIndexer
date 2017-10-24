@@ -68,10 +68,10 @@ public class SimpleIndexer {
      * Builds an index given a term and the corresponding document IDs and document frequencies (from a file)
      * In case the index is not organized, it will regroup and and update the indexes
      * e.g
-     * line 1: today, 1:2
+     * line 1: today, 1:2,1:1
      * (...)
-     * line 2: today, 1:1, 123:4
-     * Result index -> today, 1:3, 123:4
+     * line 2: today, 1:1,123:4
+     * Result index -> today, 1:4,123:4
      *
      * @param term     The given term
      * @param postings The list of postings (with document ID and document frequency)
@@ -81,8 +81,15 @@ public class SimpleIndexer {
         // if term not yet indexed
         if (!indexer.containsKey(term)) {
             indexer.put(term, new LinkedList<>());
-            for (Posting posting : postings)
-                indexer.get(term).add(posting);
+            for (Posting posting : postings) {
+                if (indexer.get(term).contains(posting)) {
+                    // if a posting
+                    int postingIdx = indexer.get(term).indexOf(posting);
+                    indexer.get(term).get(postingIdx).setDocFreq(indexer.get(term).get(postingIdx).getDocFreq() + posting.getDocFreq());
+                } else {
+                    indexer.get(term).add(posting);
+                }
+            }
         } else {
             ListIterator<Posting> iter = indexer.get(term).listIterator();
             Posting indexPosting;

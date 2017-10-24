@@ -38,7 +38,7 @@ public class IndexReader {
                 term = "";
                 isTerm = true;
                 postings.clear();
-                for (String l : line.split(", ")) {
+                for (String l : line.split(",")) {
                     if (isTerm) {
                         term = l;
                         isTerm = false;
