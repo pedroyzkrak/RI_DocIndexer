@@ -51,8 +51,8 @@ public class SaveToFile {
      */
     public static void saveResults(List<SearchData> results, String fileName) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true))) {
-            if (results.get(0).getQuery().getId() == 1) {
-                BufferedWriter clear = new BufferedWriter(new FileWriter(fileName, true));
+            if (results.size() == 0 || results.get(0).getQuery().getId() == 1) {
+                BufferedWriter clear = new BufferedWriter(new FileWriter(fileName));
                 clear.write("");
                 bw.append("query_id \t doc_id \t doc_score\n");
             }
