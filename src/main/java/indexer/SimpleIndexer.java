@@ -22,7 +22,7 @@ import java.util.ListIterator;
  * Class for the simple indexer that it's main purpose is to index multiple given tokens
  */
 
-public class SimpleIndexer {
+public class SimpleIndexer implements Indexer {
 
     private final HashMap<String, LinkedList<Posting>> indexer;
 
@@ -83,7 +83,7 @@ public class SimpleIndexer {
             indexer.put(term, new LinkedList<>());
             for (Posting posting : postings) {
                 if (indexer.get(term).contains(posting)) {
-                    // if a posting
+                    // if a posting is on the index, update frequency
                     int postingIdx = indexer.get(term).indexOf(posting);
                     indexer.get(term).get(postingIdx).setDocFreq(indexer.get(term).get(postingIdx).getDocFreq() + posting.getDocFreq());
                 } else {
@@ -119,6 +119,10 @@ public class SimpleIndexer {
      */
     public Iterable<Map.Entry<String, LinkedList<Posting>>> entrySet() {
         return indexer.entrySet();
+    }
+
+    public HashMap<String, LinkedList<Posting>> getIndexer() {
+        return indexer;
     }
 
     /**
@@ -171,11 +175,5 @@ public class SimpleIndexer {
 
         return termFreq.subList(0, n);
     }
-
-    public HashMap<String, LinkedList<Posting>> getIndexer() {
-        return indexer;
-    }
-
-
 }
 

@@ -43,14 +43,17 @@ public class Main {
 
         long tStart = System.currentTimeMillis();
 
-        SimpleSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsWords.txt", "words");
+
+        SimpleIndexer si = IndexReader.loadIndex("SaveIndex.txt");
+
+        SimpleSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsWords.txt", "words", si);
         long tEnd = System.currentTimeMillis();
         long tDelta = tEnd - tStart;
         double elapsedSeconds = tDelta / 1000.0;
         System.out.println("Elapsed Time: "+elapsedSeconds);
 
         tStart = System.currentTimeMillis();
-        SimpleSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsFrequency.txt", "frequency");
+        SimpleSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsFrequency.txt", "frequency", si);
         tEnd = System.currentTimeMillis();
         tDelta = tEnd - tStart;
         elapsedSeconds = tDelta / 1000.0;

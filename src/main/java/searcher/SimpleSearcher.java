@@ -31,12 +31,11 @@ public class SimpleSearcher {
      * @param outputFile name of the files to save the results
      * @param op         type of boolean search (by 'words' or 'frequency')
      */
-    public static void readQueryFromFile(String fileName, String outputFile, String op) {
+    public static void readQueryFromFile(String fileName, String outputFile, String op, SimpleIndexer si) {
         try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
             String line;
             int id = 0;
             Query query;
-            SimpleIndexer si = IndexReader.loadIndex("SaveIndex.txt");
             a:
             while ((line = in.readLine()) != null) {
                 id++;
@@ -75,6 +74,8 @@ public class SimpleSearcher {
         LinkedList<Token> wordsList = tkn.getTokens();
         Iterator<Token> wordsIt = wordsList.iterator();
         HashMap<String, LinkedList<Posting>> indexer = si.getIndexer();
+        int idx;
+        SearchData searched_doc;
 
         while (wordsIt.hasNext()) {
             String word = wordsIt.next().getSequence();
@@ -92,7 +93,9 @@ public class SimpleSearcher {
                         sd.setScore(1);
                         searchList.add(sd);
                     } else { //para termos diferentes pq supostamente n aparece + que uma vez um docId no mesmo termo
-                        searchList.get(searchList.indexOf(sd)).setScore(searchList.get(searchList.indexOf(sd)).getScore() + 1); //rever
+                        idx = searchList.indexOf(sd);
+                        searched_doc = searchList.get(idx);
+                        searched_doc.setScore(searched_doc.getScore() + 1); //rever
                     }
                 }
 
@@ -117,6 +120,8 @@ public class SimpleSearcher {
         LinkedList<Token> wordsList = tkn.getTokens();
         Iterator<Token> wordsIt = wordsList.iterator();
         HashMap<String, LinkedList<Posting>> indexer = si.getIndexer();
+        int idx;
+        SearchData searched_doc;
 
         while (wordsIt.hasNext()) {
             String word = wordsIt.next().getSequence();
@@ -134,7 +139,9 @@ public class SimpleSearcher {
                         sd.setScore(pst.getDocFreq());
                         searchList.add(sd);
                     } else { //para termos diferentes pq supostamente n aparece + que uma vez um docId no mesmo termo
-                        searchList.get(searchList.indexOf(sd)).setScore(searchList.get(searchList.indexOf(sd)).getScore() + pst.getDocFreq()); //rever
+                        idx = searchList.indexOf(sd);
+                        searched_doc = searchList.get(idx);
+                        searched_doc.setScore(searched_doc.getScore() + pst.getDocFreq()); //rever
                     }
                 }
 
