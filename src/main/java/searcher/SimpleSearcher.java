@@ -5,7 +5,6 @@ package searcher;
 
 import Tokenizer.SimpleTokenizer;
 import Tokenizer.SimpleTokenizer.Token;
-import indexer.IndexReader;
 import indexer.SimpleIndexer;
 
 import java.io.BufferedReader;
@@ -136,12 +135,12 @@ public class SimpleSearcher {
                     SearchData sd = new SearchData(query, pst.getDocId());
 
                     if (!searchList.contains(sd)) {
-                        sd.setScore(pst.getDocFreq());
+                        sd.setScore(pst.getTermFreq());
                         searchList.add(sd);
                     } else { //para termos diferentes pq supostamente n aparece + que uma vez um docId no mesmo termo
                         idx = searchList.indexOf(sd);
                         searched_doc = searchList.get(idx);
-                        searched_doc.setScore(searched_doc.getScore() + pst.getDocFreq()); //rever
+                        searched_doc.setScore(searched_doc.getScore() + pst.getTermFreq()); //rever
                     }
                 }
 

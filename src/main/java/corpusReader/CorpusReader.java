@@ -16,7 +16,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.*;
 
 import Tokenizer.SimpleTokenizer;
-import indexer.SimpleIndexer;
+import indexer.Indexer;
 
 /**
  * @author Francisco Lopes 76406
@@ -37,21 +37,23 @@ public class CorpusReader {
      * @param tokenizer the tokenizer
      * @param indexer   the indexer
      */
-    public static void readAndProcessDir(String dir, SimpleTokenizer tokenizer, SimpleIndexer indexer) {
+    public static void readAndProcessDir(String dir, SimpleTokenizer tokenizer, Indexer indexer) {
 
         File dirFolder = new File(dir);
         File[] listOfFiles = dirFolder.listFiles();
 
-        for (File file : listOfFiles) {
-            if (file.isFile()) {
-                try {
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                if (file.isFile()) {
+                    try {
 
-                    read(file);
-                    tokenizer.tokenize(doctitle + " " + doctext, "[a-zA-Z]{3,}", true, true);
-                    indexer.index(tokenizer.getTokens(), docid);
-                    tokenizer.clear();
-                } catch (FileNotFoundException | XMLStreamException ex) {
-                    Logger.getLogger(CorpusReader.class.getName()).log(Level.SEVERE, null, ex);
+                        read(file);
+                        tokenizer.tokenize(doctitle + " " + doctext, "[a-zA-Z]{3,}", true, true);
+                        indexer.index(tokenizer.getTokens(), docid);
+                        tokenizer.clear();
+                    } catch (FileNotFoundException | XMLStreamException ex) {
+                        Logger.getLogger(CorpusReader.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         }

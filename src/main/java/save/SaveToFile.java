@@ -3,6 +3,7 @@
  */
 package save;
 
+import indexer.Indexer;
 import indexer.SimpleIndexer;
 
 import java.io.BufferedWriter;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import indexer.WeightIndexer;
 import support.Posting;
 import support.SearchData;
 
@@ -28,12 +30,17 @@ public class SaveToFile {
      *
      * @param indexer the resulting index to be saved
      */
-    public static void saveIndex(SimpleIndexer indexer, String fileName) {
+    public static void saveIndex(Indexer indexer, String fileName) {
         try (FileWriter writer = new FileWriter(fileName)) {
             for (Map.Entry<String, LinkedList<Posting>> entry : indexer.entrySet()) {
                 writer.write(entry.getKey());
                 for (Posting doc : entry.getValue()) {
-                    writer.write("," + doc.getDocId() + ":" + doc.getDocFreq());
+                    if (indexer instanceof SimpleIndexer)
+                        writer.write("," + doc.getDocId() + ":" + doc.getTermFreq());
+                    else if (indexer instanceof WeightIndexer)
+                        writer.write("," + doc.getDocId() + ":" + doc.getWeight());
+                    else
+                        System.err.println("Instance error");
                 }
                 writer.write("\n");
             }

@@ -39,6 +39,7 @@ public class SimpleIndexer implements Indexer {
      * @param tokenList The linked list of tokens
      * @param docId     The ID of the document
      */
+    @Override
     public void index(LinkedList<Token> tokenList, int docId) {
 
         a:
@@ -53,7 +54,7 @@ public class SimpleIndexer implements Indexer {
                 // check if the list contains a document linked to this token already
                 for (Posting posting : indexer.get(tok.getSequence())) {
                     if (posting.getDocId() == docId) {
-                        posting.setDocFreq(posting.getDocFreq() + 1);
+                        posting.setTermFreq(posting.getTermFreq() + 1);
                         continue a;
                     }
                 }
@@ -85,7 +86,7 @@ public class SimpleIndexer implements Indexer {
                 if (indexer.get(term).contains(posting)) {
                     // if a posting is on the index, update frequency
                     int postingIdx = indexer.get(term).indexOf(posting);
-                    indexer.get(term).get(postingIdx).setDocFreq(indexer.get(term).get(postingIdx).getDocFreq() + posting.getDocFreq());
+                    indexer.get(term).get(postingIdx).setTermFreq(indexer.get(term).get(postingIdx).getTermFreq() + posting.getTermFreq());
                 } else {
                     indexer.get(term).add(posting);
                 }
@@ -99,7 +100,7 @@ public class SimpleIndexer implements Indexer {
                 for (Posting newPosting : postings) {
                     // update DocFreq in case postings have the same DocID
                     if (indexPosting.getDocId() == newPosting.getDocId()) {
-                        indexPosting.setDocFreq(indexPosting.getDocFreq() + newPosting.getDocFreq());
+                        indexPosting.setTermFreq(indexPosting.getTermFreq() + newPosting.getTermFreq());
                     }
                     // checks if the new posting is already on the index
                     else if (Posting.containsDocID(indexer.get(term), newPosting)) {
@@ -121,6 +122,8 @@ public class SimpleIndexer implements Indexer {
         return indexer.entrySet();
     }
 
+
+    @Override
     public HashMap<String, LinkedList<Posting>> getIndexer() {
         return indexer;
     }
@@ -128,6 +131,7 @@ public class SimpleIndexer implements Indexer {
     /**
      * clears the index
      */
+    @Override
     public void clear() {
         indexer.clear();
     }
@@ -144,9 +148,7 @@ public class SimpleIndexer implements Indexer {
         } else if (indexer.size() < n) {
             System.err.println("Value higher than indexer size.");
         }
-        indexer.entrySet().stream().filter((entry) -> (entry.getValue().size() == 1)).forEachOrdered((entry) -> {
-            singleTerms.add(entry.getKey());
-        });
+        indexer.entrySet().stream().filter((entry) -> (entry.getValue().size() == 1)).forEachOrdered((entry) -> singleTerms.add(entry.getKey()));
 
         Collections.sort(singleTerms);
 
@@ -165,7 +167,7 @@ public class SimpleIndexer implements Indexer {
         for (Map.Entry<String, LinkedList<Posting>> entry : indexer.entrySet()) {
             freq = 0;
             for (Posting post : entry.getValue()) {
-                freq += post.getDocFreq();
+                freq += post.getTermFreq();
 
             }
             termFreq.add(new Posting(entry.getKey(), freq));
