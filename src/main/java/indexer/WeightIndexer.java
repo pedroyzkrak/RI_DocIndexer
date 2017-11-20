@@ -1,6 +1,6 @@
 package indexer;
 
-import Tokenizer.SimpleTokenizer;
+import tokenizer.SimpleTokenizer;
 import support.Posting;
 
 import java.util.HashMap;

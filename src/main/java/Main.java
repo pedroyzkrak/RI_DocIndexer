@@ -1,5 +1,5 @@
 
-import Tokenizer.SimpleTokenizer;
+import tokenizer.SimpleTokenizer;
 import indexer.IndexReader;
 import indexer.Indexer;
 import indexer.SimpleIndexer;

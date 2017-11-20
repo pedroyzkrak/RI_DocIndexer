@@ -1,7 +1,7 @@
 package searcher;
 
-import Tokenizer.SimpleTokenizer;
-import Tokenizer.SimpleTokenizer.Token;
+import tokenizer.SimpleTokenizer;
+import tokenizer.SimpleTokenizer.Token;
 import indexer.SimpleIndexer;
 
 import java.io.BufferedReader;

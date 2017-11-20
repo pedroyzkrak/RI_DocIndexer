@@ -1,6 +1,6 @@
 package searcher;
 
-import Tokenizer.SimpleTokenizer;
+import tokenizer.SimpleTokenizer;
 import indexer.Indexer;
 import save.SaveToFile;
 import support.Posting;
@@ -38,7 +38,9 @@ public class RankedSearcher {
             while ((line = in.readLine()) != null) {
                 id++;
                 query = new Query(id, line);
-                SaveToFile.saveResults(rankedRetrieval(query, wi), outputFile);
+                List<SearchData> rankedList = rankedRetrieval(query,wi);
+                //funcao precision e recall
+                SaveToFile.saveResults(rankedList, outputFile);
                 System.out.println("Processed " + id);
             }
         } catch (IOException e) {

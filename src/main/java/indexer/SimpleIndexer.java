@@ -2,7 +2,7 @@ package indexer;
 
 
 import support.Posting;
-import Tokenizer.SimpleTokenizer.Token;
+import tokenizer.SimpleTokenizer.Token;
 
 import java.util.Collections;
 import java.util.HashMap;

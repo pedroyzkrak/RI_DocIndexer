@@ -12,7 +12,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.*;
 
-import Tokenizer.SimpleTokenizer;
+import tokenizer.SimpleTokenizer;
 import indexer.Indexer;
 import indexer.WeightIndexer;
 

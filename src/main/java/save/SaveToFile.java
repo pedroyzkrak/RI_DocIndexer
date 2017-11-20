@@ -58,9 +58,9 @@ public class SaveToFile {
             if (results.size() == 0 || results.get(0).getQuery().getId() == 1) {
                 BufferedWriter clear = new BufferedWriter(new FileWriter(fileName));
                 clear.write("");
-                bw.append("query_id\tdoc_id\tdoc_score\n");
+                bw.append("query_id doc_id doc_score\n");
             }
-            String formatStr = "%-8s\t%-6s\t%-9s%n";
+            String formatStr = "%s %s %s%n";
             for (SearchData data : results) {
                 bw.append(String.format(formatStr, data.getQuery().getId(), data.getDocId(), data.getScore()));
             }
