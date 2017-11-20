@@ -6,9 +6,12 @@ import indexer.SimpleIndexer;
 import indexer.WeightIndexer;
 import save.SaveToFile;
 import corpusReader.CorpusReader;
+import searcher.RankedSearcher;
 import searcher.SimpleSearcher;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Francisco Lopes 76406
@@ -20,28 +23,32 @@ public class Main {
 
         SimpleTokenizer tokenizer = new SimpleTokenizer();
         // Indexer indexer = new SimpleIndexer();
-        Indexer indexer = null;
-        try {
-            indexer = new WeightIndexer();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Indexer indexer = new WeightIndexer();
 
-        long tStart = System.currentTimeMillis();
+        long dirStart = System.currentTimeMillis();
 
         CorpusReader.readAndProcessDir("cranfield", tokenizer, indexer);
 
         
-        long tEnd = System.currentTimeMillis();
-        long tDelta = tEnd - tStart;
-        double elapsedSeconds = tDelta / 1000.0;
-        System.out.println("Elapsed Time: "+elapsedSeconds);
-
-        assert (indexer) != null;
-        ((WeightIndexer)indexer).weightIndex();
+        long dirEnd = System.currentTimeMillis();
+        long dirDelta = dirEnd - dirStart;
+        double dirElapsedSeconds = dirDelta / 1000.0;
+        System.out.println("Read Dir time: " + dirElapsedSeconds);
 
         //SaveToFile.saveIndex(indexer, "SaveIndex.txt");
         SaveToFile.saveIndex(indexer, "SaveWeightIndex.txt");
+
+        // DEBUG
+
+        long indexStart = System.currentTimeMillis();
+
+        RankedSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsRanked.txt", indexer);
+        long indexEnd = System.currentTimeMillis();
+        long indexDelta = indexEnd - indexStart;
+        double indexElapsedSeconds = indexDelta / 1000.0;
+        System.out.println("Querying Time: " + indexElapsedSeconds);
+
+
 
         /*
         // Question 4

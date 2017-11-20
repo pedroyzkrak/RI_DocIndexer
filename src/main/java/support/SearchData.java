@@ -1,17 +1,23 @@
-/**
- * Class built to save search information
- */
 package support;
 
 /**
  * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
+ * <p>
+ * Saves search information
  */
-public class SearchData {
+public class SearchData implements Comparable<SearchData> {
+
     private Query query;
     private int docId;
-    private int score;
+    private double score;
 
+    /**
+     * Contructor that supports a query object and document ID related to the search
+     *
+     * @param query query object
+     * @param docId document ID
+     */
     public SearchData(Query query, int docId) {
         this.query = query;
         this.docId = docId;
@@ -22,7 +28,7 @@ public class SearchData {
         return query;
     }
 
-    public int getScore() {
+    public double getScore() {
         return score;
     }
 
@@ -30,7 +36,7 @@ public class SearchData {
         return docId;
     }
 
-    public void setScore(int score) {
+    public void setScore(double score) {
         this.score = score;
     }
 
@@ -50,5 +56,17 @@ public class SearchData {
         int result = query.hashCode();
         result = 31 * result + docId;
         return result;
+    }
+
+    /**
+     * Comparable method to sort a list of SearchData objects by decreasing order of document score
+     */
+    @Override
+    public int compareTo(SearchData sd) {
+        if(this.score<sd.score)
+            return 1;
+        else if(sd.score<this.score)
+            return -1;
+        return 0;
     }
 }

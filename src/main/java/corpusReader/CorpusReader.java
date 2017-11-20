@@ -1,6 +1,3 @@
-/**
- * Class built to read the files and process them with given tokenizer and indexer
- */
 package corpusReader;
 
 import java.io.File;
@@ -17,6 +14,7 @@ import javax.xml.stream.events.*;
 
 import Tokenizer.SimpleTokenizer;
 import indexer.Indexer;
+import indexer.WeightIndexer;
 
 /**
  * @author Francisco Lopes 76406
@@ -57,6 +55,8 @@ public class CorpusReader {
                 }
             }
         }
+        if (indexer instanceof WeightIndexer)
+            ((WeightIndexer) indexer).weightIndex();
     }
 
     /**

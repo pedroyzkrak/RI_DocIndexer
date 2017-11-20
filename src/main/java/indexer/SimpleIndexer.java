@@ -1,6 +1,3 @@
-/**
- * Class built for the simple indexer
- */
 package indexer;
 
 

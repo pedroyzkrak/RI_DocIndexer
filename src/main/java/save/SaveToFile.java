@@ -1,6 +1,3 @@
-/**
- * Class built to save the index/results to a file
- */
 package save;
 
 import indexer.Indexer;

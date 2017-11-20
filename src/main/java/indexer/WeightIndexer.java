@@ -1,14 +1,8 @@
-/**
- * Class built for the tf-idf weight indexer
- */
 package indexer;
 
 import Tokenizer.SimpleTokenizer;
 import support.Posting;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -24,12 +18,11 @@ public class WeightIndexer implements Indexer {
 
     private final HashMap<String, LinkedList<Posting>> indexer;
     private SimpleIndexer si = new SimpleIndexer();
-    private final int N = (int) Files.list(Paths.get("cranfield")).count();
 
     /**
      * The constructor of the indexer that initializes the linked list
      */
-    public WeightIndexer() throws IOException {
+    public WeightIndexer() {
         this.indexer = new HashMap<>();
     }
 
@@ -50,10 +43,11 @@ public class WeightIndexer implements Indexer {
             indexer.put(term, new LinkedList<>());
             double weight;
             for (Posting doc : entry.getValue()) {
-                weight = (double) Math.round((1 + Math.log10(doc.getTermFreq())) * Math.log10(N/entry.getValue().size()) * 100) / 100;
-                indexer.get(term).add(new Posting(doc.getDocId(), weight));
+                weight = (double) Math.round((  1 + Math.log10(doc.getTermFreq()) ) * 100) / 100;
+                indexer.get(term).add(new Posting(doc.getDocId(), weight, doc.getTermFreq(), entry.getValue().size()));
             }
         }
+        si = null;
     }
 
     @Override

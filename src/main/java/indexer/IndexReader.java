@@ -1,6 +1,3 @@
-/**
- * Class built for the index reader
- */
 package indexer;
 
 

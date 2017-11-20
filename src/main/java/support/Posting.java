@@ -1,6 +1,3 @@
-/**
- * Class built to save document information
- */
 package support;
 
 
@@ -9,11 +6,13 @@ import java.util.List;
 /**
  * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
+ * <p>
+ * Saves document information
  */
 public class Posting implements Comparable<Posting> {
 
     private final int docId;
-    private int termFreq;
+    private int termFreq, docFreq;
     private String term;
     private double weight;
 
@@ -21,7 +20,7 @@ public class Posting implements Comparable<Posting> {
      * Contructor that supports the Document ID and Document Frequency for the tokens in the indexer
      *
      * @param docId    the ID of the document
-     * @param termFreq the frequency of a token in documents
+     * @param termFreq the frequency of the term in the document
      */
     public Posting(int docId, int termFreq) {
         this.docId = docId;
@@ -43,12 +42,16 @@ public class Posting implements Comparable<Posting> {
     /**
      * Contructor that supports the Document ID and it's weight for the tokens in the indexer
      *
-     * @param docId  the ID of the document
-     * @param weight
+     * @param docId    the ID of the document
+     * @param weight   the weight of the term in the document
+     * @param termFreq the frequency of the term in the document
+     * @param docFreq  number of documents that contain the term
      */
-    public Posting(int docId, double weight) {
+    public Posting(int docId, double weight, int termFreq, int docFreq) {
         this.docId = docId;
         this.weight = weight;
+        this.termFreq = termFreq;
+        this.docFreq = docFreq;
     }
 
     public void setTermFreq(int termFreq) {
@@ -61,6 +64,10 @@ public class Posting implements Comparable<Posting> {
 
     public int getTermFreq() {
         return termFreq;
+    }
+
+    public int getDocFreq() {
+        return docFreq;
     }
 
     public double getWeight() {
@@ -108,10 +115,4 @@ public class Posting implements Comparable<Posting> {
     public int hashCode() {
         return docId;
     }
-
-    @Override
-    public String toString() {
-        return this.docId + ":" + this.termFreq;
-    }
-
 }

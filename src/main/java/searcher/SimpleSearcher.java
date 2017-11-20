@@ -1,6 +1,3 @@
-/**
- * A class for the searcher
- */
 package searcher;
 
 import Tokenizer.SimpleTokenizer;
@@ -143,10 +140,7 @@ public class SimpleSearcher {
                         searched_doc.setScore(searched_doc.getScore() + pst.getTermFreq()); //rever
                     }
                 }
-
             }
-
-
         }
         return searchList;
     }

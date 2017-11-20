@@ -1,6 +1,3 @@
-/**
- * Class implemented for the simple tokenizer
- */
 package Tokenizer;
 
 import java.io.BufferedReader;
