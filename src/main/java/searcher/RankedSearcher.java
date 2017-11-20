@@ -35,14 +35,22 @@ public class RankedSearcher {
             String line;
             int id = 0;
             Query query;
+            long tStart = System.currentTimeMillis();
             while ((line = in.readLine()) != null) {
                 id++;
                 query = new Query(id, line);
+                long start = System.currentTimeMillis();
+
                 List<SearchData> rankedList = rankedRetrieval(query,wi);
-                //funcao precision e recall
+
+                long end = System.currentTimeMillis();
+                long delta = end - start;
+                double elapsedSeconds = delta;
+                //System.out.println("Query " + id + " Latency: " + elapsedSeconds + " ms");
                 SaveToFile.saveResults(rankedList, outputFile);
-                System.out.println("Processed " + id);
             }
+            long tEnd = System.currentTimeMillis();
+            System.out.println("Query Throughput: " + (double) Math.round((id / ((tEnd - tStart) / 1000.0)) * 10) / 10 + " queries per second");
         } catch (IOException e) {
             e.printStackTrace();
         }

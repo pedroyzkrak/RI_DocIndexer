@@ -33,7 +33,7 @@ public class Main {
         long dirEnd = System.currentTimeMillis();
         long dirDelta = dirEnd - dirStart;
         double dirElapsedSeconds = dirDelta / 1000.0;
-        System.out.println("Read Dir time: " + dirElapsedSeconds);
+        System.out.println("Read Dir time: " + dirElapsedSeconds + " s");
 
         //SaveToFile.saveIndex(indexer, "SaveIndex.txt");
         SaveToFile.saveIndex(indexer, "SaveWeightIndex.txt");
@@ -46,7 +46,7 @@ public class Main {
         long indexEnd = System.currentTimeMillis();
         long indexDelta = indexEnd - indexStart;
         double indexElapsedSeconds = indexDelta / 1000.0;
-        System.out.println("Querying Time: " + indexElapsedSeconds);
+        System.out.println("Querying Time: " + indexElapsedSeconds + " s");
 
 
 
