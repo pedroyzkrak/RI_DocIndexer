@@ -19,7 +19,7 @@ import org.tartarus.snowball.ext.englishStemmer;
  * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
  * <p>
- * A class for the Tokenizer
+ * A class for the tokenizer
  */
 public class SimpleTokenizer {
 
