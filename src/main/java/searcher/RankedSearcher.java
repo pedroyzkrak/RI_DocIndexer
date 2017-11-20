@@ -84,8 +84,10 @@ public class RankedSearcher {
 
         // Calculate weight for every query term
         for (RankedData qt : queryTerms) {
-            int df = indexer.get(qt.getTerm()).getFirst().getDocFreq();
-            qt.setWeight((( 1 + log10(qt.getWeight())) * log10( getN() / df )));
+            if (indexer.containsKey(qt.getTerm())) {
+                int df = indexer.get(qt.getTerm()).getFirst().getDocFreq();
+                qt.setWeight(((1 + log10(qt.getWeight())) * log10(getN() / df)));
+            }
         }
 
         double queryLength = calculateLength(queryTerms);
