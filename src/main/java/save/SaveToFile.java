@@ -78,11 +78,11 @@ public class SaveToFile {
      * @param queryId   query ID
      * @param fileName  name of the output file
      */
-    public static void saveMetrics(double precision, double recall, double fMeasure, double map, double mrr, int queryId, String fileName) {
+    public static void saveMetrics(double precision, double precisionCap, double recall, double fMeasure, double map, double mrr, int queryId, String fileName) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true))) {
-            String formatStr = "Query %3s: Precision: %-7s - Recall: %-7s - F-Measure: %-7s - Average Precision: %-7s - Reciprocal Rank: %-7s%n";
+            String formatStr = "Query %3s: Precision: %-7s PrecisionCap: %-7s - Recall: %-7s - F-Measure: %-7s - Average Precision: %-7s - Reciprocal Rank: %-7s%n";
 
-            bw.append(String.format(formatStr, queryId, precision, recall, fMeasure, map, mrr));
+            bw.append(String.format(formatStr, queryId, precision, precisionCap, recall, fMeasure, map, mrr));
 
         } catch (IOException ex) {
             Logger.getLogger(SaveToFile.class.getName()).log(Level.SEVERE, null, ex);

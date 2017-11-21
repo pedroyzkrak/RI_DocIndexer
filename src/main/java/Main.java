@@ -88,16 +88,19 @@ public class Main {
                                 baseData = entry.getValue();
 
             double precisionRanked = calculatePrecision(baseData, rankedData),
+                    precisionCapRanked = calculatePrecision(baseData, rankedData,10),
                     recallRanked = calculateRecall(baseData, rankedData),
                     rMAP = calculateMeanAveragePrecision(baseData, rankedData),
                     rMRR = calculateMRR(baseData, rankedData),
 
                     precisionWords = calculatePrecision(baseData, wordsData),
+                    precisionCapWords = calculatePrecision(baseData, wordsData, 10),
                     recallWords = calculateRecall(baseData, wordsData),
                     wMAP = calculateMeanAveragePrecision(baseData, wordsData),
                     wMRR = calculateMRR(baseData, wordsData),
 
                     precisionFrequency = calculatePrecision(baseData, frequencyData),
+                    precisionCapFrequency = calculatePrecision(baseData, rankedData,10),
                     recallFrequency = calculateRecall(baseData, frequencyData),
                     fMAP = calculateMeanAveragePrecision(baseData, frequencyData),
                     fMRR = calculateMRR(baseData, frequencyData);
@@ -111,9 +114,9 @@ public class Main {
             frequencyMAP += fMAP;
             frequencyMRR += fMRR;
 
-            SaveToFile.saveMetrics(precisionRanked, recallRanked, calculateF_Measure(precisionRanked, recallRanked), rMAP, rMRR, queryId, "MetricsRanked.txt");
-            SaveToFile.saveMetrics(precisionWords, recallWords, calculateF_Measure(precisionWords, recallWords), wMAP, wMRR, queryId, "MetricsWord.txt");
-            SaveToFile.saveMetrics(precisionFrequency, recallFrequency, calculateF_Measure(precisionFrequency, recallFrequency), fMAP, fMRR, queryId, "MetricsFrequency.txt");
+            SaveToFile.saveMetrics(precisionRanked, precisionCapRanked, recallRanked, calculateF_Measure(precisionRanked, recallRanked), rMAP, rMRR, queryId, "MetricsRanked.txt");
+            SaveToFile.saveMetrics(precisionWords, precisionCapWords, recallWords, calculateF_Measure(precisionWords, recallWords), wMAP, wMRR, queryId, "MetricsWord.txt");
+            SaveToFile.saveMetrics(precisionFrequency, precisionCapFrequency, recallFrequency, calculateF_Measure(precisionFrequency, recallFrequency), fMAP, fMRR, queryId, "MetricsFrequency.txt");
         }
 
         double size = baseSet.keySet().size();
