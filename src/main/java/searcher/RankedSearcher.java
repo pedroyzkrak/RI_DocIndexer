@@ -41,7 +41,7 @@ public class RankedSearcher {
         try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
             String line, queryTimes;
             int id = 0;
-            double latency = 0, lat, median;
+            double latency, median;
             Query query;
             long tStart = System.currentTimeMillis(), start, end;
             ArrayList<Double> medianLatency = new ArrayList<>();
@@ -55,9 +55,8 @@ public class RankedSearcher {
                 rankedList = rankedRetrieval(query, wi);
 
                 end = System.currentTimeMillis();
-                lat = (double) (end - start);
-                latency += lat;
-                medianLatency.add(lat);
+                latency = (double) (end - start);
+                medianLatency.add(latency);
 
                 SaveToFile.saveResults(rankedList, outputFile);
             }
@@ -66,19 +65,18 @@ public class RankedSearcher {
             Collections.sort(medianLatency);
 
             System.out.println("\tQuery Throughput: " + (double) Math.round((id / ((tEnd - tStart) / 1000.0)) * 10) / 10 + " queries per second");
-            System.out.println("\tMean query latency: " + (double) Math.round((latency / id) * 10) / 10 + " ms");
 
             if (medianLatency.size() % 2 == 0) {
                 median = (medianLatency.get(medianLatency.size() / 2) + medianLatency.get((medianLatency.size() / 2) + 1)) / 2;
                 System.out.println("\tMedian query latency: " + median + " ms");
+
                 queryTimes = "Query Throughput: " + (double) Math.round((id / ((tEnd - tStart) / 1000.0)) * 10) / 10 + " queries per second\n" +
-                        "Mean query latency: " + (double) Math.round((latency / id) * 10) / 10 + " ms\n" +
                         "Median query latency: " + median + " ms\n";
 
             } else {
                 System.out.println("\tMedian query latency: " + medianLatency.get(Math.round(medianLatency.size() / 2)) + " ms");
+
                 queryTimes = "Query Throughput: " + (double) Math.round((id / ((tEnd - tStart) / 1000.0)) * 10) / 10 + " queries per second\n" +
-                        "Mean query latency: " + (double) Math.round((latency / id) * 10) / 10 + " ms\n" +
                         "Median query latency: " + medianLatency.get(Math.round(medianLatency.size() / 2)) + " ms\n";
             }
 
