@@ -78,7 +78,7 @@ public class Main {
                                         wordsSet = parseResults("SaveResultsWords.txt"),
                                         frequencySet = parseResults("SaveResultsFrequency.txt");
 
-        double rankedMAP = 0, rankedMRR = 0, wordsMAP = 0, wordsMRR = 0, frequencyMAP = 0, frequencyMRR = 0;
+        double rankedMAP = 0, rankedMRR = 0, wordsMAP = 0, wordsMRR = 0, frequencyMAP = 0, frequencyMRR = 0, rankedMAP10 = 0, wordsMAP10 = 0, frequencyMAP10 = 0;
 
         MetricsCalculation calcRanked = new MetricsCalculation(), calcWords = new MetricsCalculation(), calcFrequency = new MetricsCalculation();
 
@@ -90,24 +90,25 @@ public class Main {
                                 baseData = entry.getValue();
 
             double precisionRanked = calcRanked.calculatePrecision(baseData, rankedData),
-                    precisionCapRanked = calcRanked.calculateAveragePrecision(baseData, rankedData,10),
+                    rMAP10 = calcRanked.calculateAveragePrecision(baseData, rankedData,10),
                     recallRanked = calcRanked.calculateRecall(baseData, rankedData),
                     rMAP = calculateAveragePrecision(baseData, rankedData,-1),
                     rMRR = calculateMRR(baseData, rankedData),
 
                     precisionWords = calcWords.calculatePrecision(baseData, wordsData),
-                    precisionCapWords = calcWords.calculateAveragePrecision(baseData, wordsData, 10),
+                    wMAP10 = calcWords.calculateAveragePrecision(baseData, wordsData, 10),
                     recallWords = calcWords.calculateRecall(baseData, wordsData),
                     wMAP = calculateAveragePrecision(baseData, wordsData, -1),
                     wMRR = calculateMRR(baseData, wordsData),
 
                     precisionFrequency = calcFrequency.calculatePrecision(baseData, frequencyData),
-                    precisionCapFrequency = calcFrequency.calculateAveragePrecision(baseData, rankedData,10),
+                    fMAP10 = calcFrequency.calculateAveragePrecision(baseData, rankedData,10),
                     recallFrequency = calcFrequency.calculateRecall(baseData, frequencyData),
                     fMAP = calculateAveragePrecision(baseData, frequencyData, -1),
                     fMRR = calculateMRR(baseData, frequencyData);
 
             rankedMAP += rMAP;
+            rankedMAP10 += rMAP10;
             rankedMRR += rMRR;
 
             wordsMAP += wMAP;
@@ -116,9 +117,9 @@ public class Main {
             frequencyMAP += fMAP;
             frequencyMRR += fMRR;
 
-            SaveToFile.saveMetrics(precisionRanked, precisionCapRanked, recallRanked, calculateF_Measure(precisionRanked, recallRanked), rMAP, rMRR, queryId, "MetricsRanked.txt");
-            SaveToFile.saveMetrics(precisionWords, precisionCapWords, recallWords, calculateF_Measure(precisionWords, recallWords), wMAP, wMRR, queryId, "MetricsWord.txt");
-            SaveToFile.saveMetrics(precisionFrequency, precisionCapFrequency, recallFrequency, calculateF_Measure(precisionFrequency, recallFrequency), fMAP, fMRR, queryId, "MetricsFrequency.txt");
+            SaveToFile.saveMetrics(precisionRanked, rMAP10, recallRanked, calculateF_Measure(precisionRanked, recallRanked), rMAP, rMRR, queryId, "MetricsRanked.txt");
+            SaveToFile.saveMetrics(precisionWords, wMAP10, recallWords, calculateF_Measure(precisionWords, recallWords), wMAP, wMRR, queryId, "MetricsWord.txt");
+            SaveToFile.saveMetrics(precisionFrequency, fMAP10, recallFrequency, calculateF_Measure(precisionFrequency, recallFrequency), fMAP, fMRR, queryId, "MetricsFrequency.txt");
         }
 
         double size = baseSet.keySet().size();
@@ -132,6 +133,7 @@ public class Main {
                 sysRecallFrequency = calcFrequency.getGlobalRecallTP() / (calcFrequency.getGlobalRecallTP() + calcFrequency.getGlobalRecallFN());
 
         SaveToFile.saveMetrics("Mean Average Precision: " + (double) Math.round(rankedMAP / size * 100000) / 100000 + "\n", "MetricsRanked.txt", false);
+        SaveToFile.saveMetrics("Mean Average Precision 10: " + (double) Math.round()), fileName);
         SaveToFile.saveMetrics("Mean Reciprocal Rank: " + (double) Math.round(rankedMRR / size * 100000) / 100000 + "\n", "MetricsRanked.txt", false);
         SaveToFile.saveMetrics("System Precision: " + (double) Math.round(sysPrecisionRanked * 100000) / 100000 + "\n", "MetricsRanked.txt", false);
         SaveToFile.saveMetrics("System Recall: " + (double) Math.round(sysRecallRanked * 100000) / 100000 + "\n", "MetricsRanked.txt", false);
