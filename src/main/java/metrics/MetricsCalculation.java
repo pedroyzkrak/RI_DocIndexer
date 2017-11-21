@@ -47,7 +47,7 @@ public class MetricsCalculation {
         double precision;
         int tp = 0;
         if (cap >= 1) {
-            mdTest = mdTest.subList(0, cap-1);
+            mdBase = mdBase.subList(0, cap);
         }
         for (MetricsData d : mdBase) {
             if (mdTest.contains(d)) {
