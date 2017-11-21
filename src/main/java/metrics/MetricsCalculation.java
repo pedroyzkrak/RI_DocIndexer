@@ -18,6 +18,15 @@ import support.MetricsData;
  */
 public class MetricsCalculation {
 
+    private double globalPrecisionTP, globalPrecisionRetrieved, globalRecallTP, globalRecallFN;
+
+    public MetricsCalculation() {
+        globalPrecisionTP = 0;
+        globalPrecisionRetrieved = 0;
+        globalRecallTP = 0;
+        globalRecallFN = 0;
+    }
+
     public static Map<Integer, List<MetricsData>> parseResults(String fileName) {
         Map<Integer, List<MetricsData>> queryInfo = new HashMap<>();
         try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
@@ -43,7 +52,7 @@ public class MetricsCalculation {
         return queryInfo;
     }
 
-    public static double calculatePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest, int cap) { 
+    public double calculatePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest, int cap) {
         double precision;
         int tp = 0;
         if (cap >= 1) {
@@ -52,7 +61,12 @@ public class MetricsCalculation {
         for (MetricsData d : mdBase) {
             if (mdTest.contains(d)) {
                 tp++;
+                if (cap < 1)
+                    globalPrecisionTP++;
             }
+
+            if (cap < 1)
+                globalPrecisionRetrieved += mdTest.size();
 
         }
         precision = (double) tp / mdTest.size();
@@ -60,19 +74,21 @@ public class MetricsCalculation {
         return (double) Math.round(precision * 100000) / 100000;
     }
 
-    public static double calculatePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest) {
-        return calculatePrecision(mdBase, mdTest, -1);
+    public double calculatePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest) {
+        return this.calculatePrecision(mdBase, mdTest, -1);
     }
 
-    public static double calculateRecall(List<MetricsData> mdBase, List<MetricsData> mdTest) {
+    public double calculateRecall(List<MetricsData> mdBase, List<MetricsData> mdTest) {
         double recall;
         int fn = 0;
         int tp = 0;
         for (MetricsData d : mdBase) {
             if (!mdTest.contains(d)) {
                 fn++;
+                globalRecallFN++;
             } else {
                 tp++;
+                globalRecallTP++;
             }
 
         }
@@ -107,6 +123,22 @@ public class MetricsCalculation {
             mmr = (double) 1 / (index + 1);
         }
         return (double) Math.round(mmr * 100000) / 100000;
+    }
+
+    public double getGlobalPrecisionTP() {
+        return globalPrecisionTP;
+    }
+
+    public double getGlobalPrecisionRetrieved() {
+        return globalPrecisionRetrieved;
+    }
+
+    public double getGlobalRecallTP() {
+        return globalRecallTP;
+    }
+
+    public double getGlobalRecallFN() {
+        return globalRecallFN;
     }
 
 }

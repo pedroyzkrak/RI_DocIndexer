@@ -90,7 +90,13 @@ public class RankedSearcher {
         }
     }
 
-
+    /**
+     * Performs a ranked retrieval method by the weight in the terms
+     *
+     * @param query the query object
+     * @param wi    the index
+     * @return a list of SearchData objects containing information about the results of the query
+     */
     private static List<SearchData> rankedRetrieval(Query query, Indexer wi) {
         SimpleTokenizer tkn = new SimpleTokenizer();
         tkn.tokenize(query.getStr(), "[a-zA-Z]{3,}", true, true);
