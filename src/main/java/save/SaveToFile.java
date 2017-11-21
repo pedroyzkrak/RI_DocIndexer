@@ -80,7 +80,7 @@ public class SaveToFile {
      */
     public static void saveMetrics(double precision, double precisionCap, double recall, double fMeasure, double map, double mrr, int queryId, String fileName) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true))) {
-            String formatStr = "Query %3s: Precision: %-7s MAP10: %-7s - Recall: %-7s - F-Measure: %-7s - Average Precision: %-7s - Reciprocal Rank: %-7s%n";
+            String formatStr = "  %3s |   %-7s | %-7s | %-7s |   %-7s |     %-7s    | %-7s%n";
 
             bw.append(String.format(formatStr, queryId, precision, precisionCap, recall, fMeasure, map, mrr));
 
@@ -92,18 +92,18 @@ public class SaveToFile {
     /**
      * Saves efficiency metrics to a file
      *
-     * @param queryTimes String with each efficiency metric
-     * @param fileName   name of the output file
-     * @param overwrite  true will overwrite the file
+     * @param text      text string to write
+     * @param fileName  name of the output file
+     * @param overwrite true will overwrite the file
      */
-    public static void saveMetrics(String queryTimes, String fileName, boolean overwrite) {
+    public static void saveMetrics(String text, String fileName, boolean overwrite) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true))) {
             if (overwrite) {
                 BufferedWriter clear = new BufferedWriter(new FileWriter(fileName));
                 clear.write("");
             }
 
-            bw.append(queryTimes);
+            bw.append(text);
 
         } catch (IOException ex) {
             Logger.getLogger(SaveToFile.class.getName()).log(Level.SEVERE, null, ex);

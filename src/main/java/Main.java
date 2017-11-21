@@ -113,6 +113,17 @@ public class Main {
             frequencyMAP += fMAP;
             frequencyMRR += fMRR;
 
+            if (queryId == 1) {
+                SaveToFile.saveMetrics("\nQuery | Precision |  MAP10  |  Recall | F-Measure | Avg. Precision | Reciprocal Rank\n" +
+                        "------|-----------|---------|---------|-----------|----------------|-----------------\n", "MetricsRanked.txt", false);
+
+                SaveToFile.saveMetrics("\nQuery | Precision |  MAP10  |  Recall | F-Measure | Avg. Precision | Reciprocal Rank\n" +
+                        "------|-----------|---------|---------|-----------|----------------|-----------------\n", "MetricsWord.txt", false);
+
+                SaveToFile.saveMetrics("\nQuery | Precision |  MAP10  |  Recall | F-Measure | Avg. Precision | Reciprocal Rank\n" +
+                        "------|-----------|---------|---------|-----------|----------------|-----------------\n", "MetricsFrequency.txt", false);
+            }
+
             SaveToFile.saveMetrics(precisionRanked, rMAP10, recallRanked, calculateF_Measure(precisionRanked, recallRanked), rMAP, rMRR, queryId, "MetricsRanked.txt");
             SaveToFile.saveMetrics(precisionWords, wMAP10, recallWords, calculateF_Measure(precisionWords, recallWords), wMAP, wMRR, queryId, "MetricsWord.txt");
             SaveToFile.saveMetrics(precisionFrequency, fMAP10, recallFrequency, calculateF_Measure(precisionFrequency, recallFrequency), fMAP, fMRR, queryId, "MetricsFrequency.txt");
@@ -128,7 +139,7 @@ public class Main {
                 sysPrecisionFrequency = calcFrequency.getGlobalPrecisionTP() / calcFrequency.getGlobalPrecisionRetrieved(),
                 sysRecallFrequency = calcFrequency.getGlobalRecallTP() / (calcFrequency.getGlobalRecallTP() + calcFrequency.getGlobalRecallFN());
 
-        SaveToFile.saveMetrics("Mean Average Precision: " + (double) Math.round(rankedMAP / size * 100000) / 100000 + "\n", "MetricsRanked.txt", false);
+        SaveToFile.saveMetrics("\nMean Average Precision: " + (double) Math.round(rankedMAP / size * 100000) / 100000 + "\n", "MetricsRanked.txt", false);
         SaveToFile.saveMetrics("Mean Average Precision 10: " + (double) Math.round(rankedMAP10 / size * 100000) / 100000 + "\n", "MetricsRanked.txt", false);
         SaveToFile.saveMetrics("Mean Reciprocal Rank: " + (double) Math.round(rankedMRR / size * 100000) / 100000 + "\n", "MetricsRanked.txt", false);
         SaveToFile.saveMetrics("System Precision: " + (double) Math.round(sysPrecisionRanked * 100000) / 100000 + "\n", "MetricsRanked.txt", false);
@@ -136,14 +147,14 @@ public class Main {
         SaveToFile.saveMetrics("System F-Measure: " + (double) Math.round(calculateF_Measure(sysPrecisionRanked, sysRecallRanked) * 100000) / 100000 + "\n", "MetricsRanked.txt", false);
 
 
-        SaveToFile.saveMetrics("Mean Average Precision: " + (double) Math.round(wordsMAP / size * 100000) / 100000 + "\n", "MetricsWord.txt", false);
+        SaveToFile.saveMetrics("\nMean Average Precision: " + (double) Math.round(wordsMAP / size * 100000) / 100000 + "\n", "MetricsWord.txt", false);
         SaveToFile.saveMetrics("Mean Average Precision 10: " + (double) Math.round(wordsMAP10 / size * 100000) / 100000 + "\n", "MetricsWord.txt", false);
         SaveToFile.saveMetrics("Mean Reciprocal Rank: " + (double) Math.round(wordsMRR / size * 100000) / 100000 + "\n", "MetricsWord.txt", false);
         SaveToFile.saveMetrics("System Precision: " + (double) Math.round(sysPrecisionWords * 100000) / 100000 + "\n", "MetricsWord.txt", false);
         SaveToFile.saveMetrics("System Recall: " + (double) Math.round(sysRecallWords * 100000) / 100000 + "\n", "MetricsWord.txt", false);
         SaveToFile.saveMetrics("System F-Measure: " + (double) Math.round(calculateF_Measure(sysPrecisionWords, sysRecallWords) * 100000) / 100000 + "\n", "MetricsWord.txt", false);
 
-        SaveToFile.saveMetrics("Mean Average Precision: " + (double) Math.round(frequencyMAP / size * 100000) / 100000 + "\n", "MetricsFrequency.txt", false);
+        SaveToFile.saveMetrics("\nMean Average Precision: " + (double) Math.round(frequencyMAP / size * 100000) / 100000 + "\n", "MetricsFrequency.txt", false);
         SaveToFile.saveMetrics("Mean Average Precision 10: " + (double) Math.round(frequencyMAP10 / size * 100000) / 100000 + "\n", "MetricsFrequency.txt", false);
         SaveToFile.saveMetrics("Mean Reciprocal Rank: " + (double) Math.round(frequencyMRR / size * 100000) / 100000 + "\n", "MetricsFrequency.txt", false);
         SaveToFile.saveMetrics("System Precision: " + (double) Math.round(sysPrecisionFrequency * 100000) / 100000 + "\n", "MetricsFrequency.txt", false);
