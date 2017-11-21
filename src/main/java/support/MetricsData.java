@@ -18,11 +18,11 @@ public class MetricsData implements Comparable<MetricsData> {
     /**
      * Contructor that supports information about query results to calculate evaluation and efficiency metrics
      *
-     * @param queryId the query ID
+     * @param docId the query ID
      * @param score   document score
      */
-    public MetricsData(int queryId, double score) {
-        this.docId = queryId;
+    public MetricsData(int docId, double score) {
+        this.docId = docId;
         this.score = score;
     }
 
