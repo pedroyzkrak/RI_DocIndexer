@@ -90,21 +90,21 @@ public class Main {
                                 baseData = entry.getValue();
 
             double precisionRanked = calcRanked.calculatePrecision(baseData, rankedData),
-                    precisionCapRanked = calcRanked.calculatePrecision(baseData, rankedData,10),
+                    precisionCapRanked = calcRanked.calculateAveragePrecision(baseData, rankedData,10),
                     recallRanked = calcRanked.calculateRecall(baseData, rankedData),
-                    rMAP = calculateMeanAveragePrecision(baseData, rankedData),
+                    rMAP = calculateAveragePrecision(baseData, rankedData,-1),
                     rMRR = calculateMRR(baseData, rankedData),
 
                     precisionWords = calcWords.calculatePrecision(baseData, wordsData),
-                    precisionCapWords = calcWords.calculatePrecision(baseData, wordsData, 10),
+                    precisionCapWords = calcWords.calculateAveragePrecision(baseData, wordsData, 10),
                     recallWords = calcWords.calculateRecall(baseData, wordsData),
-                    wMAP = calculateMeanAveragePrecision(baseData, wordsData),
+                    wMAP = calculateAveragePrecision(baseData, wordsData, -1),
                     wMRR = calculateMRR(baseData, wordsData),
 
                     precisionFrequency = calcFrequency.calculatePrecision(baseData, frequencyData),
-                    precisionCapFrequency = calcFrequency.calculatePrecision(baseData, rankedData,10),
+                    precisionCapFrequency = calcFrequency.calculateAveragePrecision(baseData, rankedData,10),
                     recallFrequency = calcFrequency.calculateRecall(baseData, frequencyData),
-                    fMAP = calculateMeanAveragePrecision(baseData, frequencyData),
+                    fMAP = calculateAveragePrecision(baseData, frequencyData, -1),
                     fMRR = calculateMRR(baseData, frequencyData);
 
             rankedMAP += rMAP;

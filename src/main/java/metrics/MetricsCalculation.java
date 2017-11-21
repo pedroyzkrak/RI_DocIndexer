@@ -94,6 +94,10 @@ public class MetricsCalculation {
         double avrg_prec = 0;
         int tp = 0;
         int counter = 0;
+        if(cap>0)
+        {
+            mdTest = mdTest.subList(0, cap);
+        }
         for (MetricsData d : mdTest) {
             counter++;
             if (mdBase.contains(d)) {
