@@ -64,7 +64,7 @@ public class MetricsCalculation {
         }
         precision = (double) tp / mdTest.size();
 
-        return (double) Math.round(precision * 100000) / 100000;
+        return (double) Math.round(precision * 10000) / 10000;
     }
 
     public double calculateRecall(List<MetricsData> mdBase, List<MetricsData> mdTest) {
@@ -83,11 +83,11 @@ public class MetricsCalculation {
         }
         recall = (double) tp / (tp + fn);
 
-        return (double) Math.round(recall * 100000) / 100000;
+        return (double) Math.round(recall * 10000) / 10000;
     }
 
     public static double calculateF_Measure(double precision, double recall) {
-        return (double) Math.round(((2 * recall * precision) / (recall + precision)) * 100000) / 100000;
+        return (double) Math.round(((2 * recall * precision) / (recall + precision)) * 10000) / 10000;
     }
 
     public static double calculateAveragePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest, int cap) {
@@ -105,7 +105,7 @@ public class MetricsCalculation {
                 avrg_prec += (double) tp / counter;
             }
         }
-        return (double) Math.round((avrg_prec / tp) * 100000) / 100000;
+        return (double) Math.round((avrg_prec / tp) * 10000) / 10000;
     }
 
     public static double calculateMRR(List<MetricsData> mdBase, List<MetricsData> mdTest) {
@@ -115,7 +115,7 @@ public class MetricsCalculation {
         if (index > 0) {
             mmr = (double) 1 / (index + 1);
         }
-        return (double) Math.round(mmr * 100000) / 100000;
+        return (double) Math.round(mmr * 10000) / 10000;
     }
 
     public double getGlobalPrecisionTP() {
