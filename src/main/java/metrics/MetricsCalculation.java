@@ -43,11 +43,11 @@ public class MetricsCalculation {
         return queryInfo;
     }
 
-    public static double calculatePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest, int cap) { //sem cap tem q ser <1
+    public static double calculatePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest, int cap) { 
         double precision;
         int tp = 0;
         if (cap >= 1) {
-            mdBase = mdBase.subList(0, cap);
+            mdTest = mdTest.subList(0, cap);
         }
         for (MetricsData d : mdBase) {
             if (mdTest.contains(d)) {
