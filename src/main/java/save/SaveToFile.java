@@ -58,7 +58,7 @@ public class SaveToFile {
             if (results.size() == 0 || results.get(0).getQuery().getId() == 1) {
                 BufferedWriter clear = new BufferedWriter(new FileWriter(fileName));
                 clear.write("");
-                bw.append("query_id doc_id doc_score\n");
+                // bw.append("query_id doc_id doc_score\n");
             }
             String formatStr = "%s %s %s%n";
             for (SearchData data : results) {
@@ -68,4 +68,50 @@ public class SaveToFile {
             Logger.getLogger(SaveToFile.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    /**
+     * Saves evaluation metrics to a file
+     *
+     * @param precision precision results
+     * @param recall    recall results
+     * @param fMeasure  f-measure results
+     * @param queryId   query ID
+     * @param fileName  name of the output file
+     */
+    public static void saveMetrics(double precision, double recall, double fMeasure, double map, double mrr, int queryId, String fileName) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true))) {
+            String formatStr = "Query %3s: Precision: %-7s - Recall: %-7s - F-Measure: %-7s - Average Precision: %-7s - Reciprocal Rank: %-7s%n";
+
+            bw.append(String.format(formatStr, queryId, precision, recall, fMeasure, map, mrr));
+
+        } catch (IOException ex) {
+            Logger.getLogger(SaveToFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Saves efficiency metrics to a file
+     *
+     * @param queryTimes String with each efficiency metric
+     * @param fileName   name of the output file
+     * @param overwrite  true will overwrite the file
+     */
+    public static void saveMetrics(String queryTimes, String fileName, boolean overwrite) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true))) {
+            if (overwrite) {
+                BufferedWriter clear = new BufferedWriter(new FileWriter(fileName));
+                clear.write("");
+            }
+
+            bw.append(queryTimes);
+
+        } catch (IOException ex) {
+            Logger.getLogger(SaveToFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void saveMetrics(String queryTimes, String fileName) {
+        saveMetrics(queryTimes, fileName, true);
+    }
+
 }

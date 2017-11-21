@@ -6,25 +6,24 @@
 package support;
 
 /**
- *
- * @author Pedro
+ * @author Francisco Lopes 76406
+ * @author Pedro Gusmão 77867
  */
 public class MetricsData implements Comparable<MetricsData> {
 
     private int docId;
     private double score;
 
+
+    /**
+     * Contructor that supports information about query results to calculate evaluation and efficiency metrics
+     *
+     * @param queryId the query ID
+     * @param score   document score
+     */
     public MetricsData(int queryId, double score) {
         this.docId = queryId;
         this.score = score;
-    }
-
-    public int getDocId() {
-        return docId;
-    }
-
-    public double getScore() {
-        return score;
     }
 
     @Override

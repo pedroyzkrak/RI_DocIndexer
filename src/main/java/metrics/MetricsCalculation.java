@@ -8,14 +8,14 @@ package metrics;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import support.MetricsData;
-import support.SearchData;
+import java.util.*;
 
+import support.MetricsData;
+
+/**
+ * @author Francisco Lopes 76406
+ * @author Pedro Gusmão 77867
+ */
 public class MetricsCalculation {
 
     public static Map<Integer, List<MetricsData>> parseResults(String fileName) {
@@ -27,6 +27,7 @@ public class MetricsCalculation {
                 int queryId = Integer.parseInt(els[0]);
                 int docId = Integer.parseInt(els[1]);
                 double score = Double.parseDouble(els[2]);
+
                 if (queryInfo.containsKey(queryId)) {
                     queryInfo.get(queryId).add(new MetricsData(docId, score));
                 } else {
@@ -38,14 +39,12 @@ public class MetricsCalculation {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        queryInfo.entrySet().stream().forEach((mdList) -> {
-            Collections.sort(mdList.getValue());
-        });
+        queryInfo.forEach((key, value) -> Collections.sort(value));
         return queryInfo;
     }
 
     public static double calculatePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest, int cap) { //sem cap tem q ser <1
-        double precision = 0;
+        double precision;
         int tp = 0;
         if (cap >= 1) {
             mdBase = mdBase.subList(0, cap);
@@ -56,13 +55,17 @@ public class MetricsCalculation {
             }
 
         }
-        precision = tp / mdTest.size();
+        precision = (double) tp / mdTest.size();
 
-        return (double) Math.round(precision * 100) / 100;
+        return (double) Math.round(precision * 100000) / 100000;
+    }
+
+    public static double calculatePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest) {
+        return calculatePrecision(mdBase, mdTest, -1);
     }
 
     public static double calculateRecall(List<MetricsData> mdBase, List<MetricsData> mdTest) {
-        double recall = 0;
+        double recall;
         int fn = 0;
         int tp = 0;
         for (MetricsData d : mdBase) {
@@ -73,16 +76,16 @@ public class MetricsCalculation {
             }
 
         }
-        recall = tp / (tp + fn);
+        recall = (double) tp / (tp + fn);
 
-        return (double) Math.round(recall * 100) / 100;
+        return (double) Math.round(recall * 100000) / 100000;
     }
 
     public static double calculateF_Measure(double precision, double recall) {
-        return ((2 * recall * precision) / (recall + precision));
+        return (double) Math.round(((2 * recall * precision) / (recall + precision)) * 100000) / 100000;
     }
 
-    public static double calculateAverage_Precision(List<MetricsData> mdBase, List<MetricsData> mdTest) {
+    public static double calculateMeanAveragePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest) {
         double avrg_prec = 0;
         int tp = 0;
         int counter = 0;
@@ -90,20 +93,20 @@ public class MetricsCalculation {
             counter++;
             if (mdBase.contains(d)) {
                 tp++;
-                avrg_prec += tp / counter;
+                avrg_prec += (double) tp / counter;
             }
         }
-        return (avrg_prec / tp);
+        return (double) Math.round((avrg_prec / tp) * 100000) / 100000;
     }
 
     public static double calculateMRR(List<MetricsData> mdBase, List<MetricsData> mdTest) {
-        int index = 0;
-        int mmr = 0;
+        int index;
+        double mmr = 0.0;
         index = mdTest.indexOf(mdBase.get(0));
         if (index > 0) {
-            mmr += (1 / (index + 1));
+            mmr = (double) 1 / (index + 1);
         }
-        return mmr;
+        return (double) Math.round(mmr * 100000) / 100000;
     }
 
 }

@@ -1,8 +1,8 @@
 package searcher;
 
+import indexer.Indexer;
 import tokenizer.SimpleTokenizer;
 import tokenizer.SimpleTokenizer.Token;
-import indexer.SimpleIndexer;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -26,12 +26,18 @@ public class SimpleSearcher {
      * @param fileName   name of the file containing the queries
      * @param outputFile name of the files to save the results
      * @param op         type of boolean search (by 'words' or 'frequency')
+     * @param si         a SimpleIndexer object
      */
-    public static void readQueryFromFile(String fileName, String outputFile, String op, SimpleIndexer si) {
+    @SuppressWarnings("Duplicates")
+    public static void readQueryFromFile(String fileName, String outputFile, String op, Indexer si) {
         try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
-            String line;
+            String line, queryTimes;
             int id = 0;
+            double latency = 0, lat, median;
+            long start, end, tStart = System.currentTimeMillis();
+            ArrayList<Double> medianLatency = new ArrayList<>();
             Query query;
+            List<SearchData> results;
             a:
             while ((line = in.readLine()) != null) {
                 id++;
@@ -39,18 +45,73 @@ public class SimpleSearcher {
 
                 switch (op) {
                     case "words":
-                        SaveToFile.saveResults(booleanSearchWord(query, si), outputFile);
+
+                        start = System.currentTimeMillis();
+
+                        results = booleanSearchWord(query, si);
+
+                        end = System.currentTimeMillis();
+                        lat = (double) (end - start);
+                        latency += lat;
+                        medianLatency.add(lat);
+
+                        SaveToFile.saveResults(results, outputFile);
                         break;
 
                     case "frequency":
-                        SaveToFile.saveResults(booleanSearchFrequency(query, si), outputFile);
+
+                        start = System.currentTimeMillis();
+
+                        results = booleanSearchFrequency(query, si);
+
+                        end = System.currentTimeMillis();
+                        lat = (double) (end - start);
+                        latency += lat;
+                        medianLatency.add(lat);
+
+                        SaveToFile.saveResults(results, outputFile);
                         break;
 
                     default:
                         System.err.println("Option not found.");
                         break a;
                 }
+
             }
+            long tEnd = System.currentTimeMillis();
+
+            Collections.sort(medianLatency);
+
+            System.out.println("\tQuery Throughput: " + (double) Math.round((id / ((tEnd - tStart) / 1000.0)) * 10) / 10 + " queries per second");
+            System.out.println("\tMean query latency: " + (double) Math.round((latency / id) * 10) / 10 + " ms");
+
+
+            if (medianLatency.size() % 2 == 0) {
+                median = (medianLatency.get(medianLatency.size() / 2) + medianLatency.get((medianLatency.size() / 2) + 1)) / 2;
+                System.out.println("\tMedian query latency: " + median + " ms");
+                queryTimes = "Query Throughput: " + (double) Math.round((id / ((tEnd - tStart) / 1000.0)) * 10) / 10 + " queries per second\n" +
+                        "Mean query latency: " + (double) Math.round((latency / id) * 10) / 10 + " ms\n" +
+                        "Median query latency: " + median + " ms\n";
+
+            } else {
+                System.out.println("\tMedian query latency: " + medianLatency.get(Math.round(medianLatency.size() / 2)) + " ms");
+                queryTimes = "Query Throughput: " + (double) Math.round((id / ((tEnd - tStart) / 1000.0)) * 10) / 10 + " queries per second\n" +
+                        "Mean query latency: " + (double) Math.round((latency / id) * 10) / 10 + " ms\n" +
+                        "Median query latency: " + medianLatency.get(Math.round(medianLatency.size() / 2)) + " ms\n";
+            }
+
+            switch (op) {
+                case "words":
+                    SaveToFile.saveMetrics(queryTimes, "MetricsWord.txt");
+                    break;
+                case "frequency":
+                    SaveToFile.saveMetrics(queryTimes, "MetricsFrequency.txt");
+                    break;
+                default:
+                    System.err.println("Option not found.");
+                    break;
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -63,7 +124,7 @@ public class SimpleSearcher {
      * @param si    the index
      * @return a list of SearchData objects containing information about the results of the query
      */
-    private static List<SearchData> booleanSearchWord(Query query, SimpleIndexer si) {
+    private static List<SearchData> booleanSearchWord(Query query, Indexer si) {
         SimpleTokenizer tkn = new SimpleTokenizer();
         tkn.tokenize(query.getStr(), "[a-zA-Z]{3,}", true, true);
         List<SearchData> searchList = new ArrayList<>();
@@ -88,10 +149,10 @@ public class SimpleSearcher {
                     if (!searchList.contains(sd)) {
                         sd.setScore(1);
                         searchList.add(sd);
-                    } else { //para termos diferentes pq supostamente n aparece + que uma vez um docId no mesmo termo
+                    } else {
                         idx = searchList.indexOf(sd);
                         searched_doc = searchList.get(idx);
-                        searched_doc.setScore(searched_doc.getScore() + 1); //rever
+                        searched_doc.setScore(searched_doc.getScore() + 1);
                     }
                 }
 
@@ -99,6 +160,9 @@ public class SimpleSearcher {
 
 
         }
+
+        Collections.sort(searchList);
+
         return searchList;
     }
 
@@ -109,7 +173,7 @@ public class SimpleSearcher {
      * @param si    the index
      * @return a list of SearchData objects containing information about the results of the query
      */
-    private static List<SearchData> booleanSearchFrequency(Query query, SimpleIndexer si) {
+    private static List<SearchData> booleanSearchFrequency(Query query, Indexer si) {
         SimpleTokenizer tkn = new SimpleTokenizer();
         tkn.tokenize(query.getStr(), "[a-zA-Z]{3,}", true, true);
         List<SearchData> searchList = new ArrayList<>();
@@ -134,14 +198,17 @@ public class SimpleSearcher {
                     if (!searchList.contains(sd)) {
                         sd.setScore(pst.getTermFreq());
                         searchList.add(sd);
-                    } else { //para termos diferentes pq supostamente n aparece + que uma vez um docId no mesmo termo
+                    } else {
                         idx = searchList.indexOf(sd);
                         searched_doc = searchList.get(idx);
-                        searched_doc.setScore(searched_doc.getScore() + pst.getTermFreq()); //rever
+                        searched_doc.setScore(searched_doc.getScore() + pst.getTermFreq());
                     }
                 }
             }
         }
+
+        Collections.sort(searchList);
+
         return searchList;
     }
 

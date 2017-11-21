@@ -29,28 +29,62 @@ public class RankedSearcher {
 
     private static int N = -1;
 
-
+    /**
+     * Reads a file containing queries and saves the results to a file
+     *
+     * @param fileName   name of the file containing the queries
+     * @param outputFile name of the files to save the results
+     * @param wi         a WeightIndexer object
+     */
+    @SuppressWarnings("Duplicates")
     public static void readQueryFromFile(String fileName, String outputFile, Indexer wi) {
         try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
-            String line;
+            String line, queryTimes;
             int id = 0;
+            double latency = 0, lat, median;
             Query query;
-            long tStart = System.currentTimeMillis();
+            long tStart = System.currentTimeMillis(), start, end;
+            ArrayList<Double> medianLatency = new ArrayList<>();
+            List<SearchData> rankedList;
             while ((line = in.readLine()) != null) {
                 id++;
                 query = new Query(id, line);
-                long start = System.currentTimeMillis();
 
-                List<SearchData> rankedList = rankedRetrieval(query,wi);
+                start = System.currentTimeMillis();
 
-                long end = System.currentTimeMillis();
-                long delta = end - start;
-                double elapsedSeconds = delta;
-                //System.out.println("Query " + id + " Latency: " + elapsedSeconds + " ms");
+                rankedList = rankedRetrieval(query, wi);
+
+                end = System.currentTimeMillis();
+                lat = (double) (end - start);
+                latency += lat;
+                medianLatency.add(lat);
+
                 SaveToFile.saveResults(rankedList, outputFile);
             }
             long tEnd = System.currentTimeMillis();
-            System.out.println("Query Throughput: " + (double) Math.round((id / ((tEnd - tStart) / 1000.0)) * 10) / 10 + " queries per second");
+
+            Collections.sort(medianLatency);
+
+            System.out.println("\tQuery Throughput: " + (double) Math.round((id / ((tEnd - tStart) / 1000.0)) * 10) / 10 + " queries per second");
+            System.out.println("\tMean query latency: " + (double) Math.round((latency / id) * 10) / 10 + " ms");
+
+            if (medianLatency.size() % 2 == 0) {
+                median = (medianLatency.get(medianLatency.size() / 2) + medianLatency.get((medianLatency.size() / 2) + 1)) / 2;
+                System.out.println("\tMedian query latency: " + median + " ms");
+                queryTimes = "Query Throughput: " + (double) Math.round((id / ((tEnd - tStart) / 1000.0)) * 10) / 10 + " queries per second\n" +
+                        "Mean query latency: " + (double) Math.round((latency / id) * 10) / 10 + " ms\n" +
+                        "Median query latency: " + median + " ms\n";
+
+            } else {
+                System.out.println("\tMedian query latency: " + medianLatency.get(Math.round(medianLatency.size() / 2)) + " ms");
+                queryTimes = "Query Throughput: " + (double) Math.round((id / ((tEnd - tStart) / 1000.0)) * 10) / 10 + " queries per second\n" +
+                        "Mean query latency: " + (double) Math.round((latency / id) * 10) / 10 + " ms\n" +
+                        "Median query latency: " + medianLatency.get(Math.round(medianLatency.size() / 2)) + " ms\n";
+            }
+
+            SaveToFile.saveMetrics(queryTimes, "MetricsRanked.txt");
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,8 +110,7 @@ public class RankedSearcher {
             if (queryTerms.contains(rd)) {
                 RankedData term = queryTerms.get(queryTerms.indexOf(rd));
                 term.setWeight(term.getWeight() + 1);
-            }
-            else
+            } else
                 queryTerms.add(rd);
 
             if (indexer.containsKey(word)) {
@@ -129,7 +162,7 @@ public class RankedSearcher {
                 }
             }
             SearchData sd = new SearchData(query, s.getKey());
-            sd.setScore( (double) round(score * 1000) / 1000);
+            sd.setScore((double) round(score * 1000) / 1000);
             searchList.add(sd);
         }
         Collections.sort(searchList);
