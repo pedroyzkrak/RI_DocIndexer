@@ -108,9 +108,11 @@ public class Main {
             rankedMRR += rMRR;
 
             wordsMAP += wMAP;
+            wordsMAP10 += wMAP10;
             wordsMRR += wMRR;
 
             frequencyMAP += fMAP;
+            frequencyMAP10 += fMAP10;
             frequencyMRR += fMRR;
 
             if (queryId == 1) {
