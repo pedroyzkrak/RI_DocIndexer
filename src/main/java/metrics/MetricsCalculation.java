@@ -46,36 +46,25 @@ public class MetricsCalculation {
 
             }
         } catch (IOException e) {
-            e.printStackTrace();
         }
         queryInfo.forEach((key, value) -> Collections.sort(value));
         return queryInfo;
     }
 
-    public double calculatePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest, int cap) {
+    public double calculatePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest) {
         double precision;
         int tp = 0;
-        if (cap >= 1) {
-            mdTest = mdTest.subList(0, cap);
-        }
         for (MetricsData d : mdBase) {
             if (mdTest.contains(d)) {
                 tp++;
-                if (cap < 1)
-                    globalPrecisionTP++;
+                globalPrecisionTP++;
             }
-
-            if (cap < 1)
-                globalPrecisionRetrieved += mdTest.size();
+            globalPrecisionRetrieved += mdTest.size();
 
         }
         precision = (double) tp / mdTest.size();
 
         return (double) Math.round(precision * 100000) / 100000;
-    }
-
-    public double calculatePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest) {
-        return this.calculatePrecision(mdBase, mdTest, -1);
     }
 
     public double calculateRecall(List<MetricsData> mdBase, List<MetricsData> mdTest) {
@@ -101,7 +90,7 @@ public class MetricsCalculation {
         return (double) Math.round(((2 * recall * precision) / (recall + precision)) * 100000) / 100000;
     }
 
-    public static double calculateMeanAveragePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest) {
+    public static double calculateAveragePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest, int cap) {
         double avrg_prec = 0;
         int tp = 0;
         int counter = 0;
