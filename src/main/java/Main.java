@@ -64,7 +64,7 @@ public class Main {
         System.out.println("Frequency Metrics");
         indexStart = System.currentTimeMillis();
 
-        SimpleSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsFrequency.txt", "frequency", si);
+        SimpleSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsFrequency.txt", "frequency", wi);
 
         indexEnd = System.currentTimeMillis();
         System.out.println("Querying Time: " + (indexEnd - indexStart) / 1000.0 + " s\n");
