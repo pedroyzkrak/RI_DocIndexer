@@ -24,7 +24,7 @@ public class SimpleIndexer implements Indexer {
     private final HashMap<String, LinkedList<Posting>> indexer;
 
     /**
-     * The constructor of the indexer that initializes the linked list
+     * The constructor of the indexer that initializes the Map
      */
     public SimpleIndexer() {
         this.indexer = new HashMap<>();

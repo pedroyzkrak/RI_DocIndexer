@@ -20,7 +20,7 @@ public class WeightIndexer implements Indexer {
     private SimpleIndexer si = new SimpleIndexer();
 
     /**
-     * The constructor of the indexer that initializes the linked list
+     * The constructor of the indexer that initializes the Map
      */
     public WeightIndexer() {
         this.indexer = new HashMap<>();
