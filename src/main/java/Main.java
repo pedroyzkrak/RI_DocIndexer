@@ -137,14 +137,14 @@ public class Main {
 
 
         SaveToFile.saveMetrics("Mean Average Precision: " + (double) Math.round(wordsMAP / size * 100000) / 100000 + "\n", "MetricsWord.txt", false);
-        SaveToFile.saveMetrics("Mean Average Precision 10: " + (double) Math.round(wordsMAP10 / size * 100000) / 100000 + "\n", "MetricsRanked.txt", false);
+        SaveToFile.saveMetrics("Mean Average Precision 10: " + (double) Math.round(wordsMAP10 / size * 100000) / 100000 + "\n", "MetricsWord.txt", false);
         SaveToFile.saveMetrics("Mean Reciprocal Rank: " + (double) Math.round(wordsMRR / size * 100000) / 100000 + "\n", "MetricsWord.txt", false);
         SaveToFile.saveMetrics("System Precision: " + (double) Math.round(sysPrecisionWords * 100000) / 100000 + "\n", "MetricsWord.txt", false);
         SaveToFile.saveMetrics("System Recall: " + (double) Math.round(sysRecallWords * 100000) / 100000 + "\n", "MetricsWord.txt", false);
         SaveToFile.saveMetrics("System F-Measure: " + (double) Math.round(calculateF_Measure(sysPrecisionWords, sysRecallWords) * 100000) / 100000 + "\n", "MetricsWord.txt", false);
 
         SaveToFile.saveMetrics("Mean Average Precision: " + (double) Math.round(frequencyMAP / size * 100000) / 100000 + "\n", "MetricsFrequency.txt", false);
-        SaveToFile.saveMetrics("Mean Average Precision 10: " + (double) Math.round(frequencyMAP10 / size * 100000) / 100000 + "\n", "MetricsRanked.txt", false);
+        SaveToFile.saveMetrics("Mean Average Precision 10: " + (double) Math.round(frequencyMAP10 / size * 100000) / 100000 + "\n", "MetricsFrequency.txt", false);
         SaveToFile.saveMetrics("Mean Reciprocal Rank: " + (double) Math.round(frequencyMRR / size * 100000) / 100000 + "\n", "MetricsFrequency.txt", false);
         SaveToFile.saveMetrics("System Precision: " + (double) Math.round(sysPrecisionFrequency * 100000) / 100000 + "\n", "MetricsFrequency.txt", false);
         SaveToFile.saveMetrics("System Recall: " + (double) Math.round(sysRecallFrequency * 100000) / 100000 + "\n", "MetricsFrequency.txt", false);
