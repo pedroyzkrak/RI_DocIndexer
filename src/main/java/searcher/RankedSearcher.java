@@ -1,7 +1,8 @@
 package searcher;
 
+import interfaces.Tokenizer;
 import tokenizer.SimpleTokenizer;
-import indexer.Indexer;
+import interfaces.Indexer;
 import save.SaveToFile;
 import support.Posting;
 import support.Query;
@@ -27,7 +28,7 @@ import static java.lang.Math.*;
  */
 public class RankedSearcher {
 
-    private static int N = -1;
+    private static int collectionSize = -1;
 
     /**
      * Reads a file containing queries and saves the results to a file
@@ -95,8 +96,8 @@ public class RankedSearcher {
      * @param wi    the index
      * @return a list of SearchData objects containing information about the results of the query
      */
-    private static List<SearchData> rankedRetrieval(Query query, Indexer wi) {
-        SimpleTokenizer tkn = new SimpleTokenizer();
+    static List<SearchData> rankedRetrieval(Query query, Indexer wi) {
+        Tokenizer tkn = new SimpleTokenizer();
         tkn.tokenize(query.getStr(), "[a-zA-Z]{3,}", true, true);
 
         List<SearchData> searchList = new ArrayList<>();
@@ -107,53 +108,31 @@ public class RankedSearcher {
         HashMap<String, LinkedList<Posting>> indexer = wi.getIndexer();
         HashMap<Integer, LinkedList<RankedData>> search = new HashMap<>();
 
-        // create a data set for the terms in the query (list) and for the docIDs that contain such terms (map)
+        // create a vector for the terms in the query and a data structure for the docIDs that contain such terms (map)
         while (wordsIt.hasNext()) {
             String word = wordsIt.next().getSequence();
             RankedData rd = new RankedData(word, 1);
-            if (queryTerms.contains(rd)) {
-                RankedData term = queryTerms.get(queryTerms.indexOf(rd));
-                term.setWeight(term.getWeight() + 1);
-            } else
-                queryTerms.add(rd);
 
+            // update query vector
+            queryVector(queryTerms, rd);
+
+            // update docID query terms
             if (indexer.containsKey(word)) {
-                for (Posting posting : indexer.get(word)) {
-                    if (search.containsKey(posting.getDocId()))
-                        search.get(posting.getDocId()).add(new RankedData(word, posting.getWeight()));
-                    else {
-                        search.put(posting.getDocId(), new LinkedList<>());
-                        search.get(posting.getDocId()).add(new RankedData(word, posting.getWeight()));
-                    }
-                }
+                docIdQueryTerms(indexer, search, word);
             }
         }
 
         // Calculate weight for every query term
-        for (RankedData qt : queryTerms) {
-            if (indexer.containsKey(qt.getTerm())) {
-                int df = indexer.get(qt.getTerm()).getFirst().getDocFreq();
-                qt.setWeight(((1 + log10(qt.getWeight())) * log10(getN() / df)));
-            }
-        }
-
-        double queryLength = calculateLength(queryTerms);
+        calculateQueryTermsWeight(indexer, queryTerms);
 
         // Normalize every query term weight
-        for (RankedData qt : queryTerms) {
-            double weightNorm = qt.getWeight() / queryLength;
-            qt.setScore(weightNorm);
-        }
+        normalizeTerms(queryTerms);
 
         // Normalize every document term weight
         for (Map.Entry<Integer, LinkedList<RankedData>> s : search.entrySet()) {
-            // get doc length
-            double length = calculateLength(s.getValue());
 
             // normalize each document term weight
-            for (RankedData rd : s.getValue()) {
-                rd.setScore(rd.getWeight() / sqrt(length));
-            }
+            normalizeTerms(s.getValue());
         }
 
         // Aggregate a result list for each document score
@@ -169,13 +148,67 @@ public class RankedSearcher {
             sd.setScore((double) round(score * 1000) / 1000);
             searchList.add(sd);
         }
+
         Collections.sort(searchList);
 
         return searchList;
     }
 
-    private static int getN() {
-        if (N == -1) {
+    /**
+     * Normalizes weights of the terms
+     * @param terms
+     */
+    private static void normalizeTerms(List<RankedData> terms) {
+        for (RankedData rd : terms) {
+            rd.setScore(rd.getWeight() / calculateLength(terms));
+        }
+    }
+
+    /**
+     * Checks if a word in the query is in the vector and update it
+     * @param queryTerms query vector
+     * @param rd RankedData object containing the query word
+     */
+    private static void queryVector(List<RankedData> queryTerms, RankedData rd) {
+        if (queryTerms.contains(rd)) {
+            RankedData term = queryTerms.get(queryTerms.indexOf(rd));
+            term.setWeight(term.getWeight() + 1);
+        } else
+            queryTerms.add(rd);
+    }
+
+    /**
+     * Updates the DocID data structure for the query terms and their weight in the documents
+     * @param indexer the weighted index
+     * @param search docID data structure
+     * @param word query term
+     */
+    private static void docIdQueryTerms(HashMap<String, LinkedList<Posting>> indexer, HashMap<Integer, LinkedList<RankedData>> search, String word) {
+        for (Posting posting : indexer.get(word)) {
+            if (search.containsKey(posting.getDocId()))
+                search.get(posting.getDocId()).add(new RankedData(word, posting.getWeight()));
+            else {
+                search.put(posting.getDocId(), new LinkedList<>());
+                search.get(posting.getDocId()).add(new RankedData(word, posting.getWeight()));
+            }
+        }
+    }
+
+    private static void calculateQueryTermsWeight(HashMap<String, LinkedList<Posting>> indexer, List<RankedData> queryTerms) {
+        for (RankedData qt : queryTerms) {
+            if (indexer.containsKey(qt.getTerm())) {
+                int df = indexer.get(qt.getTerm()).getFirst().getDocFreq();
+                qt.setWeight(((1 + log10(qt.getWeight())) * log10(getCollectionSize() / df)));
+            }
+        }
+    }
+
+    /**
+     *
+     * @return Size of the document collection
+     */
+    private static int getCollectionSize() {
+        if (collectionSize == -1) {
             List<String> fileNames = new ArrayList<>();
             try {
                 DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get("cranfield"));
@@ -185,15 +218,20 @@ public class RankedSearcher {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            N = fileNames.size();
+            collectionSize = fileNames.size();
         }
-        return N;
+        return collectionSize;
     }
 
-    private static double calculateLength(List<RankedData> values) {
+    /**
+     *
+     * @param vector query/document vector
+     * @return vector length
+     */
+    private static double calculateLength(List<RankedData> vector) {
         double weight, length = 0;
-        for (RankedData v : values) {
-            length += pow(v.getWeight(), 2);
+        for (RankedData term : vector) {
+            length += pow(term.getWeight(), 2);
         }
         weight = sqrt(length);
         return weight;

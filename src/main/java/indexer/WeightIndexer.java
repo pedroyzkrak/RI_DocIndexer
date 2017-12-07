@@ -1,6 +1,7 @@
 package indexer;
 
-import tokenizer.SimpleTokenizer;
+import interfaces.Indexer;
+import tokenizer.SimpleTokenizer.Token;
 import support.Posting;
 
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class WeightIndexer implements Indexer {
      * @param docId     The ID of the document
      */
     @Override
-    public void index(LinkedList<SimpleTokenizer.Token> tokenList, int docId) {
+    public void index(LinkedList<Token> tokenList, int docId) {
         si.index(tokenList, docId);
     }
 

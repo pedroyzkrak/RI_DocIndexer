@@ -12,8 +12,9 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.*;
 
+import interfaces.Tokenizer;
 import tokenizer.SimpleTokenizer;
-import indexer.Indexer;
+import interfaces.Indexer;
 import indexer.WeightIndexer;
 
 /**
@@ -35,7 +36,7 @@ public class CorpusReader {
      * @param tokenizer the tokenizer
      * @param indexer   the indexer
      */
-    public static void readAndProcessDir(String dir, SimpleTokenizer tokenizer, Indexer indexer) {
+    public static void readAndProcessDir(String dir, Tokenizer tokenizer, Indexer indexer) {
 
         File dirFolder = new File(dir);
         File[] listOfFiles = dirFolder.listFiles();

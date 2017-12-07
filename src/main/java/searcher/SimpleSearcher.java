@@ -1,6 +1,7 @@
 package searcher;
 
-import indexer.Indexer;
+import interfaces.Indexer;
+import interfaces.Tokenizer;
 import tokenizer.SimpleTokenizer;
 import tokenizer.SimpleTokenizer.Token;
 
@@ -120,7 +121,7 @@ public class SimpleSearcher {
      * @return a list of SearchData objects containing information about the results of the query
      */
     private static List<SearchData> booleanSearchWord(Query query, Indexer si) {
-        SimpleTokenizer tkn = new SimpleTokenizer();
+        Tokenizer tkn = new SimpleTokenizer();
         tkn.tokenize(query.getStr(), "[a-zA-Z]{3,}", true, true);
         List<SearchData> searchList = new ArrayList<>();
         LinkedList<Token> wordsList = tkn.getTokens();
@@ -169,7 +170,7 @@ public class SimpleSearcher {
      * @return a list of SearchData objects containing information about the results of the query
      */
     private static List<SearchData> booleanSearchFrequency(Query query, Indexer si) {
-        SimpleTokenizer tkn = new SimpleTokenizer();
+        Tokenizer tkn = new SimpleTokenizer();
         tkn.tokenize(query.getStr(), "[a-zA-Z]{3,}", true, true);
         List<SearchData> searchList = new ArrayList<>();
         LinkedList<Token> wordsList = tkn.getTokens();

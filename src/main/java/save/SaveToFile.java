@@ -1,6 +1,6 @@
 package save;
 
-import indexer.Indexer;
+import interfaces.Indexer;
 import indexer.SimpleIndexer;
 
 import java.io.BufferedWriter;
@@ -80,7 +80,7 @@ public class SaveToFile {
      */
     public static void saveMetrics(double precision, double precisionCap, double recall, double fMeasure, double map, double mrr, int queryId, String fileName) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true))) {
-            String formatStr = "  %3s |   %-7s | %-7s | %-7s |   %-7s |     %-7s    | %-7s%n";
+            String formatStr = "  %3s |   %-7s | %-7s | %-7s |   %-7s  |     %-7s    | %-7s%n";
 
             bw.append(String.format(formatStr, queryId, precision, precisionCap, recall, fMeasure, map, mrr));
 

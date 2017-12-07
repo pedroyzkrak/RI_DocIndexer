@@ -1,4 +1,4 @@
-package indexer;
+package interfaces;
 
 import tokenizer.SimpleTokenizer;
 import support.Posting;

@@ -1,6 +1,7 @@
-package indexer;
+package reader;
 
 
+import indexer.SimpleIndexer;
 import support.Posting;
 
 import java.io.BufferedReader;

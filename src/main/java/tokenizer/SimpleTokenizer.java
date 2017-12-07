@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import interfaces.Tokenizer;
 import org.tartarus.snowball.SnowballStemmer;
 import org.tartarus.snowball.ext.englishStemmer;
 
@@ -21,7 +22,7 @@ import org.tartarus.snowball.ext.englishStemmer;
  * <p>
  * A class for the tokenizer
  */
-public class SimpleTokenizer {
+public class SimpleTokenizer implements Tokenizer {
 
     /**
      * Internal Token class that defines a token

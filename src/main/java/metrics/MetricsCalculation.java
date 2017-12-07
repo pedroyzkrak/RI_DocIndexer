@@ -46,6 +46,7 @@ public class MetricsCalculation {
 
             }
         } catch (IOException e) {
+            e.printStackTrace();
         }
         queryInfo.forEach((key, value) -> Collections.sort(value));
         return queryInfo;

@@ -1,4 +1,5 @@
 
+import interfaces.Tokenizer;
 import metrics.MetricsCalculation;
 import support.MetricsData;
 import tokenizer.SimpleTokenizer;
@@ -23,7 +24,7 @@ public class Main {
     public static void main(String[] args) {
 
         // Variable initialization
-        SimpleTokenizer tokenizer = new SimpleTokenizer();
+        Tokenizer tokenizer = new SimpleTokenizer();
         SimpleIndexer si = new SimpleIndexer();
         WeightIndexer wi = new WeightIndexer();
 
@@ -118,13 +119,13 @@ public class Main {
 
             if (queryId == 1) {
                 SaveToFile.saveMetrics("\nQuery | Precision |  MAP10  |  Recall | F1-Measure | Avg. Precision | Reciprocal Rank\n" +
-                        "------|-----------|---------|---------|-----------|----------------|-----------------\n", "MetricsRanked.txt", false);
+                        "------|-----------|---------|---------|------------|----------------|-----------------\n", "MetricsRanked.txt", false);
 
                 SaveToFile.saveMetrics("\nQuery | Precision |  MAP10  |  Recall | F1-Measure | Avg. Precision | Reciprocal Rank\n" +
-                        "------|-----------|---------|---------|-----------|----------------|-----------------\n", "MetricsWord.txt", false);
+                        "------|-----------|---------|---------|------------|----------------|-----------------\n", "MetricsWord.txt", false);
 
                 SaveToFile.saveMetrics("\nQuery | Precision |  MAP10  |  Recall | F1-Measure | Avg. Precision | Reciprocal Rank\n" +
-                        "------|-----------|---------|---------|-----------|----------------|-----------------\n", "MetricsFrequency.txt", false);
+                        "------|-----------|---------|---------|------------|----------------|-----------------\n", "MetricsFrequency.txt", false);
             }
 
             SaveToFile.saveMetrics(precisionRanked, rMAP10, recallRanked, calculateF_Measure(precisionRanked, recallRanked), rMAP, rMRR, queryId, "MetricsRanked.txt");

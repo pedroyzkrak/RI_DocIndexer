@@ -1,6 +1,7 @@
 package indexer;
 
 
+import interfaces.Indexer;
 import support.Posting;
 import tokenizer.SimpleTokenizer.Token;
 
