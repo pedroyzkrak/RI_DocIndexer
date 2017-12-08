@@ -1,6 +1,8 @@
 package indexer;
 
 import interfaces.Indexer;
+import searcher.RocchioSearcher;
+import support.RankedData;
 import tokenizer.SimpleTokenizer.Token;
 import support.Posting;
 
@@ -19,12 +21,18 @@ public class WeightIndexer implements Indexer {
 
     private final HashMap<String, LinkedList<Posting>> indexer;
     private SimpleIndexer si = new SimpleIndexer();
+    private String algorithm;
 
     /**
      * The constructor of the indexer that initializes the Map
      */
     public WeightIndexer() {
         this.indexer = new HashMap<>();
+    }
+
+    public WeightIndexer(String algorithm) {
+        this.indexer = new HashMap<>();
+        this.algorithm = algorithm;
     }
 
     /**
@@ -46,6 +54,11 @@ public class WeightIndexer implements Indexer {
             for (Posting doc : entry.getValue()) {
                 weight = (double) Math.round((  1 + Math.log10(doc.getTermFreq()) ) * 100) / 100;
                 indexer.get(term).add(new Posting(doc.getDocId(), weight, doc.getTermFreq(), entry.getValue().size()));
+
+                if (algorithm.equals("rocchio")) {
+                    RocchioSearcher.loadDocumentCache(doc.getDocId(), new RankedData(term, weight));
+                }
+
             }
         }
         si = null;

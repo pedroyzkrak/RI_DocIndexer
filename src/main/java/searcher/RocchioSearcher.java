@@ -2,15 +2,15 @@ package searcher;
 
 import interfaces.Indexer;
 import save.SaveToFile;
+import support.Posting;
 import support.Query;
+import support.RankedData;
 import support.SearchData;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Francisco Lopes 76406
@@ -19,6 +19,8 @@ import java.util.List;
  * A class that implements the Rocchio algorithm
  */
 public class RocchioSearcher {
+
+    private static HashMap<Integer, ArrayList<RankedData>> documentCache = new HashMap<>();
 
     /**
      * Reads a file containing queries and saves the results to a file
@@ -44,8 +46,6 @@ public class RocchioSearcher {
                 start = System.currentTimeMillis();
 
                 queryVector = RankedSearcher.rankedRetrieval(query, wi);
-
-                
 
                 end = System.currentTimeMillis();
                 latency = (double) (end - start);
@@ -78,4 +78,9 @@ public class RocchioSearcher {
             e.printStackTrace();
         }
     }
+
+    public static void loadDocumentCache(int docID, RankedData rd) {
+        // update documentCache
+    }
+
 }
