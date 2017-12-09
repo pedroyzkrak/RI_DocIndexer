@@ -27,8 +27,8 @@ public class MetricsCalculation {
         globalRecallFN = 0;
     }
 
-    public static Map<Integer, List<MetricsData>> parseResults(String fileName) {
-        Map<Integer, List<MetricsData>> queryInfo = new HashMap<>();
+    public static HashMap<Integer, List<MetricsData>> parseResults(String fileName) {
+        HashMap<Integer, List<MetricsData>> queryInfo = new HashMap<>();
         try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = in.readLine()) != null) {
