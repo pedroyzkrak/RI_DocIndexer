@@ -32,13 +32,33 @@ public class Assignment4 {
         dirEnd = System.currentTimeMillis();
         System.out.println("Read Dir time: " + (dirEnd - dirStart) / 1000.0 + " s\n");
 
-        // Read queries with weighted terms
-        System.out.println("Rocchio Metrics");
+        // READ QUERY SECTION
+        // Read queries with weighted terms and rocchio implicit
+        System.out.println("Rocchio Implicit Metrics");
         indexStart = System.currentTimeMillis();
 
-        RocchioSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsRocchio.txt", "explicit", wi);
+        RocchioSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsRocchioImplicit.txt", "implicit", wi);
 
         indexEnd = System.currentTimeMillis();
         System.out.println("Querying Time: " + (indexEnd - indexStart) / 1000.0 + " s\n");
+
+        // Read queries with weighted terms and rocchio explicit
+        System.out.println("Rocchio Explicit Metrics");
+        indexStart = System.currentTimeMillis();
+
+        RocchioSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsRocchioExplicit.txt", "explicit", wi);
+
+        indexEnd = System.currentTimeMillis();
+        System.out.println("Querying Time: " + (indexEnd - indexStart) / 1000.0 + " s\n");
+
+        // Read queries with weighted terms
+        System.out.println("Ranked Metrics");
+        indexStart = System.currentTimeMillis();
+
+        RankedSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsRanked.txt", wi);
+
+        indexEnd = System.currentTimeMillis();
+        System.out.println("Querying Time: " + (indexEnd - indexStart) / 1000.0 + " s\n");
+
     }
 }

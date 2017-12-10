@@ -23,7 +23,7 @@ public class RocchioSearcher {
 
     private static HashMap<Integer, ArrayList<RankedData>> documentCache = new HashMap<>();
     private static HashMap<Integer, List<Integer>> realRelevance;
-    private static double beta = 0.5, gama = 0.25;
+    private static double beta = 0.8, gama = 0.1;
 
     /**
      * Reads a file containing queries and saves the results to a file
@@ -56,7 +56,7 @@ public class RocchioSearcher {
 
                 queryResults = RankedSearcher.rankedRetrieval(query, wi);
 
-                modifiedQueryResults = rocchioRetrieval(query, wi, queryResults.subList(0, 10));
+                modifiedQueryResults = rocchioRetrieval(query, wi, queryResults.subList(0, 10), op);
 
                 end = System.currentTimeMillis();
                 latency = (double) (end - start);
@@ -100,9 +100,10 @@ public class RocchioSearcher {
      * @param query   Query object that holds information about the query
      * @param wi      the weighted index
      * @param results initial results obtained from the query
+     * @param op      type of relevance feedback ('explicit' or 'implicit')
      * @return a list of SearchData objects containing information about the results of the query through the rocchio algorithm
      */
-    private static List<SearchData> rocchioRetrieval(Query query, Indexer wi, List<SearchData> results) {
+    private static List<SearchData> rocchioRetrieval(Query query, Indexer wi, List<SearchData> results, String op) {
         Tokenizer tkn = new SimpleTokenizer();
         tkn.tokenize(query.getStr(), "[a-zA-Z]{3,}", true, true);
 
@@ -123,7 +124,17 @@ public class RocchioSearcher {
         // Normalize every query term weight
         normalizeTerms(queryTerms, calculateLength(queryTerms));
 
-        rocchioAlgorithm(results, queryTerms, query.getId());
+        switch (op) {
+            case "explicit":
+                rocchioAlgorithmExplicit(results, queryTerms, query.getId());
+                break;
+            case "implicit":
+                rocchioAlgorithmImplicit(results, queryTerms, query.getId());
+                break;
+            default:
+                System.err.println("Invalid Rocchio feedback option.");
+                break;
+        }
 
         // Normalize every document term weight
         for (Map.Entry<Integer, LinkedList<RankedData>> s : search.entrySet()) {
@@ -148,7 +159,7 @@ public class RocchioSearcher {
      * @param queryID    ID of the current query
      * @param queryTerms original query vector
      */
-    private static void rocchioAlgorithm(List<SearchData> results, List<RankedData> queryTerms, int queryID) {
+    private static void rocchioAlgorithmExplicit(List<SearchData> results, List<RankedData> queryTerms, int queryID) {
         List<Integer> relevantDocs = getRelevantDocs(results, queryID), irrelevantDocs = getIrrelevantDocs(results, queryID);
         List<RankedData> relevantVector = new ArrayList<>(), irrelevantVector = new ArrayList<>();
         Iterator<Integer> relevantDocsIt = relevantDocs.iterator(), irrelevantDocsIt = irrelevantDocs.iterator();
@@ -182,7 +193,6 @@ public class RocchioSearcher {
         } else {
             irrelevantVector = irrelevantVector.subList(0, 5);
         }
-        System.out.println("Relevant " + relevantVector.size() + " irrelevant " + irrelevantVector.size());
 
         Iterator<RankedData> relevantVectorIt = relevantVector.iterator();
         Iterator<RankedData> irrelevantVectorIt = irrelevantVector.iterator();
@@ -205,6 +215,45 @@ public class RocchioSearcher {
                 }
             }
         }
+    }
+
+    /**
+     * Performs an explicit Rocchio Algorithm to modify query terms
+     * Modifies the original query vector
+     *
+     * @param results    initial results obtained from the query
+     * @param queryID    ID of the current query
+     * @param queryTerms original query vector
+     */
+    private static void rocchioAlgorithmImplicit(List<SearchData> results, List<RankedData> queryTerms, int queryID) {
+        List<RankedData> vector = new ArrayList<>();
+        Iterator<SearchData> docsIt = results.iterator();
+        int docsSize = results.size();
+
+        // get feedback vectors
+        for (SearchData sd: results) {
+            int docId = sd.getDocId();
+            updateFeedBackVector(docId, vector, docsSize, beta);
+        }
+
+        Collections.sort(vector);
+
+        // get first 5 (top 5) terms of each feedback vector
+        if (vector.size() < 5) {
+            vector = vector.subList(0, vector.size());
+        } else {
+            vector = vector.subList(0, 5);
+        }
+
+        for (RankedData rd : vector) {
+            if (queryTerms.contains(rd)) {
+                int indexR = queryTerms.indexOf(rd);
+                queryTerms.get(indexR).setWeight(queryTerms.get(indexR).getWeight() + rd.getWeight());
+            } else {
+                queryTerms.add(rd);
+            }
+        }
+
     }
 
     /**
