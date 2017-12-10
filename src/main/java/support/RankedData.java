@@ -6,7 +6,7 @@ package support;
  * <p>
  * Saves ranked search information
  */
-public class RankedData {
+public class RankedData implements Comparable<RankedData> {
     private String term;
     private double weight;
     private double score;
@@ -56,5 +56,18 @@ public class RankedData {
     @Override
     public int hashCode() {
         return term.hashCode();
+    }
+
+    /**
+     * Comparable method to sort a list of RankedData objects by decreasing order of document score
+     */
+    @Override
+    public int compareTo(RankedData rd) {
+        if (this.weight < rd.weight)
+            return 1;
+        else if (rd.weight < this.weight)
+            return -1;
+
+        return 0;
     }
 }

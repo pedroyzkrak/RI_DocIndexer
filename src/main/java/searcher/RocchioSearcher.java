@@ -1,13 +1,17 @@
 package searcher;
 
 import interfaces.Indexer;
+import interfaces.Tokenizer;
 import save.SaveToFile;
 import support.*;
+import tokenizer.SimpleTokenizer;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+
+import static searcher.RankedSearcher.*;
 
 /**
  * @author Francisco Lopes 76406
@@ -19,6 +23,7 @@ public class RocchioSearcher {
 
     private static HashMap<Integer, ArrayList<RankedData>> documentCache = new HashMap<>();
     private static HashMap<Integer, List<Integer>> realRelevance;
+    private static double beta = 0.5, gama = 0.25;
 
     /**
      * Reads a file containing queries and saves the results to a file
@@ -41,7 +46,7 @@ public class RocchioSearcher {
             Query query;
             long tStart = System.currentTimeMillis(), start, end;
             ArrayList<Double> medianLatency = new ArrayList<>();
-            List<SearchData> queryResults, modifiedVector;
+            List<SearchData> queryResults, modifiedQueryResults;
 
             while ((line = in.readLine()) != null) {
                 id++;
@@ -51,12 +56,14 @@ public class RocchioSearcher {
 
                 queryResults = RankedSearcher.rankedRetrieval(query, wi);
 
-                modifiedVector = rocchioAlgorithm(queryResults.subList(0, 10), id);
-
+                modifiedQueryResults = rocchioRetrieval(query, wi, queryResults.subList(0, 10));
 
                 end = System.currentTimeMillis();
                 latency = (double) (end - start);
                 medianLatency.add(latency);
+
+                SaveToFile.saveResults(modifiedQueryResults, outputFile);
+
             }
 
             long tEnd = System.currentTimeMillis();
@@ -79,7 +86,7 @@ public class RocchioSearcher {
                         "Median query latency: " + medianLatency.get(Math.round(medianLatency.size() / 2)) + " ms\n";
             }
 
-            SaveToFile.saveMetrics(queryTimes, "MetricsRanked.txt");
+            SaveToFile.saveMetrics(queryTimes, "MetricsRocchio.txt");
 
 
         } catch (IOException e) {
@@ -88,25 +95,142 @@ public class RocchioSearcher {
     }
 
     /**
-     * Performs the Rocchio Algorithm to update query terms from relevant documents
+     * Performs a retrieval emethod utilizing the rocchio algorithm
      *
-     * @param results the query results
-     * @param queryID ID of the current query
-     * @return a modified query vector with more relevant results
+     * @param query   Query object that holds information about the query
+     * @param wi      the weighted index
+     * @param results initial results obtained from the query
+     * @return a list of SearchData objects containing information about the results of the query through the rocchio algorithm
      */
-    private static List<SearchData> rocchioAlgorithm(List<SearchData> results, int queryID) {
-        double alpha = 1, beta = 0.5, gama = 0.25;
-        List<Integer> relevance = realRelevance.get(queryID), relevantDocs = getRelevantDocs(results, queryID), irrelevantDocs = getIrelevantDocs(results, queryID);
+    private static List<SearchData> rocchioRetrieval(Query query, Indexer wi, List<SearchData> results) {
+        Tokenizer tkn = new SimpleTokenizer();
+        tkn.tokenize(query.getStr(), "[a-zA-Z]{3,}", true, true);
 
-        // FAZER ROCCHIO
+        List<SearchData> searchList = new ArrayList<>();
+        List<RankedData> queryTerms = new ArrayList<>();
 
-        return null;
+        Iterator<SimpleTokenizer.Token> wordsIt = tkn.getTokens().iterator();
+
+        HashMap<String, LinkedList<Posting>> indexer = wi.getIndexer();
+        HashMap<Integer, LinkedList<RankedData>> search = new HashMap<>();
+
+        // create a vector for the terms in the query and a data structure for the docIDs that contain such terms (map)
+        processQueryTerms(wordsIt, indexer, search, queryTerms);
+
+        // Calculate weight for every query term
+        calculateQueryTermsWeight(indexer, queryTerms);
+
+        // Normalize every query term weight
+        normalizeTerms(queryTerms, calculateLength(queryTerms));
+
+        rocchioAlgorithm(results, queryTerms, query.getId());
+
+        // Normalize every document term weight
+        for (Map.Entry<Integer, LinkedList<RankedData>> s : search.entrySet()) {
+
+            // normalize each document term weight
+            normalizeTerms(s.getValue(), calculateLength(s.getValue()));
+        }
+
+        // Aggregate a result list for each document score
+        aggregateResults(search, queryTerms, searchList, query);
+
+        Collections.sort(searchList);
+
+        return searchList;
     }
 
     /**
-     * @param results Initial results obtained from the query
+     * Performs the Rocchio Algorithm to modify query terms
+     * Modifies the original query vector
+     *
+     * @param results    initial results obtained from the query
+     * @param queryID    ID of the current query
+     * @param queryTerms original query vector
+     */
+    private static void rocchioAlgorithm(List<SearchData> results, List<RankedData> queryTerms, int queryID) {
+        List<Integer> relevantDocs = getRelevantDocs(results, queryID), irrelevantDocs = getIrrelevantDocs(results, queryID);
+        List<RankedData> relevantVector = new ArrayList<>(), irrelevantVector = new ArrayList<>();
+        Iterator<Integer> relevantDocsIt = relevantDocs.iterator(), irrelevantDocsIt = irrelevantDocs.iterator();
+        int relevantDocsSize = relevantDocs.size(), irrelevantDocsSize = irrelevantDocs.size();
+
+        // get feedback vectors
+        while (relevantDocsIt.hasNext() || irrelevantDocsIt.hasNext()) {
+            if (relevantDocsIt.hasNext()) {
+                int docIdR = relevantDocsIt.next();
+                updateFeedBackVector(docIdR, relevantVector, relevantDocsSize, beta);
+            }
+
+            if (irrelevantDocsIt.hasNext()) {
+                int docIdIr = irrelevantDocsIt.next();
+                updateFeedBackVector(docIdIr, irrelevantVector, irrelevantDocsSize, gama);
+            }
+        }
+
+        // sort feedback vectors in decreasing order
+        Collections.sort(relevantVector);
+        Collections.sort(irrelevantVector);
+
+        // get first 5 (top 5) terms of each feedback vector
+        if (relevantVector.size() < 5) {
+            relevantVector = relevantVector.subList(0, relevantVector.size());
+        } else {
+            relevantVector = relevantVector.subList(0, 5);
+        }
+        if (irrelevantVector.size() < 5) {
+            irrelevantVector = irrelevantVector.subList(0, irrelevantVector.size());
+        } else {
+            irrelevantVector = irrelevantVector.subList(0, 5);
+        }
+        System.out.println("Relevant " + relevantVector.size() + " irrelevant " + irrelevantVector.size());
+
+        Iterator<RankedData> relevantVectorIt = relevantVector.iterator();
+        Iterator<RankedData> irrelevantVectorIt = irrelevantVector.iterator();
+        while (relevantVectorIt.hasNext() || irrelevantVectorIt.hasNext()) {
+            if (relevantVectorIt.hasNext()) {
+                RankedData rdRe = relevantVectorIt.next();
+                if (queryTerms.contains(rdRe)) {
+                    int indexR = queryTerms.indexOf(rdRe);
+                    queryTerms.get(indexR).setWeight(queryTerms.get(indexR).getWeight() + rdRe.getWeight());
+                } else {
+                    queryTerms.add(rdRe);
+                }
+            }
+
+            if (irrelevantVectorIt.hasNext()) {
+                RankedData rdIr = irrelevantVectorIt.next();
+                if (queryTerms.contains(rdIr)) {
+                    int indexR = queryTerms.indexOf(rdIr);
+                    queryTerms.get(indexR).setWeight(queryTerms.get(indexR).getWeight() - rdIr.getWeight());
+                }
+            }
+        }
+    }
+
+    /**
+     * Updates feedback vector
+     *
+     * @param docID            document ID
+     * @param feedbackTerms    relevant/irrelevant document vector
+     * @param feedbackTermSize number of relevant/irrelevant document vectors
+     * @param feedbackWeight   feedback document weight
+     */
+    private static void updateFeedBackVector(int docID, List<RankedData> feedbackTerms, int feedbackTermSize, double feedbackWeight) {
+        for (RankedData rd : documentCache.get(docID)) {
+            if (feedbackTerms.contains(rd)) {
+                int index = feedbackTerms.indexOf(rd);
+                feedbackTerms.get(index).setWeight(feedbackTerms.get(index).getWeight() + (feedbackWeight / feedbackTermSize) * rd.getWeight());
+            } else {
+                rd.setWeight((feedbackWeight / feedbackTermSize) * rd.getWeight());
+                feedbackTerms.add(rd);
+            }
+        }
+    }
+
+    /**
+     * @param results initial results obtained from the query
      * @param queryID Id of the query
-     * @return Irrelevant docs obtained from the query
+     * @return Relevant documents obtained from the query
      */
     private static List<Integer> getRelevantDocs(List<SearchData> results, int queryID) {
         List<Integer> relevantDocs = new ArrayList<>();
@@ -121,11 +245,11 @@ public class RocchioSearcher {
     }
 
     /**
-     * @param results Initial results obtained from the query
+     * @param results initial results obtained from the query
      * @param queryID Id of the query
-     * @return Irrelevant docs obtained from the query
+     * @return Irrelevant documents obtained from the query
      */
-    private static List<Integer> getIrelevantDocs(List<SearchData> results, int queryID) {
+    private static List<Integer> getIrrelevantDocs(List<SearchData> results, int queryID) {
         List<Integer> irrelevantDocs = new ArrayList<>();
 
         for (SearchData sd : results) {
@@ -135,7 +259,6 @@ public class RocchioSearcher {
         }
         return irrelevantDocs;
     }
-
 
     /**
      * Loads a document cache to know which terms occur in each document
@@ -153,7 +276,6 @@ public class RocchioSearcher {
     }
 
     /**
-     *
      * @return Relevant documents from the golden standard
      */
     private static HashMap<Integer, List<Integer>> getRealRelevance() {
@@ -179,5 +301,4 @@ public class RocchioSearcher {
 
         return goldStandardDocs;
     }
-
 }

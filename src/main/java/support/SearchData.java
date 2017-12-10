@@ -11,6 +11,7 @@ public class SearchData implements Comparable<SearchData> {
     private Query query;
     private int docId;
     private double score;
+    private RankedData rd;
 
     /**
      * Contructor that supports a query object and document ID related to the search
@@ -21,6 +22,20 @@ public class SearchData implements Comparable<SearchData> {
     public SearchData(Query query, int docId) {
         this.query = query;
         this.docId = docId;
+        this.score = 0;
+    }
+
+    /**
+     * Contructor that supports a query object and document ID related to the search
+     *
+     * @param query query object
+     * @param docId document ID
+     *              @param rd RankedData
+     */
+    public SearchData(Query query, int docId, RankedData rd) {
+        this.query = query;
+        this.docId = docId;
+        this.rd = rd;
         this.score = 0;
     }
 
@@ -67,6 +82,7 @@ public class SearchData implements Comparable<SearchData> {
             return 1;
         else if(sd.score<this.score)
             return -1;
+
         return 0;
     }
 }

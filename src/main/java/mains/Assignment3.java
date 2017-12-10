@@ -46,6 +46,7 @@ public class Assignment3 {
         SaveToFile.saveIndex(wi, "SaveWeightIndex.txt");
         SaveToFile.saveIndex(wi, "SaveIndex.txt");
 
+        // READ QUERY SECTION
         // Read queries with weighted terms
         System.out.println("Ranked Metrics");
         indexStart = System.currentTimeMillis();
@@ -73,6 +74,7 @@ public class Assignment3 {
         indexEnd = System.currentTimeMillis();
         System.out.println("Querying Time: " + (indexEnd - indexStart) / 1000.0 + " s\n");
 
+        // METRICS CALCULATION FOR EACH QUERY SECTION
         Map<Integer, List<MetricsData>> baseSet = parseResults("cranfield.query.relevance.txt"),
                 rankedSet = parseResults("SaveResultsRanked.txt"),
                 wordsSet = parseResults("SaveResultsWords.txt"),
@@ -135,6 +137,7 @@ public class Assignment3 {
             SaveToFile.saveMetrics(precisionFrequency, fMAP10, recallFrequency, calculateF_Measure(precisionFrequency, recallFrequency), fMAP, fMRR, queryId, "MetricsFrequency.txt");
         }
 
+        // SYSTEM METRIC RESULTS
         double size = baseSet.keySet().size();
         double sysPrecisionRanked = calcRanked.getGlobalPrecisionTP() / calcRanked.getGlobalPrecisionRetrieved(),
                 sysRecallRanked = calcRanked.getGlobalRecallTP() / (calcRanked.getGlobalRecallTP() + calcRanked.getGlobalRecallFN()),

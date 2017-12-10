@@ -21,7 +21,7 @@ public class WeightIndexer implements Indexer {
 
     private final HashMap<String, LinkedList<Posting>> indexer;
     private SimpleIndexer si = new SimpleIndexer();
-    private String algorithm;
+    private String algorithm = "";
 
     /**
      * The constructor of the indexer that initializes the Map

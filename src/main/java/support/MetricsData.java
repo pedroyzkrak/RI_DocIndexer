@@ -51,13 +51,16 @@ public class MetricsData implements Comparable<MetricsData> {
         return true;
     }
 
+    /**
+     * Comparable method to sort a list of MetricsData objects by decreasing order of document score
+     */
     @Override
     public int compareTo(MetricsData md) {
-        if (this.score < md.score) {
+        if (this.score < md.score)
             return 1;
-        } else if (md.score < this.score) {
+        else if (md.score < this.score)
             return -1;
-        }
+
         return 0;
     }
 
