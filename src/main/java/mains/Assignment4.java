@@ -71,8 +71,8 @@ public class Assignment4 {
         // METRICS CALCULATION FOR EACH QUERY SECTION
         Map<Integer, List<MetricsData>> baseSet = parseResults("cranfield.query.relevance.txt"),
                 rankedSet = parseResults("SaveResultsRanked.txt"),
-                implicitRocchioSet = parseResults("SaveResultsRocchioImplicit.txt"),
-                explicitRocchioSet = parseResults("SaveResultsRocchioExplicit.txt");
+                implicitRocchioSet = parseResults("SaveResultsImplicitRocchio.txt"),
+                explicitRocchioSet = parseResults("SaveResultsExplicitRocchio.txt");
 
         double rankedMAP = 0, rankedMRR = 0, rankedMAP10 = 0, implicitRocchioMAP = 0, implicitRocchioMRR = 0, implicitRocchioMAP10 = 0, explicitRocchioMAP = 0, explicitRocchioMRR = 0, explicitRocchioMAP10 = 0;
 
