@@ -98,7 +98,7 @@ public class Assignment4 {
                     irMRR = calculateMRR(baseData, implicitRocchioData),
 
                     precisionExplicitRocchio = calcExplicitRocchio.calculatePrecision(baseData, explicitRocchioData),
-                    erMAP10 = calculateAveragePrecision(baseData, rankedData,10),
+                    erMAP10 = calculateAveragePrecision(baseData, explicitRocchioData,10),
                     recallExplicitRocchio = calcExplicitRocchio.calculateRecall(baseData, explicitRocchioData),
                     erMAP = calculateAveragePrecision(baseData, explicitRocchioData, -1),
                     erMRR = calculateMRR(baseData, explicitRocchioData);

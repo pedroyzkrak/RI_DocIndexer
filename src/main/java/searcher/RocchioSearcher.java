@@ -204,6 +204,7 @@ public class RocchioSearcher {
             irrelevantVector = irrelevantVector.subList(0, 5);
         }
 
+        // update query vector with new term weights
         Iterator<RankedData> relevantVectorIt = relevantVector.iterator();
         Iterator<RankedData> irrelevantVectorIt = irrelevantVector.iterator();
         while (relevantVectorIt.hasNext() || irrelevantVectorIt.hasNext()) {
@@ -253,6 +254,7 @@ public class RocchioSearcher {
             vector = vector.subList(0, 5);
         }
 
+        // update query vector with new term weights
         for (RankedData rd : vector) {
             if (queryTerms.contains(rd)) {
                 int indexR = queryTerms.indexOf(rd);

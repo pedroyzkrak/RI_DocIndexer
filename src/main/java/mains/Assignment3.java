@@ -104,7 +104,7 @@ public class Assignment3 {
                     wMRR = calculateMRR(baseData, wordsData),
 
                     precisionFrequency = calcFrequency.calculatePrecision(baseData, frequencyData),
-                    fMAP10 = calculateAveragePrecision(baseData, rankedData,10),
+                    fMAP10 = calculateAveragePrecision(baseData, frequencyData,10),
                     recallFrequency = calcFrequency.calculateRecall(baseData, frequencyData),
                     fMAP = calculateAveragePrecision(baseData, frequencyData, -1),
                     fMRR = calculateMRR(baseData, frequencyData);
