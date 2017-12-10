@@ -86,7 +86,17 @@ public class RocchioSearcher {
                         "Median query latency: " + medianLatency.get(Math.round(medianLatency.size() / 2)) + " ms\n";
             }
 
-            SaveToFile.saveMetrics(queryTimes, "MetricsRocchio.txt");
+            switch (op) {
+                case "explicit":
+                    SaveToFile.saveMetrics(queryTimes, "MetricsRocchioExplicit.txt");
+                    break;
+                case "implicit":
+                    SaveToFile.saveMetrics(queryTimes, "MetricsRocchioimplicit.txt");
+                    break;
+                default:
+                    System.err.println("Invalid Rocchio feedback option.");
+                    break;
+            }
 
 
         } catch (IOException e) {
@@ -129,7 +139,7 @@ public class RocchioSearcher {
                 rocchioAlgorithmExplicit(results, queryTerms, query.getId());
                 break;
             case "implicit":
-                rocchioAlgorithmImplicit(results, queryTerms, query.getId());
+                rocchioAlgorithmImplicit(results, queryTerms);
                 break;
             default:
                 System.err.println("Invalid Rocchio feedback option.");
@@ -222,12 +232,10 @@ public class RocchioSearcher {
      * Modifies the original query vector
      *
      * @param results    initial results obtained from the query
-     * @param queryID    ID of the current query
      * @param queryTerms original query vector
      */
-    private static void rocchioAlgorithmImplicit(List<SearchData> results, List<RankedData> queryTerms, int queryID) {
+    private static void rocchioAlgorithmImplicit(List<SearchData> results, List<RankedData> queryTerms) {
         List<RankedData> vector = new ArrayList<>();
-        Iterator<SearchData> docsIt = results.iterator();
         int docsSize = results.size();
 
         // get feedback vectors
