@@ -88,10 +88,10 @@ public class RocchioSearcher {
 
             switch (op) {
                 case "explicit":
-                    SaveToFile.saveMetrics(queryTimes, "MetricsRocchioExplicit.txt");
+                    SaveToFile.saveMetrics(queryTimes, "MetricsExplicitRocchio.txt");
                     break;
                 case "implicit":
-                    SaveToFile.saveMetrics(queryTimes, "MetricsRocchioimplicit.txt");
+                    SaveToFile.saveMetrics(queryTimes, "MetricsImplicitRocchio.txt");
                     break;
                 default:
                     System.err.println("Invalid Rocchio feedback option.");
