@@ -45,7 +45,7 @@ public class Assignment4 {
         System.out.println("Rocchio Implicit Metrics");
         indexStart = System.currentTimeMillis();
 
-        RocchioSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsRocchioImplicit.txt", "implicit", wi);
+        RocchioSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsImplicitRocchio.txt", "implicit", wi);
 
         indexEnd = System.currentTimeMillis();
         System.out.println("Querying Time: " + (indexEnd - indexStart) / 1000.0 + " s\n");
@@ -54,7 +54,7 @@ public class Assignment4 {
         System.out.println("Rocchio Explicit Metrics");
         indexStart = System.currentTimeMillis();
 
-        RocchioSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsRocchioExplicit.txt", "explicit", wi);
+        RocchioSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsExplicitRocchio.txt", "explicit", wi);
 
         indexEnd = System.currentTimeMillis();
         System.out.println("Querying Time: " + (indexEnd - indexStart) / 1000.0 + " s\n");
