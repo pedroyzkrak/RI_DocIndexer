@@ -45,7 +45,7 @@ public class Assignment3 {
         System.out.println("Read Dir time: " + (dirEnd - dirStart) / 1000.0 + " s\n");
 
         SaveToFile.saveIndex(wi, "SaveWeightIndex.txt");
-        SaveToFile.saveIndex(wi, "SaveIndex.txt");
+        SaveToFile.saveIndex(si, "SaveIndex.txt");
 
         // READ QUERY SECTION
         // Read queries with weighted terms

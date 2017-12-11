@@ -12,9 +12,9 @@ import java.util.List;
 public class Posting implements Comparable<Posting> {
 
     private final int docId;
-    private int termFreq, docFreq;
+    private int docFreq;
     private String term;
-    private double weight;
+    private double weight, termFreq;
 
     /**
      * Contructor that supports the Document ID and Document Frequency for the tokens in the indexer
@@ -22,7 +22,7 @@ public class Posting implements Comparable<Posting> {
      * @param docId    the ID of the document
      * @param termFreq the frequency of the term in the document
      */
-    public Posting(int docId, int termFreq) {
+    public Posting(int docId, double termFreq) {
         this.docId = docId;
         this.termFreq = termFreq;
     }
@@ -47,14 +47,14 @@ public class Posting implements Comparable<Posting> {
      * @param termFreq the frequency of the term in the document
      * @param docFreq  number of documents that contain the term
      */
-    public Posting(int docId, double weight, int termFreq, int docFreq) {
+    public Posting(int docId, double weight, double termFreq, int docFreq) {
         this.docId = docId;
         this.weight = weight;
         this.termFreq = termFreq;
         this.docFreq = docFreq;
     }
 
-    public void setTermFreq(int termFreq) {
+    public void setTermFreq(double termFreq) {
         this.termFreq = termFreq;
     }
 
@@ -62,7 +62,7 @@ public class Posting implements Comparable<Posting> {
         return docId;
     }
 
-    public int getTermFreq() {
+    public double getTermFreq() {
         return termFreq;
     }
 
@@ -83,7 +83,12 @@ public class Posting implements Comparable<Posting> {
      */
     @Override
     public int compareTo(Posting p) {
-        return (p.termFreq - termFreq);
+        if (this.termFreq < p.termFreq)
+            return 1;
+        else if (p.termFreq < this.termFreq)
+            return -1;
+
+        return 0;
     }
 
     /**

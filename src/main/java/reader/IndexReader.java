@@ -30,7 +30,8 @@ public class IndexReader {
 
         try (BufferedReader in = new BufferedReader(new FileReader(indexFile))) {
             String line, term;
-            int docID, docFreq;
+            int docID;
+            double docFreq;
             boolean isTerm;
             while ((line = in.readLine()) != null) {
                 term = "";
@@ -42,7 +43,7 @@ public class IndexReader {
                         isTerm = false;
                     } else {
                         docID = Integer.parseInt(l.split(":")[0]);
-                        docFreq = Integer.parseInt(l.split(":")[1]);
+                        docFreq = Double.parseDouble(l.split(":")[1]);
 
                         postings.add(new Posting(docID, docFreq));
                     }

@@ -155,8 +155,8 @@ public class SimpleIndexer implements Indexer {
 
 
     /**
-     * @param n number of terms with highest document frequency
-     * @return sorted list in decreasing order of terms with highest document frequency
+     * @param n number of terms with highest frequency
+     * @return sorted list in decreasing order of terms with highest frequency
      */
     public List<Posting> getHighestFrequency(int n) {
         LinkedList<Posting> termFreq = new LinkedList<>();
