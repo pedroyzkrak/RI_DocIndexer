@@ -26,6 +26,14 @@ public class MetricsData implements Comparable<MetricsData> {
         this.score = score;
     }
 
+    public int getDocId() {
+        return docId;
+    }
+
+    public double getScore() {
+        return score;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;

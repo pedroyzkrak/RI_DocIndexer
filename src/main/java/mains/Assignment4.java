@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import static metrics.MetricsCalculation.*;
-import static metrics.MetricsCalculation.calculateF_Measure;
+import static searcher.RocchioSearcher.getRealRelevance;
 
 /**
  * Class that runs Assignment 4
@@ -24,6 +24,24 @@ import static metrics.MetricsCalculation.calculateF_Measure;
  */
 public class Assignment4 {
     public static void main() {
+        /*
+        // TESTING NDCG
+        List<MetricsData> mdBase = new LinkedList<>(), mdTest = new LinkedList<>();
+
+        mdBase.add(new MetricsData(1, 1));
+        mdBase.add(new MetricsData(2, 2));
+        mdBase.add(new MetricsData(3, 3));
+
+        mdTest.add(new MetricsData(2, 1));
+        mdTest.add(new MetricsData(3, 2));
+        mdTest.add(new MetricsData(4, 1));
+        mdTest.add(new MetricsData(5, 1));
+        mdTest.add(new MetricsData(1, 123));
+
+        System.out.println(calculateAverageNDCG(mdBase, mdTest));
+        */
+
+
 
         // Variable initialization
         Tokenizer tokenizer = new SimpleTokenizer();
@@ -69,7 +87,7 @@ public class Assignment4 {
         System.out.println("Querying Time: " + (indexEnd - indexStart) / 1000.0 + " s\n");
 
         // METRICS CALCULATION FOR EACH QUERY SECTION
-        Map<Integer, List<MetricsData>> baseSet = parseResults("cranfield.query.relevance.txt"),
+        Map<Integer, List<MetricsData>> baseSet = getRealRelevance(),
                 rankedSet = parseResults("SaveResultsRanked.txt"),
                 implicitRocchioSet = parseResults("SaveResultsImplicitRocchio.txt"),
                 explicitRocchioSet = parseResults("SaveResultsExplicitRocchio.txt");
@@ -163,7 +181,6 @@ public class Assignment4 {
         SaveToFile.saveMetrics("System Precision: " + (double) Math.round(sysPrecisionExplicitRocchio * 10000) / 10000 + "\n", "MetricsExplicitRocchio.txt", false);
         SaveToFile.saveMetrics("System Recall: " + (double) Math.round(sysRecallExplicitRocchio * 10000) / 10000 + "\n", "MetricsExplicitRocchio.txt", false);
         SaveToFile.saveMetrics("System F1-Measure: " + (double) Math.round(calculateF_Measure(sysPrecisionExplicitRocchio, sysRecallExplicitRocchio) * 10000) / 10000 + "\n", "MetricsExplicitRocchio.txt", false);
-
 
     }
 }

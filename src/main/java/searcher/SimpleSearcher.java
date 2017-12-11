@@ -135,11 +135,9 @@ public class SimpleSearcher {
             if (indexer.containsKey(word)) {
 
                 LinkedList<Posting> posting = indexer.get(word);
-                Iterator<Posting> postingsIt = posting.iterator();
 
-                while (postingsIt.hasNext()) {
+                for (Posting pst : posting) {
 
-                    Posting pst = postingsIt.next();
                     SearchData sd = new SearchData(query, pst.getDocId());
 
                     if (!searchList.contains(sd)) {
@@ -184,11 +182,9 @@ public class SimpleSearcher {
             if (indexer.containsKey(word)) {
 
                 LinkedList<Posting> posting = indexer.get(word);
-                Iterator<Posting> postingsIt = posting.iterator();
 
-                while (postingsIt.hasNext()) {
+                for (Posting pst : posting) {
 
-                    Posting pst = postingsIt.next();
                     SearchData sd = new SearchData(query, pst.getDocId());
 
                     if (!searchList.contains(sd)) {

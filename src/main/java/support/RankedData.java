@@ -59,7 +59,7 @@ public class RankedData implements Comparable<RankedData> {
     }
 
     /**
-     * Comparable method to sort a list of RankedData objects by decreasing order of document score
+     * Comparable method to sort a list of RankedData objects by decreasing order of document weight
      */
     @Override
     public int compareTo(RankedData rd) {

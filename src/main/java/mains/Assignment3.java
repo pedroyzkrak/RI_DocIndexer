@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import static metrics.MetricsCalculation.*;
-import static metrics.MetricsCalculation.calculateF_Measure;
+import static searcher.RocchioSearcher.getRealRelevance;
 
 /**
  * Class that runs Assignment 3
@@ -75,7 +75,7 @@ public class Assignment3 {
         System.out.println("Querying Time: " + (indexEnd - indexStart) / 1000.0 + " s\n");
 
         // METRICS CALCULATION FOR EACH QUERY SECTION
-        Map<Integer, List<MetricsData>> baseSet = parseResults("cranfield.query.relevance.txt"),
+        Map<Integer, List<MetricsData>> baseSet = getRealRelevance(),
                 rankedSet = parseResults("SaveResultsRanked.txt"),
                 wordsSet = parseResults("SaveResultsWords.txt"),
                 frequencySet = parseResults("SaveResultsFrequency.txt");

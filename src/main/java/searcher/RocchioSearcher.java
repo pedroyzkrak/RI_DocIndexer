@@ -2,6 +2,7 @@ package searcher;
 
 import interfaces.Indexer;
 import interfaces.Tokenizer;
+import metrics.MetricsCalculation;
 import save.SaveToFile;
 import support.*;
 import tokenizer.SimpleTokenizer;
@@ -22,7 +23,7 @@ import static searcher.RankedSearcher.*;
 public class RocchioSearcher {
 
     private static HashMap<Integer, ArrayList<RankedData>> documentCache = new HashMap<>();
-    private static HashMap<Integer, List<Integer>> realRelevance;
+    private static HashMap<Integer, List<MetricsData>> realRelevance;
     private static double beta = 0.8, gama = 0.1;
 
     /**
@@ -36,7 +37,7 @@ public class RocchioSearcher {
     @SuppressWarnings("Duplicates")
     public static void readQueryFromFile(String fileName, String outputFile, String op, Indexer wi) {
 
-        if (realRelevance == null && op.equals("explicit"))
+        if (op.equals("explicit"))
             realRelevance = getRealRelevance();
 
         try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
@@ -204,6 +205,7 @@ public class RocchioSearcher {
             irrelevantVector = irrelevantVector.subList(0, 5);
         }
 
+
         // update query vector with new term weights
         Iterator<RankedData> relevantVectorIt = relevantVector.iterator();
         Iterator<RankedData> irrelevantVectorIt = irrelevantVector.iterator();
@@ -229,7 +231,7 @@ public class RocchioSearcher {
     }
 
     /**
-     * Performs an explicit Rocchio Algorithm to modify query terms
+     * Performs an implicit Rocchio Algorithm to modify query terms
      * Modifies the original query vector
      *
      * @param results    initial results obtained from the query
@@ -240,7 +242,7 @@ public class RocchioSearcher {
         int docsSize = results.size();
 
         // get feedback vectors
-        for (SearchData sd: results) {
+        for (SearchData sd : results) {
             int docId = sd.getDocId();
             updateFeedBackVector(docId, vector, docsSize, beta);
         }
@@ -296,7 +298,8 @@ public class RocchioSearcher {
 
         for (SearchData sd : results) {
             int docID = sd.getDocId();
-            if (realRelevance.get(queryID).contains(docID))
+            MetricsData md = new MetricsData(docID, -1);
+            if (realRelevance.get(queryID).contains(md))
                 relevantDocs.add(docID);
         }
 
@@ -313,7 +316,8 @@ public class RocchioSearcher {
 
         for (SearchData sd : results) {
             int docID = sd.getDocId();
-            if (!realRelevance.get(queryID).contains(docID))
+            MetricsData md = new MetricsData(docID, -1);
+            if (!realRelevance.get(queryID).contains(md))
                 irrelevantDocs.add(docID);
         }
         return irrelevantDocs;
@@ -337,27 +341,10 @@ public class RocchioSearcher {
     /**
      * @return Relevant documents from the golden standard
      */
-    private static HashMap<Integer, List<Integer>> getRealRelevance() {
-        HashMap<Integer, List<Integer>> goldStandardDocs = new HashMap<>();
-        try (BufferedReader in = new BufferedReader(new FileReader("cranfield.query.relevance.txt"))) {
-            String line;
-            while ((line = in.readLine()) != null) {
-                String[] values = line.split(" ");
-                int queryId = Integer.parseInt(values[0]);
-                int docId = Integer.parseInt(values[1]);
-
-                if (goldStandardDocs.containsKey(queryId)) {
-                    goldStandardDocs.get(queryId).add(docId);
-                } else {
-                    goldStandardDocs.put(queryId, new ArrayList<>());
-                    goldStandardDocs.get(queryId).add(docId);
-                }
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return goldStandardDocs;
+    public static HashMap<Integer, List<MetricsData>> getRealRelevance() {
+        if (realRelevance == null)
+            return MetricsCalculation.parseResults("cranfield.query.relevance.txt");
+        else
+            return realRelevance;
     }
 }
