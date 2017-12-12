@@ -81,9 +81,9 @@ public class Assignment3 {
                 wordsSet = parseResults("SaveResultsWords.txt"),
                 frequencySet = parseResults("SaveResultsFrequency.txt");
 
-        ValueHolder rankedMAP = new ValueHolder(), rankedMRR = new ValueHolder(), rankedMAP10 = new ValueHolder(),
-                wordsMAP = new ValueHolder(), wordsMRR = new ValueHolder(), wordsMAP10 = new ValueHolder(),
-                frequencyMAP = new ValueHolder(), frequencyMRR = new ValueHolder(), frequencyMAP10 = new ValueHolder();
+        ValueHolder rankedMAP = new ValueHolder(), rankedMRR = new ValueHolder(), rankedMAP10 = new ValueHolder(), rankedNDCG = new ValueHolder(),
+                wordsMAP = new ValueHolder(), wordsMRR = new ValueHolder(), wordsMAP10 = new ValueHolder(), wordsNDCG = new ValueHolder(),
+                frequencyMAP = new ValueHolder(), frequencyMRR = new ValueHolder(), frequencyMAP10 = new ValueHolder(), frequencyNDCG = new ValueHolder();
 
         MetricsCalculation calcRanked = new MetricsCalculation(), calcWords = new MetricsCalculation(), calcFrequency = new MetricsCalculation();
         String fileNameRanked = "MetricsRanked.txt", fileNameFrequency = "MetricsFrequency.txt", fileNameWords = "MetricsWord.txt";
@@ -95,17 +95,17 @@ public class Assignment3 {
                     frequencyData = frequencySet.get(queryId),
                     baseData = entry.getValue();
 
-            performQueryMetricCalculation(baseData, rankedData, calcRanked, rankedMAP, rankedMAP10, rankedMRR, queryId, fileNameRanked);
-            performQueryMetricCalculation(baseData, wordsData, calcWords, wordsMAP, wordsMAP10, wordsMRR, queryId, fileNameWords);
-            performQueryMetricCalculation(baseData, frequencyData, calcFrequency, frequencyMAP, frequencyMAP10, frequencyMRR, queryId, fileNameFrequency);
+            performQueryMetricCalculation(baseData, rankedData, calcRanked, rankedMAP, rankedMAP10, rankedMRR, rankedNDCG, queryId, fileNameRanked);
+            performQueryMetricCalculation(baseData, wordsData, calcWords, wordsMAP, wordsMAP10, wordsMRR, wordsNDCG, queryId, fileNameWords);
+            performQueryMetricCalculation(baseData, frequencyData, calcFrequency, frequencyMAP, frequencyMAP10, frequencyMRR, frequencyNDCG, queryId, fileNameFrequency);
         }
 
         // SYSTEM METRIC RESULTS
         double size = baseSet.keySet().size();
 
-        performSystemMetricCalculation(calcRanked, rankedMAP.getValue(), rankedMAP10.getValue(), rankedMRR.getValue(), size, fileNameRanked);
-        performSystemMetricCalculation(calcWords, wordsMAP.getValue(), wordsMAP10.getValue(), wordsMRR.getValue(), size, fileNameWords);
-        performSystemMetricCalculation(calcFrequency, frequencyMAP.getValue(), frequencyMAP10.getValue(), frequencyMRR.getValue(), size, fileNameFrequency);
+        performSystemMetricCalculation(calcRanked, rankedMAP.getValue(), rankedMAP10.getValue(), rankedMRR.getValue(), rankedNDCG.getValue(), size, fileNameRanked);
+        performSystemMetricCalculation(calcWords, wordsMAP.getValue(), wordsMAP10.getValue(), wordsMRR.getValue(), wordsNDCG.getValue(), size, fileNameWords);
+        performSystemMetricCalculation(calcFrequency, frequencyMAP.getValue(), frequencyMAP10.getValue(), frequencyMRR.getValue(), frequencyNDCG.getValue(), size, fileNameFrequency);
 
     }
 }

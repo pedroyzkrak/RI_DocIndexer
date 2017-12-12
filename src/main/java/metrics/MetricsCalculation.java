@@ -54,7 +54,7 @@ public class MetricsCalculation {
         return queryInfo;
     }
 
-    public double calculatePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest) {
+    private double calculatePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest) {
         double precision;
         int tp = 0;
         for (MetricsData d : mdBase) {
@@ -67,10 +67,10 @@ public class MetricsCalculation {
         }
         precision = (double) tp / mdTest.size();
 
-        return (double) Math.round(precision * 10000) / 10000;
+        return Math.round(precision * 10000.0) / 10000.0;
     }
 
-    public double calculateRecall(List<MetricsData> mdBase, List<MetricsData> mdTest) {
+    private double calculateRecall(List<MetricsData> mdBase, List<MetricsData> mdTest) {
         double recall;
         int fn = 0;
         int tp = 0;
@@ -86,14 +86,14 @@ public class MetricsCalculation {
         }
         recall = (double) tp / (tp + fn);
 
-        return (double) Math.round(recall * 10000) / 10000;
+        return Math.round(recall * 10000.0) / 10000.0;
     }
 
-    public static double calculateF_Measure(double precision, double recall) {
-        return (double) Math.round(((2 * recall * precision) / (recall + precision)) * 10000) / 10000;
+    private static double calculateF_Measure(double precision, double recall) {
+        return Math.round(((2 * recall * precision) / (recall + precision)) * 10000.0) / 10000.0;
     }
 
-    public static double calculateAveragePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest, int cap) {
+    private static double calculateAveragePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest, int cap) {
         double avg_prec = 0;
         int tp = 0;
         int counter = 0;
@@ -110,17 +110,17 @@ public class MetricsCalculation {
                 avg_prec += (double) tp / counter;
             }
         }
-        return (double) Math.round((avg_prec / tp) * 10000) / 10000;
+        return Math.round((avg_prec / tp) * 10000.0) / 10000.0;
     }
 
-    public static double calculateMRR(List<MetricsData> mdBase, List<MetricsData> mdTest) {
+    private static double calculateMRR(List<MetricsData> mdBase, List<MetricsData> mdTest) {
         int index;
         double mmr = 0.0;
         index = mdTest.indexOf(mdBase.get(0));
         if (index > 0) {
             mmr = (double) 1 / (index + 1);
         }
-        return (double) Math.round(mmr * 10000) / 10000;
+        return Math.round(mmr * 10000.0) / 10000.0;
     }
 
     public static double calculateAverageNDCG(List<MetricsData> mdBase, List<MetricsData> mdTest) {
@@ -159,15 +159,15 @@ public class MetricsCalculation {
                 idealDCG += idealRelevance / log2(rank);
                 ideal_dcg_values.add(idealDCG);
             }
-            System.out.println(realDCG + " " + idealDCG + " -> " + realDCG / idealDCG);
         }
+
         Iterator<Double> real_dcgIT = real_dcg_values.iterator(), ideal_dcgIt = ideal_dcg_values.iterator();
         while (real_dcgIT.hasNext() && ideal_dcgIt.hasNext()) {
             double a = real_dcgIT.next() / ideal_dcgIt.next();
             avg_ndcg += a;
         }
 
-        return Math.round(avg_ndcg / mdTest.size() * 1000.0) / 1000.0;
+        return Math.round(avg_ndcg / mdTest.size() * 10000.0) / 10000.0;
     }
 
     /**
@@ -182,22 +182,24 @@ public class MetricsCalculation {
      * @param queryId    ID of the current query
      * @param fileName   name of file to save metrics
      */
-    public static void performQueryMetricCalculation(List<MetricsData> base, List<MetricsData> test, MetricsCalculation calc, ValueHolder queryMAP, ValueHolder queryMAP10, ValueHolder queryMRR, int queryId, String fileName) {
+    public static void performQueryMetricCalculation(List<MetricsData> base, List<MetricsData> test, MetricsCalculation calc, ValueHolder queryMAP, ValueHolder queryMAP10, ValueHolder queryMRR, ValueHolder queryNDCG, int queryId, String fileName) {
         double precision = calc.calculatePrecision(base, test),
                 map10 = calculateAveragePrecision(base, test, 10),
                 recall = calc.calculateRecall(base, test),
                 map = calculateAveragePrecision(base, test, -1),
-                mrr = calculateMRR(base, test);
+                mrr = calculateMRR(base, test),
+                ndcg = calculateAverageNDCG(base, test.subList(0, 10));
 
         queryMAP.setValue(queryMAP.getValue() + map);
         queryMAP10.setValue(queryMAP10.getValue() + map10);
         queryMRR.setValue(queryMRR.getValue() + mrr);
+        queryNDCG.setValue(queryNDCG.getValue() + ndcg);
 
         if (queryId == 1)
-            SaveToFile.saveMetrics("\nQuery | Precision |  MAP10  |  Recall | F1-Measure | Avg. Precision | Reciprocal Rank\n" +
-                    "------|-----------|---------|---------|------------|----------------|-----------------\n", fileName, false);
+            SaveToFile.saveMetrics("\nQuery | Precision |  MAP10  |  Recall | F1-Measure | Avg. Precision | Reciprocal Rank |  NDCG  \n" +
+                    "------|-----------|---------|---------|------------|----------------|-----------------|---------\n", fileName, false);
 
-        SaveToFile.saveMetrics(precision, map10, recall, calculateF_Measure(precision, recall), map, mrr, queryId, fileName);
+        SaveToFile.saveMetrics(precision, map10, recall, calculateF_Measure(precision, recall), map, mrr, ndcg, queryId, fileName);
     }
 
     /**
@@ -210,16 +212,17 @@ public class MetricsCalculation {
      * @param size       total number of queries
      * @param fileName   name of the file to save metrics
      */
-    public static void performSystemMetricCalculation(MetricsCalculation calc, double queryMAP, double queryMAP10, double queryMRR, double size, String fileName) {
+    public static void performSystemMetricCalculation(MetricsCalculation calc, double queryMAP, double queryMAP10, double queryMRR, double queryNDCG, double size, String fileName) {
         double systemPrecision = calc.getGlobalPrecisionTP() / calc.getGlobalPrecisionRetrieved(),
                 systemRecall = calc.getGlobalRecallTP() / (calc.getGlobalRecallTP() + calc.getGlobalRecallFN());
 
-        SaveToFile.saveMetrics("\nMean Average Precision: " + (double) Math.round(queryMAP / size * 10000) / 10000 + "\n", fileName, false);
-        SaveToFile.saveMetrics("Mean Average Precision at Rank 10: " + (double) Math.round(queryMAP10 / size * 10000) / 10000 + "\n", fileName, false);
-        SaveToFile.saveMetrics("Mean Reciprocal Rank: " + (double) Math.round(queryMRR / size * 10000) / 10000 + "\n", fileName, false);
-        SaveToFile.saveMetrics("System Precision: " + (double) Math.round(systemPrecision * 10000) / 10000 + "\n", fileName, false);
-        SaveToFile.saveMetrics("System Recall: " + (double) Math.round(systemRecall * 10000) / 10000 + "\n", fileName, false);
-        SaveToFile.saveMetrics("System F1-Measure: " + (double) Math.round(calculateF_Measure(systemPrecision, systemRecall) * 10000) / 10000 + "\n", fileName, false);
+        SaveToFile.saveMetrics("\nMean Average Precision: " + Math.round(queryMAP / size * 10000.0) / 10000.0 + "\n", fileName, false);
+        SaveToFile.saveMetrics("Mean Average Precision at Rank 10: " + Math.round(queryMAP10 / size * 10000.0) / 10000.0 + "\n", fileName, false);
+        SaveToFile.saveMetrics("Mean Reciprocal Rank: " + Math.round(queryMRR / size * 10000.0) / 10000.0 + "\n", fileName, false);
+        SaveToFile.saveMetrics("System Precision: " + Math.round(systemPrecision * 10000.0) / 10000.0 + "\n", fileName, false);
+        SaveToFile.saveMetrics("System Recall: " + Math.round(systemRecall * 10000.0) / 10000.0 + "\n", fileName, false);
+        SaveToFile.saveMetrics("System F1-Measure: " + Math.round(calculateF_Measure(systemPrecision, systemRecall) * 10000.0) / 10000.0 + "\n", fileName, false);
+        SaveToFile.saveMetrics("Average Normalized DCG: "+ Math.round(queryNDCG / size * 10000.0) / 10000.0 + "\n", fileName, false);
 
     }
 
@@ -227,19 +230,19 @@ public class MetricsCalculation {
         return Math.log10(number) / Math.log10(2);
     }
 
-    public double getGlobalPrecisionTP() {
+    private double getGlobalPrecisionTP() {
         return globalPrecisionTP;
     }
 
-    public double getGlobalPrecisionRetrieved() {
+    private double getGlobalPrecisionRetrieved() {
         return globalPrecisionRetrieved;
     }
 
-    public double getGlobalRecallTP() {
+    private double getGlobalRecallTP() {
         return globalRecallTP;
     }
 
-    public double getGlobalRecallFN() {
+    private double getGlobalRecallFN() {
         return globalRecallFN;
     }
 

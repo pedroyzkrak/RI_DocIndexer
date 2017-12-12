@@ -72,17 +72,21 @@ public class SaveToFile {
     /**
      * Saves evaluation metrics to a file
      *
-     * @param precision precision results
-     * @param recall    recall results
-     * @param fMeasure  f-measure results
-     * @param queryId   query ID
-     * @param fileName  name of the output file
+     * @param precision    precision results
+     * @param precisionCap precision for the first 10 results
+     * @param recall       recall results
+     * @param fMeasure     f-measure results
+     * @param map          mean average precision results
+     * @param mrr          mean reciprocal rank results
+     * @param ndcg         normalized discounted cumulative gain results
+     * @param queryId      query ID
+     * @param fileName     name of the output file
      */
-    public static void saveMetrics(double precision, double precisionCap, double recall, double fMeasure, double map, double mrr, int queryId, String fileName) {
+    public static void saveMetrics(double precision, double precisionCap, double recall, double fMeasure, double map, double mrr, double ndcg, int queryId, String fileName) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true))) {
-            String formatStr = "  %3s |   %-7s | %-7s | %-7s |   %-7s  |     %-7s    | %-7s%n";
+            String formatStr = "  %3s |   %-7s | %-7s | %-7s |   %-7s  |     %-7s    |      %-7s    | %-7s %n";
 
-            bw.append(String.format(formatStr, queryId, precision, precisionCap, recall, fMeasure, map, mrr));
+            bw.append(String.format(formatStr, queryId, precision, precisionCap, recall, fMeasure, map, mrr, ndcg));
 
         } catch (IOException ex) {
             Logger.getLogger(SaveToFile.class.getName()).log(Level.SEVERE, null, ex);
