@@ -5,6 +5,7 @@ import indexer.SimpleIndexer;
 import support.Posting;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -50,6 +51,9 @@ public class IndexReader {
                 }
                 indexer.indexFromFile(term, postings);
             }
+        } catch (FileNotFoundException e) {
+            System.err.println("File " + indexFile + " not found. Index could not be loaded.");
+            System.exit(1);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -37,7 +37,6 @@ public class CorpusReader {
      * @param indexer   the indexer
      */
     public static void readAndProcessDir(String dir, Tokenizer tokenizer, Indexer indexer) {
-
         File dirFolder = new File(dir);
         File[] listOfFiles = dirFolder.listFiles();
 

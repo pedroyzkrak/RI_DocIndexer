@@ -44,6 +44,7 @@ public class Assignment3 {
         dirEnd = System.currentTimeMillis();
         System.out.println("Read Dir time: " + (dirEnd - dirStart) / 1000.0 + " s\n");
 
+        //Save indexes
         SaveToFile.saveIndex(wi, "SaveWeightIndex.txt");
         SaveToFile.saveIndex(si, "SaveIndex.txt");
 

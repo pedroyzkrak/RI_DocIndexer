@@ -9,6 +9,7 @@ import tokenizer.SimpleTokenizer;
 
 /**
  * Class that runs Assignment 1
+ *
  * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
  */
@@ -23,7 +24,7 @@ public class Assignment1 {
         long tEnd = System.currentTimeMillis();
         long tDelta = tEnd - tStart;
         double elapsedSeconds = tDelta / 1000.0;
-        System.out.println("Elapsed Time: "+elapsedSeconds);
+        System.out.println("Elapsed Time: " + elapsedSeconds);
 
         SaveToFile.saveIndex(indexer, "SaveIndex.txt");
 

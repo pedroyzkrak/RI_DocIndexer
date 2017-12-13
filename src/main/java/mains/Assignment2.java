@@ -7,6 +7,7 @@ import searcher.SimpleSearcher;
 
 /**
  * Class that runs Assignment 2
+ *
  * @author Francisco Lopes 76406
  * @author Pedro Gusmão 77867
  */
@@ -25,7 +26,7 @@ public class Assignment2 {
         long tEnd = System.currentTimeMillis();
         long tDelta = tEnd - tStart;
         double elapsedSeconds = tDelta / 1000.0;
-        System.out.println("Elapsed Time: "+elapsedSeconds);
+        System.out.println("Elapsed Time: " + elapsedSeconds);
         System.out.println();
 
         System.out.println("Frequency Querying");
@@ -34,6 +35,6 @@ public class Assignment2 {
         tEnd = System.currentTimeMillis();
         tDelta = tEnd - tStart;
         elapsedSeconds = tDelta / 1000.0;
-        System.out.println("Elapsed Time: "+elapsedSeconds);
+        System.out.println("Elapsed Time: " + elapsedSeconds);
     }
 }

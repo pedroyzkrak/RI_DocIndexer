@@ -123,7 +123,7 @@ public class MetricsCalculation {
         return Math.round(mmr * 10000.0) / 10000.0;
     }
 
-    public static double calculateAverageNDCG(List<MetricsData> mdBase, List<MetricsData> mdTest) {
+    private static double calculateAverageNDCG(List<MetricsData> mdBase, List<MetricsData> mdTest) {
         double avg_ndcg = 0, relevance, realRelevance, idealRelevance, realDCG = 0, idealDCG = 0;
         List<Double> real_dcg_values = new ArrayList<>(), ideal_dcg_values = new ArrayList<>();
         List<MetricsData> actualRanking = new ArrayList<>(), perfectRanking;
