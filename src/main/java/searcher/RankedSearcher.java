@@ -19,6 +19,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static indexer.WeightIndexer.calculateLength;
+import static indexer.WeightIndexer.normalizeTerms;
 import static java.lang.Math.*;
 
 /**
@@ -118,31 +120,12 @@ public class RankedSearcher {
         // Normalize every query term weight
         normalizeTerms(queryTerms, calculateLength(queryTerms));
 
-        // Normalize every document term weight
-        for (Map.Entry<Integer, LinkedList<RankedData>> s : search.entrySet()) {
-
-            // normalize each document term weight
-            normalizeTerms(s.getValue(), calculateLength(s.getValue()));
-        }
-
         // Aggregate a result list for each document score
         aggregateResults(search, queryTerms, searchList, query);
 
         Collections.sort(searchList);
 
         return searchList;
-    }
-
-    /**
-     * Normalizes weights of the terms
-     *
-     * @param terms  the terms int the vector
-     * @param length length of the vector
-     */
-    static void normalizeTerms(List<RankedData> terms, double length) {
-        for (RankedData rd : terms) {
-            rd.setScore(rd.getWeight() / length);
-        }
     }
 
     /**
@@ -228,7 +211,7 @@ public class RankedSearcher {
             double score = 0;
             for (RankedData rd : queryTerms) {
                 if (s.getValue().contains(rd)) {
-                    double docScore = s.getValue().get(s.getValue().indexOf(rd)).getScore();
+                    double docScore = s.getValue().get(s.getValue().indexOf(rd)).getWeight();
                     score += rd.getWeight() * docScore;
                 }
             }
@@ -255,19 +238,6 @@ public class RankedSearcher {
             collectionSize = fileNames.size();
         }
         return collectionSize;
-    }
-
-    /**
-     * @param vector query/document vector
-     * @return vector length
-     */
-    static double calculateLength(List<RankedData> vector) {
-        double weight, length = 0;
-        for (RankedData term : vector) {
-            length += pow(term.getWeight(), 2);
-        }
-        weight = sqrt(length);
-        return weight;
     }
 
 }

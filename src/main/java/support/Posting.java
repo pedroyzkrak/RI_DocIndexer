@@ -58,6 +58,10 @@ public class Posting implements Comparable<Posting> {
         this.termFreq = termFreq;
     }
 
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
     public int getDocId() {
         return docId;
     }

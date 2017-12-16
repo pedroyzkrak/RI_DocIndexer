@@ -1,5 +1,6 @@
 package searcher;
 
+import indexer.SimpleIndexer;
 import interfaces.Indexer;
 import interfaces.Tokenizer;
 import metrics.MetricsCalculation;
@@ -12,6 +13,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+import static indexer.WeightIndexer.calculateLength;
+import static indexer.WeightIndexer.normalizeTerms;
 import static searcher.RankedSearcher.*;
 
 /**
@@ -22,7 +25,7 @@ import static searcher.RankedSearcher.*;
  */
 public class RocchioSearcher {
 
-    private static HashMap<Integer, ArrayList<RankedData>> documentCache = new HashMap<>();
+    private static HashMap<Integer, ArrayList<RankedData>> documentCache;
     private static HashMap<Integer, List<MetricsData>> realRelevance;
     private static double beta = 0.8, gama = 0.1;
 
@@ -39,6 +42,13 @@ public class RocchioSearcher {
 
         if (op.equals("explicit"))
             realRelevance = getRealRelevance();
+
+        if (wi instanceof SimpleIndexer) {
+            System.err.println("Invalid Indexer, only WeightIndexer allowed on Rocchio method");
+            System.exit(1);
+        }
+
+        documentCache = wi.getDocumentCache();
 
         try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
             String line, queryTimes;
@@ -145,13 +155,6 @@ public class RocchioSearcher {
             default:
                 System.err.println("Invalid Rocchio feedback option.");
                 break;
-        }
-
-        // Normalize every document term weight
-        for (Map.Entry<Integer, LinkedList<RankedData>> s : search.entrySet()) {
-
-            // normalize each document term weight
-            normalizeTerms(s.getValue(), calculateLength(s.getValue()));
         }
 
         // Aggregate a result list for each document score
@@ -321,21 +324,6 @@ public class RocchioSearcher {
                 irrelevantDocs.add(docID);
         }
         return irrelevantDocs;
-    }
-
-    /**
-     * Loads a document cache to know which terms occur in each document
-     *
-     * @param docID document ID
-     * @param rd    RankedData object containing the term and it's weight in the document
-     */
-    public static void loadDocumentCache(int docID, RankedData rd) {
-        if (documentCache.containsKey(docID))
-            documentCache.get(docID).add(rd);
-        else {
-            documentCache.put(docID, new ArrayList<>());
-            documentCache.get(docID).add(rd);
-        }
     }
 
     /**

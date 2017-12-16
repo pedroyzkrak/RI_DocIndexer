@@ -3,14 +3,10 @@ package indexer;
 
 import interfaces.Indexer;
 import support.Posting;
+import support.RankedData;
 import tokenizer.SimpleTokenizer.Token;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.LinkedList;
-import java.util.ListIterator;
+import java.util.*;
 
 
 /**
@@ -118,6 +114,11 @@ public class SimpleIndexer implements Indexer {
      */
     public Iterable<Map.Entry<String, LinkedList<Posting>>> entrySet() {
         return indexer.entrySet();
+    }
+
+    @Override
+    public HashMap<Integer, ArrayList<RankedData>> getDocumentCache() {
+        return null;
     }
 
 
