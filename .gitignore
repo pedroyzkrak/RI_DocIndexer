@@ -1,5 +1,10 @@
 /target/
 /.idea/
 RI_DocumentIndexer.iml
-SaveResults*.txt
+
+Save*.txt
+
 Metrics*.txt
+*Index.txt
+
+*notas.txt
