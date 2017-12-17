@@ -3,7 +3,6 @@ package searcher;
 import indexer.SimpleIndexer;
 import interfaces.Indexer;
 import interfaces.Tokenizer;
-import metrics.MetricsCalculation;
 import save.SaveToFile;
 import support.*;
 import tokenizer.SimpleTokenizer;
@@ -15,6 +14,7 @@ import java.util.*;
 
 import static indexer.WeightIndexer.calculateLength;
 import static indexer.WeightIndexer.normalizeTerms;
+import static metrics.MetricsCalculation.*;
 import static searcher.RankedSearcher.*;
 
 /**
@@ -27,7 +27,7 @@ public class RocchioSearcher {
 
     private static HashMap<Integer, ArrayList<RankedData>> documentCache;
     private static HashMap<Integer, List<MetricsData>> realRelevance;
-    private static double beta = 0.8, gama = 0.1;
+    private static double beta = 0.8, gama = 0.2;
 
     /**
      * Reads a file containing queries and saves the results to a file
@@ -331,7 +331,7 @@ public class RocchioSearcher {
      */
     public static HashMap<Integer, List<MetricsData>> getRealRelevance() {
         if (realRelevance == null)
-            return MetricsCalculation.parseResults("cranfield.query.relevance.txt");
+            return parseResults("cranfield.query.relevance.txt");
         else
             return realRelevance;
     }

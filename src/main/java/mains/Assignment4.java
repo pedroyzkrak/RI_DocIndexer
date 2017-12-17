@@ -4,11 +4,9 @@ import corpusReader.CorpusReader;
 import indexer.WeightIndexer;
 import interfaces.Tokenizer;
 import metrics.MetricsCalculation;
-import save.SaveToFile;
 import searcher.RankedSearcher;
 import searcher.RocchioSearcher;
 import support.MetricsData;
-import support.ValueHolder;
 import tokenizer.SimpleTokenizer;
 
 import java.util.List;
@@ -25,25 +23,7 @@ import static searcher.RocchioSearcher.getRealRelevance;
  */
 public class Assignment4 {
     public static void main() {
-        /*
-        // TESTING NDCG
-        List<MetricsData> mdBase = new LinkedList<>(), mdTest = new LinkedList<>();
-
-        mdBase.add(new MetricsData(1, 1));
-        mdBase.add(new MetricsData(2, 2));
-        mdBase.add(new MetricsData(3, 3));
-
-        mdTest.add(new MetricsData(2, 1));
-        mdTest.add(new MetricsData(3, 2));
-        mdTest.add(new MetricsData(4, 1));
-        mdTest.add(new MetricsData(5, 1));
-        mdTest.add(new MetricsData(1, 123));
-
-        System.out.println(calculateAverageNDCG(mdBase, mdTest));
-        */
-
-
-
+        
         // Variable initialization
         Tokenizer tokenizer = new SimpleTokenizer();
         WeightIndexer wi = new WeightIndexer("rocchio");
@@ -93,10 +73,6 @@ public class Assignment4 {
                 implicitRocchioSet = parseResults("SaveResultsImplicitRocchio.txt"),
                 explicitRocchioSet = parseResults("SaveResultsExplicitRocchio.txt");
 
-        ValueHolder rankedMAP = new ValueHolder(), rankedMRR = new ValueHolder(), rankedMAP10 = new ValueHolder(), rankedNDCG = new ValueHolder(),
-                implicitRocchioMAP = new ValueHolder(), implicitRocchioMRR = new ValueHolder(), implicitRocchioMAP10 = new ValueHolder(), implicitRocchioNDCG = new ValueHolder(),
-                explicitRocchioMAP = new ValueHolder(), explicitRocchioMRR = new ValueHolder(), explicitRocchioMAP10 = new ValueHolder(), explicitRocchioNDCG = new ValueHolder();
-
         MetricsCalculation calcRanked = new MetricsCalculation(), calcImplicitRocchio = new MetricsCalculation(), calcExplicitRocchio = new MetricsCalculation();
         String fileNameRanked = "MetricsRanked.txt", fileNameImplicit = "MetricsImplicitRocchio.txt", fileNameExplicit = "MetricsExplicitRocchio.txt";
 
@@ -107,17 +83,17 @@ public class Assignment4 {
                     explicitRocchioData = explicitRocchioSet.get(queryId),
                     baseData = entry.getValue();
 
-            performQueryMetricCalculation(baseData, rankedData, calcRanked, rankedMAP, rankedMAP10, rankedMRR, rankedNDCG, queryId, fileNameRanked);
-            performQueryMetricCalculation(baseData, implicitRocchioData, calcImplicitRocchio, implicitRocchioMAP, implicitRocchioMAP10, implicitRocchioMRR, implicitRocchioNDCG, queryId, fileNameImplicit);
-            performQueryMetricCalculation(baseData, explicitRocchioData, calcExplicitRocchio, explicitRocchioMAP, explicitRocchioMAP10, explicitRocchioMRR, explicitRocchioNDCG, queryId, fileNameExplicit);
+            calcRanked.performQueryMetricCalculation(baseData, rankedData, queryId, fileNameRanked);
+            calcImplicitRocchio.performQueryMetricCalculation(baseData, implicitRocchioData, queryId, fileNameImplicit);
+            calcExplicitRocchio.performQueryMetricCalculation(baseData, explicitRocchioData, queryId, fileNameExplicit);
         }
 
         // SYSTEM METRIC RESULTS
         double size = baseSet.keySet().size();
 
-        performSystemMetricCalculation(calcRanked, rankedMAP.getValue(), rankedMAP10.getValue(), rankedMRR.getValue(), rankedNDCG.getValue(), size, fileNameRanked);
-        performSystemMetricCalculation(calcImplicitRocchio, implicitRocchioMAP.getValue(), implicitRocchioMAP10.getValue(), implicitRocchioMRR.getValue(), implicitRocchioNDCG.getValue(), size, fileNameImplicit);
-        performSystemMetricCalculation(calcExplicitRocchio, explicitRocchioMAP.getValue(), explicitRocchioMAP10.getValue(), explicitRocchioMRR.getValue(), explicitRocchioNDCG.getValue(), size, fileNameExplicit);
+        calcRanked.performSystemMetricCalculation(size, fileNameRanked);
+        calcImplicitRocchio.performSystemMetricCalculation(size, fileNameImplicit);
+        calcExplicitRocchio.performSystemMetricCalculation(size, fileNameExplicit);
 
     }
 }

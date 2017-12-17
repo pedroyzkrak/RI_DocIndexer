@@ -12,7 +12,6 @@ import java.util.*;
 
 import save.SaveToFile;
 import support.MetricsData;
-import support.ValueHolder;
 
 /**
  * @author Francisco Lopes 76406
@@ -20,13 +19,18 @@ import support.ValueHolder;
  */
 public class MetricsCalculation {
 
-    private double globalPrecisionTP, globalPrecisionRetrieved, globalRecallTP, globalRecallFN;
+    private double globalPrecisionTP, globalPrecisionRetrieved, globalRecallTP, globalRecallFN,
+                    queryMAP, queryMAP10, queryMRR, queryNDCG;
 
     public MetricsCalculation() {
         globalPrecisionTP = 0;
         globalPrecisionRetrieved = 0;
         globalRecallTP = 0;
         globalRecallFN = 0;
+        queryMAP = 0;
+        queryMAP10 = 0;
+        queryMRR = 0;
+        queryNDCG = 0;
     }
 
     public static HashMap<Integer, List<MetricsData>> parseResults(String fileName) {
@@ -34,10 +38,10 @@ public class MetricsCalculation {
         try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = in.readLine()) != null) {
-                String[] els = line.split(" ");
-                int queryId = Integer.parseInt(els[0]);
-                int docId = Integer.parseInt(els[1]);
-                double score = Double.parseDouble(els[2]);
+                String[] field = line.split(" ");
+                int queryId = Integer.parseInt(field[0]);
+                int docId = Integer.parseInt(field[1]);
+                double score = Double.parseDouble(field[2]);
 
                 if (queryInfo.containsKey(queryId)) {
                     queryInfo.get(queryId).add(new MetricsData(docId, score));
@@ -175,25 +179,21 @@ public class MetricsCalculation {
      *
      * @param base       gold standard results
      * @param test       results obtained
-     * @param calc       MetricsCalculation object to calculate precision and recall and obtain global values for later usage
-     * @param queryMAP   variable to hold values of global system MAP
-     * @param queryMAP10 variable to hold values of global system MAP with rank 10
-     * @param queryMRR   variable to hold values of global system MRR
      * @param queryId    ID of the current query
      * @param fileName   name of file to save metrics
      */
-    public static void performQueryMetricCalculation(List<MetricsData> base, List<MetricsData> test, MetricsCalculation calc, ValueHolder queryMAP, ValueHolder queryMAP10, ValueHolder queryMRR, ValueHolder queryNDCG, int queryId, String fileName) {
-        double precision = calc.calculatePrecision(base, test),
+    public void performQueryMetricCalculation(List<MetricsData> base, List<MetricsData> test, int queryId, String fileName) {
+        double precision = calculatePrecision(base, test),
                 map10 = calculateAveragePrecision(base, test, 10),
-                recall = calc.calculateRecall(base, test),
+                recall = calculateRecall(base, test),
                 map = calculateAveragePrecision(base, test, -1),
                 mrr = calculateMRR(base, test),
                 ndcg = calculateAverageNDCG(base, test.subList(0, 10));
 
-        queryMAP.setValue(queryMAP.getValue() + map);
-        queryMAP10.setValue(queryMAP10.getValue() + map10);
-        queryMRR.setValue(queryMRR.getValue() + mrr);
-        queryNDCG.setValue(queryNDCG.getValue() + ndcg);
+        queryMAP += map;
+        queryMAP10 += map10;
+        queryMRR += mrr;
+        queryNDCG += ndcg;
 
         if (queryId == 1)
             SaveToFile.saveMetrics("\nQuery | Precision |  MAP10  |  Recall | F1-Measure | Avg. Precision | Reciprocal Rank |  NDCG  \n" +
@@ -205,45 +205,28 @@ public class MetricsCalculation {
     /**
      * Performs metrics calculation of the system
      *
-     * @param calc       MetricsCalculation object to calculate precision and recall and obtain global values for later usage
-     * @param queryMAP   variable to hold values of global system MAP
-     * @param queryMAP10 variable to hold values of global system MAP with rank 10
-     * @param queryMRR   variable to hold values of global system MRR
      * @param size       total number of queries
      * @param fileName   name of the file to save metrics
      */
-    public static void performSystemMetricCalculation(MetricsCalculation calc, double queryMAP, double queryMAP10, double queryMRR, double queryNDCG, double size, String fileName) {
-        double systemPrecision = calc.getGlobalPrecisionTP() / calc.getGlobalPrecisionRetrieved(),
-                systemRecall = calc.getGlobalRecallTP() / (calc.getGlobalRecallTP() + calc.getGlobalRecallFN());
+    public void performSystemMetricCalculation(double size, String fileName) {
+        double systemPrecision = globalPrecisionTP / globalPrecisionRetrieved,
+                systemRecall = globalRecallTP / (globalRecallTP + globalRecallFN);
 
-        SaveToFile.saveMetrics("\nMean Average Precision: " + Math.round(queryMAP / size * 10000.0) / 10000.0 + "\n", fileName, false);
-        SaveToFile.saveMetrics("Mean Average Precision at Rank 10: " + Math.round(queryMAP10 / size * 10000.0) / 10000.0 + "\n", fileName, false);
-        SaveToFile.saveMetrics("Mean Reciprocal Rank: " + Math.round(queryMRR / size * 10000.0) / 10000.0 + "\n", fileName, false);
-        SaveToFile.saveMetrics("System Precision: " + Math.round(systemPrecision * 10000.0) / 10000.0 + "\n", fileName, false);
-        SaveToFile.saveMetrics("System Recall: " + Math.round(systemRecall * 10000.0) / 10000.0 + "\n", fileName, false);
-        SaveToFile.saveMetrics("System F1-Measure: " + Math.round(calculateF_Measure(systemPrecision, systemRecall) * 10000.0) / 10000.0 + "\n", fileName, false);
-        SaveToFile.saveMetrics("Average Normalized DCG: "+ Math.round(queryNDCG / size * 10000.0) / 10000.0 + "\n", fileName, false);
+        String systemMetric =
+                        "\nMean Average Precision: " + Math.round(queryMAP / size * 10000.0) / 10000.0 + "\n" +
+                        "Mean Average Precision at Rank 10: " + Math.round(queryMAP10 / size * 10000.0) / 10000.0 + "\n" +
+                        "Mean Reciprocal Rank: " + Math.round(queryMRR / size * 10000.0) / 10000.0 + "\n" +
+                        "System Precision: " + Math.round(systemPrecision * 10000.0) / 10000.0 + "\n" +
+                        "System Recall: " + Math.round(systemRecall * 10000.0) / 10000.0 + "\n" +
+                        "System F1-Measure: " + Math.round(calculateF_Measure(systemPrecision, systemRecall) * 10000.0) / 10000.0 + "\n" +
+                        "Average Normalized DCG: "+ Math.round(queryNDCG / size * 10000.0) / 10000.0 + "\n";
+
+       SaveToFile.saveMetrics(systemMetric, fileName, false);
 
     }
 
     private static double log2(double number) {
         return Math.log10(number) / Math.log10(2);
-    }
-
-    private double getGlobalPrecisionTP() {
-        return globalPrecisionTP;
-    }
-
-    private double getGlobalPrecisionRetrieved() {
-        return globalPrecisionRetrieved;
-    }
-
-    private double getGlobalRecallTP() {
-        return globalRecallTP;
-    }
-
-    private double getGlobalRecallFN() {
-        return globalRecallFN;
     }
 
 }
