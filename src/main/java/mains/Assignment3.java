@@ -1,6 +1,6 @@
 package mains;
 
-import corpusReader.CorpusReader;
+import reader.CorpusReader;
 import indexer.SimpleIndexer;
 import indexer.WeightIndexer;
 import interfaces.Tokenizer;
@@ -32,13 +32,18 @@ public class Assignment3 {
 
         long dirStart, dirEnd, indexStart, indexEnd;
 
+        String collection = "cranfield",
+                queriesFile = "cranfield.queries.txt",
+                fileNameRankedResults = "SaveResultsRanked.txt", fileNameFrequencyResults = "SaveResultsFrequency.txt", fileNameWordsResults = "SaveResultsWords.txt",
+                fileNameRankedMetrics = "MetricsRanked.txt", fileNameFrequencyMetrics = "MetricsFrequency.txt", fileNameWordsMetrics = "MetricsWord.txt";
+
         // Read Directory Section
         dirStart = System.currentTimeMillis();
 
         // build SimpleIndexer
-        CorpusReader.readAndProcessDir("cranfield", tokenizer, si);
+        CorpusReader.readAndProcessDir(collection, tokenizer, si);
         // build WeightIndexer
-        CorpusReader.readAndProcessDir("cranfield", tokenizer, wi);
+        CorpusReader.readAndProcessDir(collection, tokenizer, wi);
 
         dirEnd = System.currentTimeMillis();
         System.out.println("Read Dir time: " + (dirEnd - dirStart) / 1000.0 + " s\n");
@@ -52,7 +57,7 @@ public class Assignment3 {
         System.out.println("Ranked Metrics");
         indexStart = System.currentTimeMillis();
 
-        RankedSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsRanked.txt", wi);
+        RankedSearcher.readQueryFromFile(queriesFile, fileNameRankedResults, fileNameRankedMetrics, wi);
 
         indexEnd = System.currentTimeMillis();
         System.out.println("Querying Time: " + (indexEnd - indexStart) / 1000.0 + " s\n");
@@ -61,7 +66,7 @@ public class Assignment3 {
         System.out.println("Word Metrics");
         indexStart = System.currentTimeMillis();
 
-        SimpleSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsWords.txt", "words", si);
+        SimpleSearcher.readQueryFromFile(queriesFile, fileNameWordsResults, fileNameWordsMetrics,"words", si);
 
         indexEnd = System.currentTimeMillis();
         System.out.println("Querying Time: " + (indexEnd - indexStart) / 1000.0 + " s\n");
@@ -70,19 +75,18 @@ public class Assignment3 {
         System.out.println("Frequency Metrics");
         indexStart = System.currentTimeMillis();
 
-        SimpleSearcher.readQueryFromFile("cranfield.queries.txt", "SaveResultsFrequency.txt", "frequency", si);
+        SimpleSearcher.readQueryFromFile(queriesFile, fileNameFrequencyResults, fileNameFrequencyMetrics,"frequency", si);
 
         indexEnd = System.currentTimeMillis();
         System.out.println("Querying Time: " + (indexEnd - indexStart) / 1000.0 + " s\n");
 
         // METRICS CALCULATION FOR EACH QUERY SECTION
         Map<Integer, List<MetricsData>> baseSet = getRealRelevance(),
-                rankedSet = parseResults("SaveResultsRanked.txt"),
-                wordsSet = parseResults("SaveResultsWords.txt"),
-                frequencySet = parseResults("SaveResultsFrequency.txt");
+                rankedSet = parseResults(fileNameRankedResults),
+                wordsSet = parseResults(fileNameWordsResults),
+                frequencySet = parseResults(fileNameFrequencyResults);
 
         MetricsCalculation calcRanked = new MetricsCalculation(), calcWords = new MetricsCalculation(), calcFrequency = new MetricsCalculation();
-        String fileNameRanked = "MetricsRanked.txt", fileNameFrequency = "MetricsFrequency.txt", fileNameWords = "MetricsWord.txt";
 
         for (Map.Entry<Integer, List<MetricsData>> entry: baseSet.entrySet()) {
             int queryId = entry.getKey();
@@ -91,17 +95,17 @@ public class Assignment3 {
                     frequencyData = frequencySet.get(queryId),
                     baseData = entry.getValue();
 
-            calcRanked.performQueryMetricCalculation(baseData, rankedData, queryId, fileNameRanked);
-            calcWords.performQueryMetricCalculation(baseData, wordsData, queryId, fileNameWords);
-            calcFrequency.performQueryMetricCalculation(baseData, frequencyData, queryId, fileNameFrequency);
+            calcRanked.performQueryMetricCalculation(baseData, rankedData, queryId, fileNameRankedMetrics);
+            calcWords.performQueryMetricCalculation(baseData, wordsData, queryId, fileNameWordsMetrics);
+            calcFrequency.performQueryMetricCalculation(baseData, frequencyData, queryId, fileNameFrequencyMetrics);
         }
 
         // SYSTEM METRIC RESULTS
         double size = baseSet.keySet().size();
 
-        calcRanked.performSystemMetricCalculation(size, fileNameRanked);
-        calcWords.performSystemMetricCalculation(size, fileNameWords);
-        calcFrequency.performSystemMetricCalculation(size, fileNameFrequency);
+        calcRanked.performSystemMetricCalculation(size, fileNameRankedMetrics);
+        calcWords.performSystemMetricCalculation(size, fileNameWordsMetrics);
+        calcFrequency.performSystemMetricCalculation(size, fileNameFrequencyMetrics);
 
     }
 }

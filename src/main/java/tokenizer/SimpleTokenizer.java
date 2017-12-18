@@ -35,7 +35,7 @@ public class SimpleTokenizer implements Tokenizer {
             return sequence;
         }
 
-        public Token(String sequence) {
+        Token(String sequence) {
             super();
             this.sequence = sequence;
         }

@@ -5,6 +5,7 @@ import interfaces.Indexer;
 import interfaces.Tokenizer;
 import save.SaveToFile;
 import support.*;
+import thesaurus.Thesaurus;
 import tokenizer.SimpleTokenizer;
 
 import java.io.BufferedReader;
@@ -27,7 +28,7 @@ public class RocchioSearcher {
 
     private static HashMap<Integer, ArrayList<RankedData>> documentCache;
     private static HashMap<Integer, List<MetricsData>> realRelevance;
-    private static double beta = 0.8, gama = 0.2;
+    private static final double BETA = 0.8, GAMA = 0.2;
 
     /**
      * Reads a file containing queries and saves the results to a file
@@ -36,9 +37,10 @@ public class RocchioSearcher {
      * @param outputFile name of the files to save the results
      * @param op         type of relevance feedback ('explicit' or 'implicit')
      * @param wi         a WeightIndexer object
+     * @param thesaurus  thesaurus that contains word similarity to expand the query
      */
     @SuppressWarnings("Duplicates")
-    public static void readQueryFromFile(String fileName, String outputFile, String op, Indexer wi) {
+    public static void readQueryFromFile(String fileName, String outputFile, String outputMetricsFile, String op, Indexer wi, Thesaurus thesaurus) {
 
         if (op.equals("explicit"))
             realRelevance = getRealRelevance();
@@ -61,6 +63,14 @@ public class RocchioSearcher {
 
             while ((line = in.readLine()) != null) {
                 id++;
+
+                if (thesaurus != null) {
+                    //System.out.println("Query " + id + ": " + line);
+                    line = thesaurus.getSimilarWords(line, 3);
+                    //System.out.println("Query " + id + ": " + line);
+                }
+
+
                 query = new Query(id, line);
 
                 start = System.currentTimeMillis();
@@ -97,22 +107,16 @@ public class RocchioSearcher {
                         "Median query latency: " + medianLatency.get(Math.round(medianLatency.size() / 2)) + " ms\n";
             }
 
-            switch (op) {
-                case "explicit":
-                    SaveToFile.saveMetrics(queryTimes, "MetricsExplicitRocchio.txt");
-                    break;
-                case "implicit":
-                    SaveToFile.saveMetrics(queryTimes, "MetricsImplicitRocchio.txt");
-                    break;
-                default:
-                    System.err.println("Invalid Rocchio feedback option.");
-                    break;
-            }
+            SaveToFile.saveMetrics(queryTimes, outputMetricsFile);
 
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void readQueryFromFile(String fileName, String outputFile, String outputMetricsFile, String op, Indexer wi) {
+        readQueryFromFile(fileName, outputFile, outputMetricsFile, op, wi, null);
     }
 
     /**
@@ -183,12 +187,12 @@ public class RocchioSearcher {
         while (relevantDocsIt.hasNext() || irrelevantDocsIt.hasNext()) {
             if (relevantDocsIt.hasNext()) {
                 int docIdR = relevantDocsIt.next();
-                updateFeedBackVector(docIdR, relevantVector, relevantDocsSize, beta);
+                updateFeedBackVector(docIdR, relevantVector, relevantDocsSize, BETA);
             }
 
             if (irrelevantDocsIt.hasNext()) {
                 int docIdIr = irrelevantDocsIt.next();
-                updateFeedBackVector(docIdIr, irrelevantVector, irrelevantDocsSize, gama);
+                updateFeedBackVector(docIdIr, irrelevantVector, irrelevantDocsSize, GAMA);
             }
         }
 
@@ -247,7 +251,7 @@ public class RocchioSearcher {
         // get feedback vectors
         for (SearchData sd : results) {
             int docId = sd.getDocId();
-            updateFeedBackVector(docId, vector, docsSize, beta);
+            updateFeedBackVector(docId, vector, docsSize, BETA);
         }
 
         Collections.sort(vector);

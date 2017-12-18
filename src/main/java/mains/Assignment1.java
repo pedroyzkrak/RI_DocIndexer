@@ -1,6 +1,6 @@
 package mains;
 
-import corpusReader.CorpusReader;
+import reader.CorpusReader;
 import indexer.SimpleIndexer;
 import interfaces.Tokenizer;
 import save.SaveToFile;

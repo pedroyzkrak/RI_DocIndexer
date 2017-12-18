@@ -30,7 +30,7 @@ public class SimpleSearcher {
      * @param si         a SimpleIndexer object
      */
     @SuppressWarnings("Duplicates")
-    public static void readQueryFromFile(String fileName, String outputFile, String op, Indexer si) {
+    public static void readQueryFromFile(String fileName, String outputFile, String outputMetricsFile, String op, Indexer si) {
         try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
             String line, queryTimes;
             int id = 0;
@@ -96,17 +96,7 @@ public class SimpleSearcher {
                         "Median query latency: " + medianLatency.get(Math.round(medianLatency.size() / 2)) + " ms\n";
             }
 
-            switch (op) {
-                case "words":
-                    SaveToFile.saveMetrics(queryTimes, "MetricsWord.txt");
-                    break;
-                case "frequency":
-                    SaveToFile.saveMetrics(queryTimes, "MetricsFrequency.txt");
-                    break;
-                default:
-                    System.err.println("Option not found.");
-                    break;
-            }
+            SaveToFile.saveMetrics(queryTimes, outputMetricsFile);
 
         } catch (IOException e) {
             e.printStackTrace();

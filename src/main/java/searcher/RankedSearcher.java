@@ -41,7 +41,7 @@ public class RankedSearcher {
      * @param wi         a WeightIndexer object
      */
     @SuppressWarnings("Duplicates")
-    public static void readQueryFromFile(String fileName, String outputFile, Indexer wi) {
+    public static void readQueryFromFile(String fileName, String outputFile, String outputMetricsFile, Indexer wi) {
         try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
             String line, queryTimes;
             int id = 0;
@@ -84,7 +84,7 @@ public class RankedSearcher {
                         "Median query latency: " + medianLatency.get(Math.round(medianLatency.size() / 2)) + " ms\n";
             }
 
-            SaveToFile.saveMetrics(queryTimes, "MetricsRanked.txt");
+            SaveToFile.saveMetrics(queryTimes, outputMetricsFile);
 
 
         } catch (IOException e) {
