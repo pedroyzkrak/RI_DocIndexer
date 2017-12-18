@@ -1,8 +1,5 @@
 
-import mains.Assignment1;
-import mains.Assignment2;
-import mains.Assignment3;
-import mains.Assignment4;
+import mains.*;
 
 import java.util.Scanner;
 
@@ -31,13 +28,15 @@ public class Main {
                 case "n":
                 case "no":
                     String assignment = "";
-                    while (!assignment.equals("1") && !assignment.equals("2") && !assignment.equals("3") && !assignment.equals("4") && !assignment.equals("5")) {
+                    while (!assignment.equals("1") && !assignment.equals("2") && !assignment.equals("3") && !assignment.equals("4") && !assignment.equals("5") && !assignment.equals("6")) {
                         System.out.println("Choose what assignment to run.");
                         System.out.println("1 - Assignment 1.");
                         System.out.println("2 - Assignment 2.");
                         System.out.println("3 - Assignment 3.");
                         System.out.println("4 - Assignment 4.");
-                        System.out.println("5 - Exit.");
+                        System.out.println("5 - Create 'cranfield_sentences.txt'");
+                        System.out.println("6 - Run Word2Vec Example");
+                        System.out.println("7 - Exit.");
                         assignment = sc.nextLine();
 
                         switch (assignment) {
@@ -58,6 +57,18 @@ public class Main {
                                 Assignment4.main();
                                 break;
                             case "5":
+                                System.out.println();
+                                Sentences.main();
+                                break;
+                            case "6":
+                                System.out.println();
+                                try {
+                                    Word2VecRawTextExample.main();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                break;
+                            case "7":
                                 System.exit(0);
                                 break;
                             default:

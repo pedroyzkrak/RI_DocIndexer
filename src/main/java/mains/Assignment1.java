@@ -40,6 +40,6 @@ public class Assignment1 {
 
         System.out.println("Top 10 Highest Frequency terms");
         for (Posting freq : indexer.getHighestFrequency(10))
-            System.out.println("Term: " + freq.getTerm() + " DocFreq: " + (int) freq.getTermFreq());
+            System.out.println("Term: " + freq.getTerm() + " Frequency: " + (int) freq.getTermFreq());
     }
 }

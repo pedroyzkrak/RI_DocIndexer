@@ -23,7 +23,7 @@ import static searcher.RocchioSearcher.getRealRelevance;
  */
 public class Assignment4 {
     public static void main() {
-        
+
         // Variable initialization
         Tokenizer tokenizer = new SimpleTokenizer();
         WeightIndexer wi = new WeightIndexer("rocchio");
