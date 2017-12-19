@@ -128,7 +128,7 @@ public class RocchioSearcher {
     }
 
     /**
-     * Performs a retrieval emethod utilizing the rocchio algorithm
+     * Performs a retrieval method utilizing the rocchio algorithm
      *
      * @param query   Query object that holds information about the query
      * @param wi      the weighted index
@@ -179,6 +179,7 @@ public class RocchioSearcher {
 
     /**
      * Performs the Rocchio Algorithm to modify query terms
+     * This method determines which result retrieved documents are relevant and non-relevant and acts accordingly
      * Modifies the original query vector
      *
      * @param results    initial results obtained from the query
@@ -247,6 +248,7 @@ public class RocchioSearcher {
 
     /**
      * Performs an implicit Rocchio Algorithm to modify query terms
+     * This method considers every result retrieved document as relevant
      * Modifies the original query vector
      *
      * @param results    initial results obtained from the query
