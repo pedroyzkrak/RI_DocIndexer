@@ -28,16 +28,14 @@ public class Main {
                 case "n":
                 case "no":
                     String assignment = "";
-                    while (!assignment.equals("1") && !assignment.equals("2") && !assignment.equals("3") && !assignment.equals("4") && !assignment.equals("5") && !assignment.equals("6")) {
+                    while (!assignment.equals("1") && !assignment.equals("2") && !assignment.equals("3") && !assignment.equals("4") && !assignment.equals("5")) {
                         System.out.println(
                                         "Choose what assignment to run.\n" +
                                         "1 - Assignment 1.\n" +
                                         "2 - Assignment 2.\n" +
                                         "3 - Assignment 3.\n" +
                                         "4 - Assignment 4.\n" +
-                                        "5 - Create 'cranfield_sentences.txt'.\n" +
-                                        "6 - Run Word2Vec Example.\n" +
-                                        "7 - Exit.\n");
+                                        "5 - Exit.\n");
                         assignment = sc.nextLine();
 
                         switch (assignment) {
@@ -58,18 +56,6 @@ public class Main {
                                 Assignment4.main();
                                 break;
                             case "5":
-                                System.out.println();
-                                Sentences.main();
-                                break;
-                            case "6":
-                                System.out.println();
-                                try {
-                                    Word2VecRawTextExample.main();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                break;
-                            case "7":
                                 System.exit(0);
                                 break;
                             default:
