@@ -20,8 +20,11 @@ import support.MetricsData;
 public class MetricsCalculation {
 
     private double globalPrecisionTP, globalPrecisionRetrieved, globalRecallTP, globalRecallFN,
-                    queryMAP, queryMAP10, queryMRR, queryNDCG;
+            queryMAP, queryMAP10, queryMRR, queryNDCG;
 
+    /**
+     * Constructor to initialize global variables for system metrics calculation
+     */
     public MetricsCalculation() {
         globalPrecisionTP = 0;
         globalPrecisionRetrieved = 0;
@@ -33,6 +36,12 @@ public class MetricsCalculation {
         queryNDCG = 0;
     }
 
+    /**
+     * Parses query results from a given file that contains them
+     *
+     * @param fileName file that contains the results of the queries
+     * @return a map with query ID as key and corresponding list with MetricsData objects containing Document ID and it's score
+     */
     public static HashMap<Integer, List<MetricsData>> parseResults(String fileName) {
         HashMap<Integer, List<MetricsData>> queryInfo = new HashMap<>();
         try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
@@ -58,6 +67,13 @@ public class MetricsCalculation {
         return queryInfo;
     }
 
+    /**
+     * Calculates query precisio
+     *
+     * @param mdBase gold standard results of a query
+     * @param mdTest test results from a query
+     * @return query precision
+     */
     private double calculatePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest) {
         double precision;
         int tp = 0;
@@ -74,6 +90,13 @@ public class MetricsCalculation {
         return Math.round(precision * 10000.0) / 10000.0;
     }
 
+    /**
+     * Calculates query recall
+     *
+     * @param mdBase gold standard results of a query
+     * @param mdTest test results from a query
+     * @return query recall
+     */
     private double calculateRecall(List<MetricsData> mdBase, List<MetricsData> mdTest) {
         double recall;
         int fn = 0;
@@ -93,10 +116,25 @@ public class MetricsCalculation {
         return Math.round(recall * 10000.0) / 10000.0;
     }
 
+    /**
+     * Calculates Harmonic mean of recall and precision from a query (F1)
+     *
+     * @param precision query precision
+     * @param recall    query recall
+     * @return F1-Measure of the query
+     */
     private static double calculateF_Measure(double precision, double recall) {
         return Math.round(((2 * recall * precision) / (recall + precision)) * 10000.0) / 10000.0;
     }
 
+    /**
+     * Calculates Average precision of a query
+     *
+     * @param mdBase gold standard results of a query
+     * @param mdTest test results from a query
+     * @param cap    number of first query results to consider for calculation, < 0 will consider all
+     * @return average precision of the query
+     */
     private static double calculateAveragePrecision(List<MetricsData> mdBase, List<MetricsData> mdTest, int cap) {
         double avg_prec = 0;
         int tp = 0;
@@ -117,16 +155,30 @@ public class MetricsCalculation {
         return Math.round((avg_prec / tp) * 10000.0) / 10000.0;
     }
 
-    private static double calculateMRR(List<MetricsData> mdBase, List<MetricsData> mdTest) {
+    /**
+     * Calculates Reciprocal Rank of a query
+     *
+     * @param mdBase gold standard results of a query
+     * @param mdTest test results from a query
+     * @return reciprocal rank of the query
+     */
+    private static double calculateRR(List<MetricsData> mdBase, List<MetricsData> mdTest) {
         int index;
         double mmr = 0.0;
         index = mdTest.indexOf(mdBase.get(0));
-        if (index > 0) {
+        if (index >= 0) {
             mmr = (double) 1 / (index + 1);
         }
         return Math.round(mmr * 10000.0) / 10000.0;
     }
 
+    /**
+     * Calculates the average Normalized Discounted Cumulative Gain of a query
+     *
+     * @param mdBase gold standard results of a query
+     * @param mdTest test results from a query
+     * @return returns an average NDCG of the query
+     */
     private static double calculateAverageNDCG(List<MetricsData> mdBase, List<MetricsData> mdTest) {
         double avg_ndcg = 0, relevance, realRelevance, idealRelevance, realDCG = 0, idealDCG = 0;
         List<Double> real_dcg_values = new ArrayList<>(), ideal_dcg_values = new ArrayList<>();
@@ -177,17 +229,17 @@ public class MetricsCalculation {
     /**
      * Performs metrics calculation for each query
      *
-     * @param base       gold standard results
-     * @param test       results obtained
-     * @param queryId    ID of the current query
-     * @param fileName   name of file to save metrics
+     * @param base     gold standard results
+     * @param test     results obtained
+     * @param queryId  ID of the current query
+     * @param fileName name of file to save metrics
      */
     public void performQueryMetricCalculation(List<MetricsData> base, List<MetricsData> test, int queryId, String fileName) {
         double precision = calculatePrecision(base, test),
                 map10 = calculateAveragePrecision(base, test, 10),
                 recall = calculateRecall(base, test),
                 map = calculateAveragePrecision(base, test, -1),
-                mrr = calculateMRR(base, test),
+                mrr = calculateRR(base, test),
                 ndcg = calculateAverageNDCG(base, test.subList(0, 10));
 
         queryMAP += map;
@@ -205,26 +257,32 @@ public class MetricsCalculation {
     /**
      * Performs metrics calculation of the system
      *
-     * @param size       total number of queries
-     * @param fileName   name of the file to save metrics
+     * @param size     total number of queries
+     * @param fileName name of the file to save metrics
      */
     public void performSystemMetricCalculation(double size, String fileName) {
         double systemPrecision = globalPrecisionTP / globalPrecisionRetrieved,
                 systemRecall = globalRecallTP / (globalRecallTP + globalRecallFN);
 
         String systemMetric =
-                        "\nMean Average Precision: " + Math.round(queryMAP / size * 10000.0) / 10000.0 + "\n" +
+                "\nMean Average Precision: " + Math.round(queryMAP / size * 10000.0) / 10000.0 + "\n" +
                         "Mean Average Precision at Rank 10: " + Math.round(queryMAP10 / size * 10000.0) / 10000.0 + "\n" +
                         "Mean Reciprocal Rank: " + Math.round(queryMRR / size * 10000.0) / 10000.0 + "\n" +
                         "System Precision: " + Math.round(systemPrecision * 10000.0) / 10000.0 + "\n" +
                         "System Recall: " + Math.round(systemRecall * 10000.0) / 10000.0 + "\n" +
                         "System F1-Measure: " + Math.round(calculateF_Measure(systemPrecision, systemRecall) * 10000.0) / 10000.0 + "\n" +
-                        "Average Normalized DCG: "+ Math.round(queryNDCG / size * 10000.0) / 10000.0 + "\n";
+                        "Average Normalized DCG: " + Math.round(queryNDCG / size * 10000.0) / 10000.0 + "\n";
 
-       SaveToFile.saveMetrics(systemMetric, fileName, false);
+        SaveToFile.saveMetrics(systemMetric, fileName, false);
 
     }
 
+    /**
+     * Calculates log base 2 of a given number
+     *
+     * @param number number to calculate log base 2
+     * @return log base 2 of a given number
+     */
     private static double log2(double number) {
         return Math.log10(number) / Math.log10(2);
     }
