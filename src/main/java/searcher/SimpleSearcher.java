@@ -2,6 +2,7 @@ package searcher;
 
 import interfaces.Indexer;
 import interfaces.Tokenizer;
+import thesaurus.Thesaurus;
 import tokenizer.SimpleTokenizer;
 import tokenizer.SimpleTokenizer.Token;
 
@@ -23,14 +24,17 @@ public class SimpleSearcher {
 
     /**
      * Reads a file containing queries and saves the results to a file
+     * Can also do query expansion by using a Thesaurus object (trained previously)
      *
-     * @param fileName   name of the file containing the queries
-     * @param outputFile name of the files to save the results
-     * @param op         type of boolean search (by 'words' or 'frequency')
-     * @param si         a SimpleIndexer object
+     * @param fileName          name of the file containing the queries
+     * @param outputFile        name of the files to save the results
+     * @param outputMetricsFile name of file to save metrics
+     * @param op                type of boolean search (by 'words' or 'frequency')
+     * @param si                a SimpleIndexer object
+     * @param thesaurus         thesaurus that contains word similarity to expand the query
      */
     @SuppressWarnings("Duplicates")
-    public static void readQueryFromFile(String fileName, String outputFile, String outputMetricsFile, String op, Indexer si) {
+    public static void readQueryFromFile(String fileName, String outputFile, String outputMetricsFile, String op, Indexer si, Thesaurus thesaurus) {
         try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
             String line, queryTimes;
             int id = 0;
@@ -42,39 +46,34 @@ public class SimpleSearcher {
             a:
             while ((line = in.readLine()) != null) {
                 id++;
+
+                start = System.currentTimeMillis();
+
+                if (thesaurus != null) {
+                    line = thesaurus.getExpandedQuery(line);
+                }
+
                 query = new Query(id, line);
 
                 switch (op) {
                     case "words":
-
-                        start = System.currentTimeMillis();
-
                         results = booleanSearchWord(query, si);
-
-                        end = System.currentTimeMillis();
-                        latency = (double) (end - start);
-                        medianLatency.add(latency);
-
-                        SaveToFile.saveResults(results, outputFile);
                         break;
 
                     case "frequency":
-
-                        start = System.currentTimeMillis();
-
                         results = booleanSearchFrequency(query, si);
-
-                        end = System.currentTimeMillis();
-                        latency = (double) (end - start);
-                        medianLatency.add(latency);
-
-                        SaveToFile.saveResults(results, outputFile);
                         break;
 
                     default:
                         System.err.println("Option not found.");
                         break a;
                 }
+
+                end = System.currentTimeMillis();
+                latency = (double) (end - start);
+                medianLatency.add(latency);
+
+                SaveToFile.saveResults(results, outputFile);
 
             }
             long tEnd = System.currentTimeMillis();
@@ -101,6 +100,19 @@ public class SimpleSearcher {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Reads a file containing queries and saves the results to a file
+     *
+     * @param fileName          name of the file containing the queries
+     * @param outputFile        name of the file to save the results
+     * @param outputMetricsFile name of file to save metrics
+     * @param op                type of boolean search (by 'words' or 'frequency')
+     * @param si                a SimpleIndexer object
+     */
+    public static void readQueryFromFile(String fileName, String outputFile, String outputMetricsFile, String op, Indexer si) {
+        readQueryFromFile(fileName, outputFile, outputMetricsFile, op, si, null);
     }
 
     /**

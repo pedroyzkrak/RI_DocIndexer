@@ -15,7 +15,7 @@ public class Main {
         String op = "";
 
         while (!op.equals("y") && !op.equals("n") && !op.equals("yes") && !op.equals("no")) {
-            System.out.println("Run Current Assignment? (y/n)\n(No allows to choose previous assignments.)");
+            System.out.println("Run Current Assignment? (y/n)\n(Answering 'No' allows to choose previous assignments.)");
             op = sc.nextLine();
             op = op.toLowerCase();
 
@@ -29,14 +29,15 @@ public class Main {
                 case "no":
                     String assignment = "";
                     while (!assignment.equals("1") && !assignment.equals("2") && !assignment.equals("3") && !assignment.equals("4") && !assignment.equals("5") && !assignment.equals("6")) {
-                        System.out.println("Choose what assignment to run.");
-                        System.out.println("1 - Assignment 1.");
-                        System.out.println("2 - Assignment 2.");
-                        System.out.println("3 - Assignment 3.");
-                        System.out.println("4 - Assignment 4.");
-                        System.out.println("5 - Create 'cranfield_sentences.txt'");
-                        System.out.println("6 - Run Word2Vec Example");
-                        System.out.println("7 - Exit.");
+                        System.out.println(
+                                        "Choose what assignment to run.\n" +
+                                        "1 - Assignment 1.\n" +
+                                        "2 - Assignment 2.\n" +
+                                        "3 - Assignment 3.\n" +
+                                        "4 - Assignment 4.\n" +
+                                        "5 - Create 'cranfield_sentences.txt'.\n" +
+                                        "6 - Run Word2Vec Example.\n" +
+                                        "7 - Exit.\n");
                         assignment = sc.nextLine();
 
                         switch (assignment) {
@@ -75,8 +76,6 @@ public class Main {
                                 System.err.println("Invalid option. Choose option 1 to 5");
                                 break;
                         }
-
-
                     }
 
                     break;
@@ -86,11 +85,5 @@ public class Main {
             }
 
         }
-
-
-
-
-
-
     }
 }

@@ -1,6 +1,7 @@
 package searcher;
 
 import interfaces.Tokenizer;
+import thesaurus.Thesaurus;
 import tokenizer.SimpleTokenizer;
 import tokenizer.SimpleTokenizer.Token;
 import interfaces.Indexer;
@@ -32,16 +33,20 @@ import static java.lang.Math.*;
 public class RankedSearcher {
 
     private static int collectionSize = -1;
+    private static final String collectionDir = "cranfield";
 
     /**
      * Reads a file containing queries and saves the results to a file
+     * Can also do query expansion by using a Thesaurus object (trained previously)
      *
-     * @param fileName   name of the file containing the queries
-     * @param outputFile name of the files to save the results
-     * @param wi         a WeightIndexer object
+     * @param fileName          name of the file containing the queries
+     * @param outputFile        name of the file to save the results
+     * @param outputMetricsFile name of file to save metrics
+     * @param wi                a WeightIndexer object
+     * @param thesaurus         thesaurus that contains word similarity to expand the query
      */
     @SuppressWarnings("Duplicates")
-    public static void readQueryFromFile(String fileName, String outputFile, String outputMetricsFile, Indexer wi) {
+    public static void readQueryFromFile(String fileName, String outputFile, String outputMetricsFile, Indexer wi, Thesaurus thesaurus) {
         try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
             String line, queryTimes;
             int id = 0;
@@ -52,9 +57,14 @@ public class RankedSearcher {
             List<SearchData> rankedList;
             while ((line = in.readLine()) != null) {
                 id++;
-                query = new Query(id, line);
 
                 start = System.currentTimeMillis();
+
+                if (thesaurus != null) {
+                    line = thesaurus.getExpandedQuery(line);
+                }
+
+                query = new Query(id, line);
 
                 rankedList = rankedRetrieval(query, wi);
 
@@ -90,6 +100,18 @@ public class RankedSearcher {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Reads a file containing queries and saves the results to a file
+     *
+     * @param fileName          name of the file containing the queries
+     * @param outputFile        name of the file to save the results
+     * @param outputMetricsFile name of file to save metrics
+     * @param wi                a WeightIndexer object
+     */
+    public static void readQueryFromFile(String fileName, String outputFile, String outputMetricsFile, Indexer wi) {
+        readQueryFromFile(fileName, outputFile, outputMetricsFile, wi, null);
     }
 
     /**
@@ -228,7 +250,7 @@ public class RankedSearcher {
         if (collectionSize == -1) {
             List<String> fileNames = new ArrayList<>();
             try {
-                DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get("cranfield"));
+                DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(collectionDir));
                 for (Path path : directoryStream) {
                     fileNames.add(path.toString());
                 }

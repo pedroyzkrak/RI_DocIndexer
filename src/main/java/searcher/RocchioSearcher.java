@@ -32,12 +32,14 @@ public class RocchioSearcher {
 
     /**
      * Reads a file containing queries and saves the results to a file
+     * Can also do query expansion by using a Thesaurus object (trained previously)
      *
-     * @param fileName   name of the file containing the queries
-     * @param outputFile name of the files to save the results
-     * @param op         type of relevance feedback ('explicit' or 'implicit')
-     * @param wi         a WeightIndexer object
-     * @param thesaurus  thesaurus that contains word similarity to expand the query
+     * @param fileName          name of the file containing the queries
+     * @param outputFile        name of the file to save the results
+     * @param outputMetricsFile name of file to save metrics
+     * @param op                type of relevance feedback ('explicit' or 'implicit')
+     * @param wi                a WeightIndexer object
+     * @param thesaurus         thesaurus that contains word similarity to expand the query
      */
     @SuppressWarnings("Duplicates")
     public static void readQueryFromFile(String fileName, String outputFile, String outputMetricsFile, String op, Indexer wi, Thesaurus thesaurus) {
@@ -64,16 +66,13 @@ public class RocchioSearcher {
             while ((line = in.readLine()) != null) {
                 id++;
 
+                start = System.currentTimeMillis();
+
                 if (thesaurus != null) {
-                    //System.out.println("Query " + id + ": " + line);
-                    line = thesaurus.getSimilarWords(line, 3);
-                    //System.out.println("Query " + id + ": " + line);
+                    line = thesaurus.getExpandedQuery(line);
                 }
 
-
                 query = new Query(id, line);
-
-                start = System.currentTimeMillis();
 
                 queryResults = RankedSearcher.rankedRetrieval(query, wi);
 
@@ -115,6 +114,15 @@ public class RocchioSearcher {
         }
     }
 
+    /**
+     * Reads a file containing queries and saves the results to a file
+     *
+     * @param fileName          name of the file containing the queries
+     * @param outputFile        name of the file to save the results
+     * @param outputMetricsFile name of file to save metrics
+     * @param op                type of relevance feedback ('explicit' or 'implicit')
+     * @param wi                a WeightIndexer object
+     */
     public static void readQueryFromFile(String fileName, String outputFile, String outputMetricsFile, String op, Indexer wi) {
         readQueryFromFile(fileName, outputFile, outputMetricsFile, op, wi, null);
     }

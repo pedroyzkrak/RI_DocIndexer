@@ -11,24 +11,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tokenizer.SimpleTokenizer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Iterator;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Thesaurus {
     private Word2Vec vec;
+    private HashMap<String, ArrayList<String>> neighbourCache;
+
     private static Logger log = LoggerFactory.getLogger(Thesaurus.class);
 
-    public Thesaurus(String fileName) throws FileNotFoundException {
+    /**
+     * Contructor that initializes and builds a cache of a thesaurus of word embedding vectors
+     *
+     * @param fileName    file name of the training model
+     * @param queriesFile file containing the queries to process
+     * @param n           number of similar words to generate from a query word
+     * @throws FileNotFoundException if training file doesn't exists/is not found
+     */
+    public Thesaurus(String fileName, String queriesFile, int n) throws FileNotFoundException {
         this.vec = generateWord2Vec(fileName);
+        neighbourCache = loadNeighbourCache(queriesFile, n);
     }
 
     /**
      * Generates a thesaurus of word embedding vectors
      *
-     * @param fileName name of the file to train the model
+     * @param fileName file name of the training model
      * @return a thesaurus of word embedding vectors
-     * @throws FileNotFoundException if file doens't exists/is not found
+     * @throws FileNotFoundException if file doesn't exists/is not found
      */
     private Word2Vec generateWord2Vec(String fileName) throws FileNotFoundException {
         /*
@@ -79,26 +90,64 @@ public class Thesaurus {
         return vec;
     }
 
+
     /**
      * Expands the original query with similar words
      *
      * @param query the string of words from the query
-     * @param n     number of similar words to obtain from each query word
      * @return an expanded query containing similar words from the original query
      */
-    public String getSimilarWords(String query, int n) {
+    public String getExpandedQuery(String query) {
         StringBuilder expandedQuery = new StringBuilder(query);
+
         Tokenizer tkn = new SimpleTokenizer();
         tkn.tokenize(query, "[a-zA-Z]{3,}", false, true);
 
         for (SimpleTokenizer.Token token : tkn.getTokens()) {
             String word = token.getSequence();
-            for (String similarWord : vec.wordsNearest(word, n)) {
-                expandedQuery.append(String.format(" %s", similarWord));
+            if (neighbourCache.containsKey(word)) {
+                for (String similarWord : neighbourCache.get(word))
+                    expandedQuery.append(String.format(" %s", similarWord));
             }
         }
 
-
         return expandedQuery.toString();
     }
+
+    /**
+     * Loads a cache for every similar word of a query word for
+     * faster querying processing times
+     *
+     * @param fileName file containing the queries to process
+     * @return a cache for every similar word of a query word
+     */
+    private HashMap<String, ArrayList<String>> loadNeighbourCache(String fileName, int n) {
+        System.out.println("Loading Similar word Cache...");
+        long start = System.currentTimeMillis();
+        Tokenizer tkn = new SimpleTokenizer();
+        HashMap<String, ArrayList<String>> cache = new HashMap<>();
+        String line;
+        try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
+            while ((line = in.readLine()) != null) {
+                tkn.tokenize(line, "[a-zA-Z]{3,}", false, true);
+                for (SimpleTokenizer.Token token : tkn.getTokens()) {
+                    String word = token.getSequence();
+                    if (!cache.containsKey(word)) {
+                        cache.put(word, new ArrayList<>());
+                        for (String similarWord : vec.wordsNearest(word, n)) {
+                            cache.get(word).add(similarWord);
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Similar Word Cache Loaded.");
+        System.out.println("Elapsed time: " + (System.currentTimeMillis() - start) / 1000.0 + " s \n");
+
+        return cache;
+    }
+
 }
