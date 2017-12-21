@@ -29,9 +29,11 @@ public class Assignment4 {
 
     public static void main() {
         // Exercise 1
+        System.out.println("Starting Rocchio Algorithm section...");
         //main1();
 
         // Exercise 2
+        System.out.println("Starting Query Expansion section");
         main2();
     }
 
@@ -124,7 +126,7 @@ public class Assignment4 {
         Tokenizer tokenizer = new SimpleTokenizer();
         WeightIndexer wi = new WeightIndexer("rocchio");
         SimpleIndexer si = new SimpleIndexer();
-        int neighbours = 3;
+        int neighbours = 1;
 
         long dirStart, dirEnd, indexStart, indexEnd;
         String collection = "cranfield",

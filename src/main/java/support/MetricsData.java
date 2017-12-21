@@ -53,10 +53,7 @@ public class MetricsData implements Comparable<MetricsData> {
             return false;
         }
         final MetricsData other = (MetricsData) obj;
-        if (this.docId != other.docId) {
-            return false;
-        }
-        return true;
+        return this.docId == other.docId;
     }
 
     /**

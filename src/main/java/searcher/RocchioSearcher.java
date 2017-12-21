@@ -3,6 +3,7 @@ package searcher;
 import indexer.SimpleIndexer;
 import interfaces.Indexer;
 import interfaces.Tokenizer;
+import metrics.MetricsCalculation;
 import save.SaveToFile;
 import support.*;
 import thesaurus.Thesaurus;
@@ -28,7 +29,7 @@ public class RocchioSearcher {
 
     private static HashMap<Integer, ArrayList<RankedData>> documentCache;
     private static HashMap<Integer, List<MetricsData>> realRelevance;
-    private static final double BETA = 0.8, GAMA = 0.2;
+    private static final double EXPBETA = 1, IMPBETA = 0.7, GAMA = 0.2;
 
     /**
      * Reads a file containing queries and saves the results to a file
@@ -187,16 +188,27 @@ public class RocchioSearcher {
      * @param queryTerms original query vector
      */
     private static void rocchioAlgorithmExplicit(List<SearchData> results, List<RankedData> queryTerms, int queryID) {
-        List<Integer> relevantDocs = getRelevantDocs(results, queryID), irrelevantDocs = getIrrelevantDocs(results, queryID);
+        List<MetricsData> relevantDocs = getRelevantDocs(results, queryID);
+        List<Integer> irrelevantDocs = getIrrelevantDocs(results, queryID);
         List<RankedData> relevantVector = new ArrayList<>(), irrelevantVector = new ArrayList<>();
-        Iterator<Integer> relevantDocsIt = relevantDocs.iterator(), irrelevantDocsIt = irrelevantDocs.iterator();
+        Iterator<MetricsData> relevantDocsIt = relevantDocs.iterator();
+        Iterator<Integer> irrelevantDocsIt = irrelevantDocs.iterator();
         int relevantDocsSize = relevantDocs.size(), irrelevantDocsSize = irrelevantDocs.size();
 
         // get feedback vectors
         while (relevantDocsIt.hasNext() || irrelevantDocsIt.hasNext()) {
             if (relevantDocsIt.hasNext()) {
-                int docIdR = relevantDocsIt.next();
-                updateFeedBackVector(docIdR, relevantVector, relevantDocsSize, BETA);
+                MetricsData mdR = relevantDocsIt.next();
+                double delta = 0.1;
+                if (mdR.getScore() == 4)
+                    delta = 0;
+                else if (mdR.getScore() == 3)
+                    delta = delta * 1.0;
+                else if (mdR.getScore() == 2)
+                    delta = delta * 2.0;
+                else
+                    delta = delta * 3.0;
+                updateFeedBackVector(mdR.getDocId(), relevantVector, relevantDocsSize, (EXPBETA - delta));
             }
 
             if (irrelevantDocsIt.hasNext()) {
@@ -261,7 +273,7 @@ public class RocchioSearcher {
         // get feedback vectors
         for (SearchData sd : results) {
             int docId = sd.getDocId();
-            updateFeedBackVector(docId, vector, docsSize, BETA);
+            updateFeedBackVector(docId, vector, docsSize, IMPBETA);
         }
 
         Collections.sort(vector);
@@ -310,14 +322,16 @@ public class RocchioSearcher {
      * @param queryID Id of the query
      * @return Relevant documents obtained from the query
      */
-    private static List<Integer> getRelevantDocs(List<SearchData> results, int queryID) {
-        List<Integer> relevantDocs = new ArrayList<>();
+    private static List<MetricsData> getRelevantDocs(List<SearchData> results, int queryID) {
+        List<MetricsData> relevantDocs = new ArrayList<>();
 
         for (SearchData sd : results) {
             int docID = sd.getDocId();
             MetricsData md = new MetricsData(docID, -1);
-            if (realRelevance.get(queryID).contains(md))
-                relevantDocs.add(docID);
+            if (realRelevance.get(queryID).contains(md)) {
+                int idx = realRelevance.get(queryID).indexOf(md);
+                relevantDocs.add(realRelevance.get(queryID).get(idx));
+            }
         }
 
         return relevantDocs;
