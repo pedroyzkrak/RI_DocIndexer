@@ -30,7 +30,7 @@ public class Assignment4 {
     public static void main() {
         // Exercise 1
         System.out.println("Starting Rocchio Algorithm section...");
-        //main1();
+        main1();
 
         // Exercise 2
         System.out.println("Starting Query Expansion section");
